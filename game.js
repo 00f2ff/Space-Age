@@ -22,7 +22,7 @@ var resourceRates = {
  
 
 function init() {
-	updateResources();
+	gameLoop();
 }
 
 init();
@@ -35,18 +35,19 @@ function gameLoop() {
 }
 
 function updateMinePrices() {
-	var i, r, nextLevel, j, r2, difference;
+	var i, r, nextLevel, nextLevelIndex, j, r2, difference;
 	for (i = 0; i < resourceTypes.length; i++) {
 		r = resourceTypes[i];
-		nextLevel = mineData.mineLevels[r]; // not + 1 because of indexing
+		nextLevel = mineData.mineLevels[r] + 1;
+		nextLevelIndex = nextLevel - 1;
 		if (nextLevel <= 21) {
 			for (j = 0; j < resourceTypes.length; j++) {
 				r2 = resourceTypes[j];
-				$('#'+r+'-mine .'+r2+'-price').html(mineCosts[r][r2][nextLevel]).css('color','green');
-				if (resources[r] < mineCosts[r][r2][nextLevel]) $('#'+r+'-mine .'+r2+'-price').css('color','red');
+				$('#'+r+'-mine .'+r2+'-price').html(mineCosts[r][r2][nextLevelIndex]);
+				if (resources[r] < mineCosts[r][r2][nextLevelIndex]) $('#'+r+'-mine .'+r2+'-price').css('color','red');
+				else $('#'+r+'-mine .'+r2+'-price').css('color','green');
 			}
-			var difference = mineData.production[nextLevel] - mineData.production[nextLevel-1];
-			console.log(mineData.production[nextLevel], mineData.production[nextLevel-1])
+			var difference = mineData.production[nextLevelIndex] - mineData.production[nextLevelIndex-1];
 			$('#'+r+'-mine .rate-increase').html('+'+difference);
 		} else {
 			for (j = 0; j < resourceTypes.length; j++) {
@@ -59,18 +60,18 @@ function updateMinePrices() {
 }
 
 // this is mining-specific
-function showPrices(resource, nextLevel) {
+function showPrices(resource, nextLevelIndex) {
 	var r;
 	for (var i = 0; i < resourceTypes.length; i++) {
 		r = resourceTypes[i];
 		// show price and affordability
-		$('.'+r+'-count-decrease').html('-'+mineCosts[resource][r][nextLevel]);
-		console.log(mineCosts[resource][r][nextLevel])
-		if (resources[r] < mineCosts[resource][r][nextLevel]) $('.'+r+'-count-decrease').css('color','red');
+		$('.'+r+'-count-decrease').html('-'+mineCosts[resource][r][nextLevelIndex]);
+		console.log(mineCosts[resource][r][nextLevelIndex])
+		if (resources[r] < mineCosts[resource][r][nextLevelIndex]) $('.'+r+'-count-decrease').css('color','red');
 		else $('.'+r+'-count-decrease').css('color','green');
 	}
 	// show improvement
-	var difference = mineData.production[nextLevel] - mineData.production[nextLevel-1];
+	var difference = mineData.production[nextLevelIndex] - mineData.production[nextLevelIndex];
 	$('.'+resource+'-rate-increase').html('+'+difference);
 }
 
@@ -96,47 +97,36 @@ function updateResourceUI(resource) {
 // currently this just handles mine upgrading. I'll need to abstract this later on
 $('button').click(function() {
 	var resource = $(this).attr('id').split('-')[0];
-	var nextLevel = mineData.mineLevels[resource]; // not +1 because we need to correct for index starting at 0
+	var nextLevel = mineData.mineLevels[resource] + 1;
+	var nextLevelIndex = nextLevel - 1;
 	if (nextLevel <= 21) {
-		if (canUpgradeMine(resource, nextLevel)) {
-			upgradeMine(resource, nextLevel);
-			// nextLevel++;
-			// showPrices(resource, nextLevel);
+		if (canUpgradeMine(resource, nextLevelIndex)) {
+			upgradeMine(resource, nextLevelIndex);
 		}
 	}
 });
-// }).mouseenter(function() {
-// 	var resource = $(this).attr('id').split('-')[0];
-// 	var nextLevel = mineData.mineLevels[resource];
-// 	if (nextLevel <= 21) {
-// 		showPrices(resource, nextLevel);
-// 	}
-// }).mouseleave(function() {
-// 	$('.count-decrease').html('');
-// 	$('.rate-increase').html('');
-// });
 
-function canUpgradeMine(resource, nextLevel) {
+function canUpgradeMine(resource, nextLevelIndex) {
 	var r;
 	for (var i = 0; i < resourceTypes.length; i++) {
 		r = resourceTypes[i];
-		if (resources[r] < mineCosts[resource][r][nextLevel]) return false;
+		if (resources[r] < mineCosts[resource][r][nextLevelIndex]) return false;
 	}
 	return true;
 }
 
-function upgradeMine(resource, nextLevel) {
+function upgradeMine(resource, nextLevelIndex) {
 	mineData.mineLevels[resource]++;
 	var r;
 	for (var i = 0; i < resourceTypes.length; i++) {
 		r = resourceTypes[i];
-		resources[r] -= mineCosts[resource][r][nextLevel];
+		resources[r] -= mineCosts[resource][r][nextLevelIndex];
 	}
 }
 
 
 /*
  * To Do
- *  - Fix formatting problems due to price indicators
+ *  - 
  *
  */
