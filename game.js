@@ -87,6 +87,7 @@ function gameLoop() {
 	updateMultipliers();
 	updateResources();
 	updateMinePrices();
+	updateStoragePrices(); // I should be able to build an abstraction around this
 	
 }
 
@@ -94,6 +95,43 @@ function updateMultipliers() {
 	for (var key in planetMultiplier) {
 		if (!planetMultiplier.hasOwnProperty(key)) continue;
 		$('.'+key+'-multiplier').html(planetMultiplier[key]);
+	}
+}
+
+function updateStoragePrices() {
+	var i, r, nextLevel, nextLevelIndex, j, r2, difference;
+	for (i = 0; i < resourceTypes.length; i++) {
+		r = resourceTypes[i];
+		if (r === 'energy') continue; // energy doesn't have storage
+		nextLevel = storageData.storageLevels[r] + 1;
+		nextLevelIndex = nextLevel - 1;
+		// mine button UI change
+		if (canUpgradeStorage(r, nextLevelIndex)) $('#'+r+'-button').css('color','green');
+		else $('#'+r+'-button').css('color','red');
+		if (nextLevel <= 21) {
+			for (j = 0; j < resourceTypes.length; j++) {
+				r2 = resourceTypes[j];
+				$('#'+r+'-storage .'+r2+'-price').html(storageCosts[r][r2][nextLevelIndex])
+											  // .removeClass('affordable')
+											  // .removeClass('unaffordable');
+				// if (resources[r] < mineCosts[r][r2][nextLevelIndex]) $('#'+r+'-mine .'+r2+'-price').addClass('unaffordable');
+				// else $('#'+r+'-mine .'+r2+'-price').addClass('affordable');
+			}
+			var difference = storageData.storage[nextLevelIndex] - storageData.storage[nextLevelIndex-1];
+			$('#'+r+'-mine .storage-increase').html('+'+difference);
+		} else {
+			for (j = 0; j < resourceTypes.length; j++) {
+				r2 = resourceTypes[j];
+				$('#'+r+'-storage .'+r2+'-price').html('');
+											  // .removeClass('affordable')
+											  // .removeClass('unaffordable')
+											  // .addClass('no-upgrades');
+			}
+			$('#'+r+'-storage .storage-increase').html('');
+										   // .removeClass('affordable')
+										   // .removeClass('unaffordable')
+									   	//    .addClass('no-upgrades');
+		}
 	}
 }
 
@@ -160,7 +198,6 @@ function updateResourceUI(resource) {
 	$('.'+resource+'-level').html(mineData.mineLevels[resource]);
 }
 
-// currently this just handles mine upgrading. I'll need to abstract this later on
 $('button').click(function() {
 	var resource = $(this).attr('id').split('-')[0];
 	var nextLevel = mineData.mineLevels[resource] + 1;
@@ -181,6 +218,15 @@ function canUpgradeMine(resource, nextLevelIndex) {
 	return true;
 }
 
+function canUpgradeStorage(resource, nextLevelIndex) {
+	var r;
+	for (var i = 0; i < resourceTypes.length; i++) {
+		r = resourceTypes[i];
+		if (resources[r] < storageCosts[resource][r][nextLevelIndex]) return false;
+	}
+	return true;
+}
+
 function upgradeMine(resource, nextLevelIndex) {
 	mineData.mineLevels[resource]++;
 	var r;
@@ -190,6 +236,14 @@ function upgradeMine(resource, nextLevelIndex) {
 	}
 }
 
+function upgradeStorage(resource, nextLevelIndex) {
+	storageData.storageLevels[resource]++;
+	var r;
+	for (var i = 0; i < resourceTypes.length; i++) {
+		r = resourceTypes[i];
+		resources[r] -= storageCosts[resource][r][nextLevelIndex];
+	}
+}
 
 /*
  * To Do
