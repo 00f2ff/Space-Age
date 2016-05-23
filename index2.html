@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<title></title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="base.css">
+
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-4">
+        <!-- sun / planet / point data here -->
+        <div class="planet-data">
+          <div class="planet-name"><b>Name:</b> </div>
+          <div class="planet-type"><b>Planet type: </b>Super Terra</div>
+          <div class="planet-points"><b>Points:</b> </div>
+        </div>
+        <div class="sun"><b>Sun strength:</b> </div>
+      </div>
+
+      <div class="col-md-8"> 
+        <!-- resource data here -->
+        <h4 class="sub-header">Resources</h4>
+        <table id="resources-table" class="table">
+          <thead>
+            <tr>
+              <th>Resource</th>
+              <th>Count</th>
+              <th>Rate / min</th> <!-- tooltip about how this is scaled -->
+              <th>Multiplier</th> <!-- this could use a tooltip -->
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Crystal</td>
+              <td><span class="count crystal-count"></span></td>
+              <td><span class="rate crystal-rate"></span></td>
+              <td><span class="multiplier crystal-multiplier"></span></td>
+            </tr>
+            <tr>
+              <td>Steel</td>
+              <td><span class="count steel-count"></span></td>
+              <td><span class="rate steel-rate"></span></td>
+              <td><span class="multiplier steel-multiplier"></span></td>
+            </tr>
+            <tr>
+              <td>Titanium</td>
+              <td><span class="count titanium-count"></span></td>
+              <td><span class="rate titanium-rate"></span></td>
+              <td><span class="multiplier titanium-multiplier"></span></td>
+            </tr>
+            <tr>
+              <td>Tritium</td>
+              <td><span class="count tritium-count"></span></td>
+              <td><span class="rate tritium-rate"></span></td>
+              <td><span class="multiplier tritium-multiplier"></span></td>
+            </tr>
+            <tr>
+              <td>Energy</td>
+              <td><span class="count energy-count"></span></td>
+              <td><span class="rate energy-rate">--</span></td>
+              <td><span class="multiplier energy-multiplier">--</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="row">
+      <ul class="nav nav-pills nav-justified">
+        <li role="presentation" class="active"><a href="#">Mines</a></li>
+        <li role="presentation"><a href="#">Storage</a></li>
+        <li role="presentation"><a href="#">Power</a></li>
+        <li role="presentation"><a href="#">Economy</a></li>
+        <li role="presentation"><a href="#">Fleet</a></li>
+        <li role="presentation"><a href="#">Defense</a></li>
+        <li role="presentation"><a href="#">Technology</a></li>
+        <li role="presentation"><a href="#">Reference</a></li>
+      </ul>
+    </div>
+
+    <div class="row">
+      <h4 class="sub-header">Mines</h4> <!-- I know that steel is not mined but whatever -->
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Resource</th>
+            <th>Level</th>
+            <th>Rate / min</th>
+            <th>Price Crystal</th>
+            <th>Price Steel</th>
+            <th>Price Titanium</th>
+            <th>Price Tritium</th>
+            <th>Rate Increase</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr id="crystal-mine">
+            <td>Crystal</td>
+            <td class="crystal-level"></td>
+            <td class="crystal-rate"></td>
+            <td class="crystal-price"></td>
+            <td class="steel-price"></td>
+            <td class="titanium-price"></td>
+            <td class="tritium-price"></td>
+            <td class="rate-increase"></td>
+            <td><button class="upgrade-button" id="crystal-button">Upgrade</button></td>
+          </tr>
+          <tr id="steel-mine">
+            <td>Steel</td>
+            <td class="steel-level"></td>
+            <td class="steel-rate"></td>
+            <td class="crystal-price"></td>
+            <td class="steel-price"></td>
+            <td class="titanium-price"></td>
+            <td class="tritium-price"></td>
+            <td class="rate-increase"></td>
+            <td><button class="upgrade-button" id="steel-button">Upgrade</button></td>
+          </tr>
+          <tr id="titanium-mine">
+            <td>Titanium</td>
+            <td class="titanium-level"></td>
+            <td class="titanium-rate"></td>
+            <td class="crystal-price"></td>
+            <td class="steel-price"></td>
+            <td class="titanium-price"></td>
+            <td class="tritium-price"></td>
+            <td class="rate-increase"></td>
+            <td><button class="upgrade-button" id="titanium-button">Upgrade</button></td>
+          </tr>
+          <tr id="tritium-mine">
+            <td>Tritium</td>
+            <td class="tritium-level"></td>
+            <td class="tritium-rate"></td>
+            <td class="crystal-price"></td>
+            <td class="steel-price"></td>
+            <td class="titanium-price"></td>
+            <td class="tritium-price"></td>
+            <td class="rate-increase"></td>
+            <td><button class="upgrade-button" id="tritium-button">Upgrade</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<script type="text/javascript" src="mines.js"></script>
+<script type="text/javascript" src="game.js"></script>
+</body>
+</html>
+

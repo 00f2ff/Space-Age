@@ -11,7 +11,7 @@ var resources = {
 
 var resourceTypes = ["crystal", "steel", "titanium", "tritium"];
 
-/* these are per minute */
+/* these are per minute, and are base (resources update with multiplier, however) */
 var resourceRates = {
 	crystal: undefined,
 	steel: undefined,
@@ -19,9 +19,55 @@ var resourceRates = {
 	tritium: undefined
 }
 
- 
+var solarMultiplier = [
+	{
+		tritium: 0.9,
+		steel: 1.1,
+		titanium: 1.1
+	},
+	{
+		tritium: 0.95,
+		steel: 1.05,
+		titanium: 1.05
+	},
+	{
+		tritium: 1,
+		steel: 1,
+		titanium: 1
+	},
+	{
+		tritium: 1.05,
+		steel: 0.95,
+		titanium: 0.95
+	},
+	{
+		tritium: 1.1,
+		steel: 0.9,
+		titanium: 0.9
+	}
+];
+
+var planetMultiplier = { // just contains resource multipliers
+	crystal: 1,
+	steel: 1,
+	titanium: 1,
+	tritium: 1
+}
+
+var sun;
+
+function Sun() {
+	this.strength = Math.round(Math.random() * (solarMultiplier.length-1) + 1);
+	this.multiplier = solarMultiplier[this.strength];
+	for (var key in this.multiplier) {
+		if (!this.multiplier.hasOwnProperty(key)) continue;
+		planetMultiplier[key] *= this.multiplier[key];
+	}
+}
 
 function init() {
+	sun = new Sun();
+	$('.sun').html($('.sun').html()+' '+sun.strength)
 	gameLoop();
 }
 
@@ -30,8 +76,17 @@ init();
 window.setInterval(gameLoop, 100);
 
 function gameLoop() {
+	updateMultipliers();
 	updateResources();
 	updateMinePrices();
+	
+}
+
+function updateMultipliers() {
+	for (var key in planetMultiplier) {
+		if (!planetMultiplier.hasOwnProperty(key)) continue;
+		$('.'+key+'-multiplier').html(planetMultiplier[key]);
+	}
 }
 
 function updateMinePrices() {
@@ -40,6 +95,7 @@ function updateMinePrices() {
 		r = resourceTypes[i];
 		nextLevel = mineData.mineLevels[r] + 1;
 		nextLevelIndex = nextLevel - 1;
+		// mine button UI change
 		if (canUpgradeMine(r, nextLevelIndex)) $('#'+r+'-button').css('color','green');
 		else $('#'+r+'-button').css('color','red');
 		if (nextLevel <= 21) {
@@ -51,7 +107,7 @@ function updateMinePrices() {
 				// if (resources[r] < mineCosts[r][r2][nextLevelIndex]) $('#'+r+'-mine .'+r2+'-price').addClass('unaffordable');
 				// else $('#'+r+'-mine .'+r2+'-price').addClass('affordable');
 			}
-			var difference = mineData.production[nextLevelIndex] - mineData.production[nextLevelIndex-1];
+			var difference = Math.round((mineData.production[nextLevelIndex] - mineData.production[nextLevelIndex-1]) * planetMultiplier[r] * 10) / 10;
 			$('#'+r+'-mine .rate-increase').html('+'+difference);
 		} else {
 			for (j = 0; j < resourceTypes.length; j++) {
@@ -77,14 +133,14 @@ function updateResources() {
 		resourceRates[r] = mineData.production[mineData.mineLevels[r]-1];
 
 		// update resources
-		resources[r] += (resourceRates[r] / 600.0); // resources are per minute and loop runs every 1/10 second
+		resources[r] += (resourceRates[r] * planetMultiplier[r] / 600.0); // resources are per minute and loop runs every 1/10 second
 		updateResourceUI(r);
 	}
 }
 
 function updateResourceUI(resource) {
 	$('.'+resource+'-count').html(Math.floor(resources[resource]));
-	$('.'+resource+'-rate').html(Math.floor(resourceRates[resource]));
+	$('.'+resource+'-rate').html(Math.round(resourceRates[resource] * planetMultiplier[resource] * 10) / 10);
 	$('.'+resource+'-level').html(mineData.mineLevels[resource]);
 }
 
@@ -121,6 +177,13 @@ function upgradeMine(resource, nextLevelIndex) {
 
 /*
  * To Do
- *  - 
- *
+ *  - Support UI changes
+ *  - Energy
+ *  - Update rates to allow scaled; same with energy generation (if applicable)
+ *  - Planet (start with just Super Terra)
+ *  - Building spots + buildings
+ *  - Sun
+ *  - Solar system (aka planet abstraction)
+ *  - Tooltips
+ *  - Programmatic UI generation (or build with partials via Node)
  */
