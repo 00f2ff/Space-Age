@@ -292,14 +292,23 @@ function Planet(type, sun) {
 Planet.prototype.canUpgradeBuilding = function(category, name, index) {
 	var nextLevelIndex, i, r;
 	nextLevelIndex = this.buildings[category][name][index] + 1;
-	// check available power
-	if (this.power < buildingData[category][name].power[nextLevelIndex]) return false;
-	// check available resources
-	for (i = 0; i < resourceTypes.length; i++) {
-		r = resourceTypes[i];
-		if (this.resources[r] < buildingData[category][name].cost[r][nextLevelIndex]) return false;
+	// check not max level
+	if (nextLevelIndex <= 21) {
+		// check available power
+		if (this.power < buildingData[category][name].power[nextLevelIndex]) return false;
+		// check available resources
+		for (i = 0; i < resourceTypes.length; i++) {
+			r = resourceTypes[i];
+			if (this.resources[r] < buildingData[category][name].cost[r][nextLevelIndex]) return false;
+		}
+		return true;
+	} else return false;
+}
+
+Planet.prototype.upgradeBuilding = function(category, name, index) {
+	if (this.canUpgradeBuilding(category, name, index)) {
+		this.buildings[category][name][index]++;
 	}
-	return true;
 }
 
 Planet.prototype.canBuyBuilding = function(category, name) {
@@ -312,9 +321,18 @@ Planet.prototype.canBuyBuilding = function(category, name) {
 	return this.canUpgradeBuilding(category, name, -1); // -1 sets nextLevelIndex to 0
 }
 
+Planet.prototype.buyBuilding = function(category, name) {
+	if (canBuyBuilding(category, name)) {
+		this.buildings[category][name].push(1); // add a level 1 building
+		if (category !== 'mine') this.usedBuildingSlots++;
+	}
+}
+
 /*
  * The way this is going to work is there will be a master building file, but I'll keep track of level and quantity in this file
  * Each building node will consist of an array of 0+ elements, each indicating a level of a particular building
  * Those will be subject to a capped length based on planet-specific attributes such as quantity available, as well as available building spots
  * -- Technology and reference perhaps shouldn't be here...
+ *
+ * The main reason for this approach is to more clearly separate UI and data code
  */
