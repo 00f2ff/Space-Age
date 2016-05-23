@@ -24,7 +24,6 @@ var resourceRates = {
 function init() {
 	updateResources();
 }
-var hoverConsideration = {hovering: false, resource: undefined, nextLevel: undefined};
 
 init();
 
@@ -44,8 +43,7 @@ function updateResources() {
 
 		// update resources
 		resources[r] += (resourceRates[r] / 600.0); // resources are per minute and loop runs every 1/10 second
-		if (hoverConsideration.hovering) showPurchaseChange(hoverConsideration.resource, hoverConsideration.nextLevel);
-		else updateResourceUI(r);
+		updateResourceUI(r);
 	}
 }
 
@@ -62,25 +60,24 @@ $('button').click(function() {
 	if (nextLevel <= 21) {
 		if (canUpgradeMine(resource, nextLevel)) {
 			upgradeMine(resource, nextLevel);
-			nextLevel++;
-			showPurchaseChange(resource, nextLevel);
+			// nextLevel++;
+			// showPrices(resource, nextLevel);
 		}
 	}
-}).mouseenter(function() {
-	var resource = $(this).attr('id').split('-')[0];
-	var nextLevel = mineData.mineLevels[resource];
-	if (nextLevel <= 21) {
-		hoverConsideration = {hovering: true, resource: resource, nextLevel: nextLevel};
-		showPurchaseChange(resource, nextLevel);
-	}
-}).mouseleave(function() {
-	hoverConsideration = {hovering: false, resource: undefined, nextLevel: undefined};
-	$('.count-decrease').html('');
-	$('.rate-increase').html('');
 });
+// }).mouseenter(function() {
+// 	var resource = $(this).attr('id').split('-')[0];
+// 	var nextLevel = mineData.mineLevels[resource];
+// 	if (nextLevel <= 21) {
+// 		showPrices(resource, nextLevel);
+// 	}
+// }).mouseleave(function() {
+// 	$('.count-decrease').html('');
+// 	$('.rate-increase').html('');
+// });
 
 // this is mining-specific
-function showPurchaseChange(resource, nextLevel) {
+function showPrices(resource, nextLevel) {
 	var r;
 	for (var i = 0; i < resourceTypes.length; i++) {
 		r = resourceTypes[i];
