@@ -47,7 +47,7 @@ var planetData = {
 			furnacePowerPlant: 1,
 			nuclearPowerPlant: 1
 		}
-		buildingSlots: 12,
+		maxBuildingSlots: 12,
 		mineSlots: {
 			crystalMine: 2,
 			steelMine: 2,
@@ -71,7 +71,7 @@ var planetData = {
 			furnacePowerPlant: 1,
 			nuclearPowerPlant: 1
 		}
-		buildingSlots: 10,
+		maxBuildingSlots: 10,
 		mineSlots: {
 			crystalMine: 1,
 			steelMine: 1,
@@ -95,7 +95,7 @@ var planetData = {
 			furnacePowerPlant: 2,
 			nuclearPowerPlant: 0
 		}
-		buildingSlots: 10,
+		maxBuildingSlots: 10,
 		mineSlots: {
 			crystalMine: 1,
 			steelMine: 2,
@@ -119,7 +119,7 @@ var planetData = {
 			furnacePowerPlant: 0,
 			nuclearPowerPlant: 1.5
 		}
-		buildingSlots: 7,
+		maxBuildingSlots: 7,
 		mineSlots: {
 			crystalMine: 1,
 			steelMine: 0,
@@ -143,7 +143,7 @@ var planetData = {
 			furnacePowerPlant: 0.7,
 			nuclearPowerPlant: 0.7
 		}
-		buildingSlots: 3,
+		maxBuildingSlots: 3,
 		mineSlots: {
 			crystalMine: 3,
 			steelMine: 0,
@@ -167,7 +167,7 @@ var planetData = {
 			furnacePowerPlant: 2,
 			nuclearPowerPlant: 1.5
 		}
-		buildingSlots: 10,
+		maxBuildingSlots: 10,
 		mineSlots: {
 			crystalMine: 0,
 			steelMine: 3,
@@ -191,7 +191,7 @@ var planetData = {
 			furnacePowerPlant: 1.5,
 			nuclearPowerPlant: 1
 		}
-		buildingSlots: 12,
+		maxBuildingSlots: 12,
 		mineSlots: {
 			crystalMine: 1,
 			steelMine: 1,
@@ -207,6 +207,7 @@ var planetData = {
 function Planet(type, sun) {
 	this.type = type;
 	this.sun = sun;
+	this.resourceTypes = ["crystal", "steel", "titanium", "tritium"];
 	this.buildings = {
 		mine: {
 			crystalMine: [],
@@ -271,8 +272,8 @@ function Planet(type, sun) {
 		}
 		// assign planet type data
 		this.powerRates = planetData[type].powerRates;
-		this.buildings = 0;
-		this.buildingSlots = planetData[type].buildingSlots;
+		this.usedBuildingSlots = 0;
+		this.maxBuildingSlots = planetData[type].maxBuildingSlots;
 		this.mineSlots = planetData[type].mineSlots;
 		// build specific buildings only for Super Terra
 		if (type === 'superTerra') {
@@ -282,13 +283,34 @@ function Planet(type, sun) {
 				titaniumStorage: [1],
 				tritiumStorage: [1]
 			}
+			this.usedBuildingSlots = 4;
 			this.buildings.power.planetaryPowerGenerator = [1];
 		}
 	}
-
-
 }
 
+Planet.prototype.canUpgradeBuilding = function(category, name, index) {
+	var nextLevelIndex, i, r;
+	nextLevelIndex = this.buildings[category][name][index] + 1;
+	// check available power
+	if (this.power < buildingData[category][name].power[nextLevelIndex]) return false;
+	// check available resources
+	for (i = 0; i < resourceTypes.length; i++) {
+		r = resourceTypes[i];
+		if (this.resources[r] < buildingData[category][name].cost[r][nextLevelIndex]) return false;
+	}
+	return true;
+}
+
+Planet.prototype.canBuyBuilding = function(category, name) {
+	// check available building / mine slots
+	if (category === 'mine') {
+		if (this.buildings.mine[name].length === this.mineSlots[name]) return false;
+	} else {
+		if (this.usedBuildingSlots === this.maxBuildingSlots) return false;
+	}
+	return this.canUpgradeBuilding(category, name, -1); // -1 sets nextLevelIndex to 0
+}
 
 /*
  * The way this is going to work is there will be a master building file, but I'll keep track of level and quantity in this file
