@@ -276,12 +276,6 @@ function Planet(type, sun) {
 		this.mineSlots = planetData[type].mineSlots;
 		// build specific buildings only for Super Terra
 		if (type === 'superTerra') {
-			this.buildings.mine = {
-				crystalMine: [1],
-				steelMine: [1],
-				titaniumMine: [1],
-				tritiumMine: [1]
-			}
 			this.buildings.storage = {
 				crystalStorage: [1],
 				steelStorage: [1],
@@ -292,7 +286,7 @@ function Planet(type, sun) {
 		}
 	}
 
-	
+
 }
 
 
