@@ -207,11 +207,9 @@ function updateResourceUI(resource) {
 // supports mine and storage
 $('button').click(function() {
 	var type, resource, nextLevel, nextLevelIndex
-	console.log($(this).parent().parent())
 	type = $(this).parent().parent().attr('id').split('-')[1];
-
 	resource = $(this).attr('id').split('-')[0];
-	// I could use a switch here
+	// I could use a switch somewhere?
 	if (type === 'mine') nextLevel = mineData.mineLevels[resource] + 1;
 	else if (type === 'storage') nextLevel = storageData.storageLevels[resource] + 1;
 	nextLevelIndex = nextLevel - 1;
@@ -281,6 +279,7 @@ function upgradeBuilding(type, resource, nextLevelIndex) {
  *    - Consider putting off implementation of feeder plants to reduce complexity. On the other hand, I could also implement them now
  *  - Periodically test to make sure I don't wait around too long for buildings. If that happens, create new price functions and adjust code to support that
  *  - Planet (start with just Super Terra)
+ *    - Everything in this file makes sense in terms of belonging to a planet object (except the sun), but I'm not sure if the privacy awarded by the module design pattern supports multiple implementations. Look into this.
  *  - Building spots + buildings, backward compatability for new power plants
  *    - Determine if I need to update building spots for allowing storage
  *  - Solar system (aka planet abstraction)
