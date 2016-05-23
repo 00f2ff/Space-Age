@@ -257,12 +257,12 @@ function upgradeStorage(resource, nextLevelIndex) {
 
 /*
  * To Do
- *  - Support UI changes
  *  - Energy
- *  - Periodically test to make sure I don't wait around too long for buildings. If that happens, create new price functions
+ *  - Periodically test to make sure I don't wait around too long for buildings. If that happens, create new price functions and adjust code to support that
  *  - Planet (start with just Super Terra)
- *  - Building spots + buildings
+ *  - Building spots + buildings, backward compatability for new power plants
+ *    - Determine if I need to update building spots for allowing storage
  *  - Solar system (aka planet abstraction)
  *  - Tooltips
- *  - Programmatic UI generation (or build with partials via Node)
+ *  - Programmatic UI generation (or build with partials via Node). Show/hide also works
  */
