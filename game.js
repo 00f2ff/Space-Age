@@ -10,6 +10,13 @@ var resources = {
 	energy: 0
 }
 
+var storage = {
+	crystal: 1000,
+	steel: 1000,
+	titanium: 1000,
+	tritium: 1000
+}
+
 var resourceTypes = ["crystal", "steel", "titanium", "tritium", "energy"];
 
 /* these are per minute, and are base (resources update with multiplier, however) */
@@ -136,15 +143,20 @@ function updateResources() {
 
 		// update resources
 		if (r === 'energy') updateResourceUI(resources[r]); // energy doesn't have a rate
-		else resources[r] += (resourceRates[r] * planetMultiplier[r] / 600.0); // resources are per minute and loop runs every 1/10 second
+		else if (resources[r] < storage[r]) resources[r] += (resourceRates[r] * planetMultiplier[r] / 600.0); // resources are per minute and loop runs every 1/10 second
 		updateResourceUI(r);
 	}
 }
 
 function updateResourceUI(resource) {
 	$('.'+resource+'-count').html(Math.floor(resources[resource]));
-	if (!planetMultiplier[resource]) $('.'+resource+'-rate').html('--');
-	else $('.'+resource+'-rate').html(Math.round(resourceRates[resource] * planetMultiplier[resource] * 10) / 10);
+	if (!planetMultiplier[resource]) {
+		$('.'+resource+'-rate').html('--');
+		$('.'+resource+'-storage').html('--');
+	} else {
+		$('.'+resource+'-rate').html(Math.round(resourceRates[resource] * planetMultiplier[resource] * 10) / 10);
+		$('.'+resource+'-storage').html(storage[resource]);
+	}
 	$('.'+resource+'-level').html(mineData.mineLevels[resource]);
 }
 
@@ -183,10 +195,9 @@ function upgradeMine(resource, nextLevelIndex) {
  * To Do
  *  - Support UI changes
  *  - Energy
- *  - Update rates to allow scaled; same with energy generation (if applicable)
+ *  - Periodically test to make sure I don't wait around too long for buildings. If that happens, create new price functions
  *  - Planet (start with just Super Terra)
  *  - Building spots + buildings
- *  - Sun
  *  - Solar system (aka planet abstraction)
  *  - Tooltips
  *  - Programmatic UI generation (or build with partials via Node)
