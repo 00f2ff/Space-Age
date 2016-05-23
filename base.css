@@ -12,3 +12,6 @@
 
 #resources-table td, #resources-table th { text-align: left; }
 
+.affordable { color: green; }
+.unaffordable { color: red; }
+.no-upgrades { color: black; }

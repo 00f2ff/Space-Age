@@ -43,18 +43,26 @@ function updateMinePrices() {
 		if (nextLevel <= 21) {
 			for (j = 0; j < resourceTypes.length; j++) {
 				r2 = resourceTypes[j];
-				$('#'+r+'-mine .'+r2+'-price').html(mineCosts[r][r2][nextLevelIndex]);
-				if (resources[r] < mineCosts[r][r2][nextLevelIndex]) $('#'+r+'-mine .'+r2+'-price').css('color','red');
-				else $('#'+r+'-mine .'+r2+'-price').css('color','green');
+				$('#'+r+'-mine .'+r2+'-price').html(mineCosts[r][r2][nextLevelIndex])
+											  .removeClass('affordable')
+											  .removeClass('unaffordable');
+				if (resources[r] < mineCosts[r][r2][nextLevelIndex]) $('#'+r+'-mine .'+r2+'-price').addClass('unaffordable');
+				else $('#'+r+'-mine .'+r2+'-price').addClass('affordable');
 			}
 			var difference = mineData.production[nextLevelIndex] - mineData.production[nextLevelIndex-1];
 			$('#'+r+'-mine .rate-increase').html('+'+difference);
 		} else {
 			for (j = 0; j < resourceTypes.length; j++) {
 				r2 = resourceTypes[j];
-				$('#'+r+'-mine .'+r2+'-price').html('').css('color','black');
+				$('#'+r+'-mine .'+r2+'-price').html('')
+											  .removeClass('affordable')
+											  .removeClass('unaffordable')
+											  .addClass('no-upgrades');
 			}
-			$('#'+r+'-mine .rate-increase').html('').css('color', 'black');
+			$('#'+r+'-mine .rate-increase').html('')
+										   .removeClass('affordable')
+										   .removeClass('unaffordable')
+									   	   .addClass('no-upgrades');
 		}
 	}
 }
@@ -104,34 +112,7 @@ $('button').click(function() {
 			upgradeMine(resource, nextLevelIndex);
 		}
 	}
-<<<<<<< HEAD
-}).mouseenter(function() {
-	var resource = $(this).attr('id').split('-')[0];
-	var nextLevel = mineData.mineLevels[resource];
-	if (nextLevel <= 21) {
-		hoverConsideration = {hovering: true, resource: resource, nextLevel: nextLevel};
-		showPurchaseChange(resource, nextLevel);
-	}
-}).mouseleave(function() {
-	hoverConsideration = {hovering: false, resource: undefined, nextLevel: undefined};
-	$('.count, .rate').html('').css('color','black');
-	$('.rate-increase').html('');
-});
-
-// this is mining-specific
-function showPurchaseChange(resource, nextLevel) {
-	var r, difference;
-	for (var i = 0; i < resourceTypes.length; i++) {
-		r = resourceTypes[i];
-		// show price and affordability
-		difference = Math.floor(resources[r] - mineCosts[resource][r][nextLevel]);
-		$('.'+r+'-count').html(difference);
-		if (difference < 0) $('.'+r+'-count').css('color','red');
-		else $('.'+r+'-count').css('color','green');
-	}
-	// show improvement
-	$('.'+resource+'-rate').html(mineData.production[nextLevel]).css('color','blue');
-}
+})
 
 function canUpgradeMine(resource, nextLevelIndex) {
 	var r;
