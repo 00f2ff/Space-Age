@@ -22,9 +22,8 @@ var resourceRates = {
  
 
 function init() {
-	updateResources();
+	gameLoop();
 }
-var hoverConsideration = {hovering: false, resource: undefined, nextLevel: undefined};
 
 init();
 
@@ -32,7 +31,48 @@ window.setInterval(gameLoop, 100);
 
 function gameLoop() {
 	updateResources();
+	updateMinePrices();
+}
 
+function updateMinePrices() {
+	var i, r, nextLevel, nextLevelIndex, j, r2, difference;
+	for (i = 0; i < resourceTypes.length; i++) {
+		r = resourceTypes[i];
+		nextLevel = mineData.mineLevels[r] + 1;
+		nextLevelIndex = nextLevel - 1;
+		if (nextLevel <= 21) {
+			for (j = 0; j < resourceTypes.length; j++) {
+				r2 = resourceTypes[j];
+				$('#'+r+'-mine .'+r2+'-price').html(mineCosts[r][r2][nextLevelIndex]);
+				if (resources[r] < mineCosts[r][r2][nextLevelIndex]) $('#'+r+'-mine .'+r2+'-price').css('color','red');
+				else $('#'+r+'-mine .'+r2+'-price').css('color','green');
+			}
+			var difference = mineData.production[nextLevelIndex] - mineData.production[nextLevelIndex-1];
+			$('#'+r+'-mine .rate-increase').html('+'+difference);
+		} else {
+			for (j = 0; j < resourceTypes.length; j++) {
+				r2 = resourceTypes[j];
+				$('#'+r+'-mine .'+r2+'-price').html('').css('color','black');
+			}
+			$('#'+r+'-mine .rate-increase').html('').css('color', 'black');
+		}
+	}
+}
+
+// this is mining-specific
+function showPrices(resource, nextLevelIndex) {
+	var r;
+	for (var i = 0; i < resourceTypes.length; i++) {
+		r = resourceTypes[i];
+		// show price and affordability
+		$('.'+r+'-count-decrease').html('-'+mineCosts[resource][r][nextLevelIndex]);
+		console.log(mineCosts[resource][r][nextLevelIndex])
+		if (resources[r] < mineCosts[resource][r][nextLevelIndex]) $('.'+r+'-count-decrease').css('color','red');
+		else $('.'+r+'-count-decrease').css('color','green');
+	}
+	// show improvement
+	var difference = mineData.production[nextLevelIndex] - mineData.production[nextLevelIndex];
+	$('.'+resource+'-rate-increase').html('+'+difference);
 }
 
 function updateResources() {
@@ -44,8 +84,7 @@ function updateResources() {
 
 		// update resources
 		resources[r] += (resourceRates[r] / 600.0); // resources are per minute and loop runs every 1/10 second
-		if (hoverConsideration.hovering) showPurchaseChange(hoverConsideration.resource, hoverConsideration.nextLevel);
-		else updateResourceUI(r);
+		updateResourceUI(r);
 	}
 }
 
@@ -58,14 +97,14 @@ function updateResourceUI(resource) {
 // currently this just handles mine upgrading. I'll need to abstract this later on
 $('button').click(function() {
 	var resource = $(this).attr('id').split('-')[0];
-	var nextLevel = mineData.mineLevels[resource]; // not +1 because we need to correct for index starting at 0
+	var nextLevel = mineData.mineLevels[resource] + 1;
+	var nextLevelIndex = nextLevel - 1;
 	if (nextLevel <= 21) {
-		if (canUpgradeMine(resource, nextLevel)) {
-			upgradeMine(resource, nextLevel);
-			nextLevel++;
-			showPurchaseChange(resource, nextLevel);
+		if (canUpgradeMine(resource, nextLevelIndex)) {
+			upgradeMine(resource, nextLevelIndex);
 		}
 	}
+<<<<<<< HEAD
 }).mouseenter(function() {
 	var resource = $(this).attr('id').split('-')[0];
 	var nextLevel = mineData.mineLevels[resource];
@@ -94,27 +133,27 @@ function showPurchaseChange(resource, nextLevel) {
 	$('.'+resource+'-rate').html(mineData.production[nextLevel]).css('color','blue');
 }
 
-function canUpgradeMine(resource, nextLevel) {
+function canUpgradeMine(resource, nextLevelIndex) {
 	var r;
 	for (var i = 0; i < resourceTypes.length; i++) {
 		r = resourceTypes[i];
-		if (resources[r] < mineCosts[resource][r][nextLevel]) return false;
+		if (resources[r] < mineCosts[resource][r][nextLevelIndex]) return false;
 	}
 	return true;
 }
 
-function upgradeMine(resource, nextLevel) {
+function upgradeMine(resource, nextLevelIndex) {
 	mineData.mineLevels[resource]++;
 	var r;
 	for (var i = 0; i < resourceTypes.length; i++) {
 		r = resourceTypes[i];
-		resources[r] -= mineCosts[resource][r][nextLevel];
+		resources[r] -= mineCosts[resource][r][nextLevelIndex];
 	}
 }
 
 
 /*
  * To Do
- *  - Fix formatting problems due to price indicators
+ *  - 
  *
  */
