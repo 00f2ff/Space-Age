@@ -6,10 +6,11 @@ var resources = {
 	crystal: 1000,
 	steel: 1000,
 	titanium: 500,
-	tritium: 1000
+	tritium: 1000,
+	energy: 0
 }
 
-var resourceTypes = ["crystal", "steel", "titanium", "tritium"];
+var resourceTypes = ["crystal", "steel", "titanium", "tritium", "energy"];
 
 /* these are per minute, and are base (resources update with multiplier, however) */
 var resourceRates = {
@@ -57,8 +58,8 @@ var planetMultiplier = { // just contains resource multipliers
 var sun;
 
 function Sun() {
-	this.strength = Math.round(Math.random() * (solarMultiplier.length-1) + 1);
-	this.multiplier = solarMultiplier[this.strength];
+	this.strength = Math.round(Math.random() * (solarMultiplier.length - 1) + 1);
+	this.multiplier = solarMultiplier[this.strength - 1];
 	for (var key in this.multiplier) {
 		if (!this.multiplier.hasOwnProperty(key)) continue;
 		planetMultiplier[key] *= this.multiplier[key];
@@ -93,6 +94,7 @@ function updateMinePrices() {
 	var i, r, nextLevel, nextLevelIndex, j, r2, difference;
 	for (i = 0; i < resourceTypes.length; i++) {
 		r = resourceTypes[i];
+		if (r === 'energy') continue; // energy doesn't have a mine
 		nextLevel = mineData.mineLevels[r] + 1;
 		nextLevelIndex = nextLevel - 1;
 		// mine button UI change
@@ -133,14 +135,16 @@ function updateResources() {
 		resourceRates[r] = mineData.production[mineData.mineLevels[r]-1];
 
 		// update resources
-		resources[r] += (resourceRates[r] * planetMultiplier[r] / 600.0); // resources are per minute and loop runs every 1/10 second
+		if (r === 'energy') updateResourceUI(resources[r]); // energy doesn't have a rate
+		else resources[r] += (resourceRates[r] * planetMultiplier[r] / 600.0); // resources are per minute and loop runs every 1/10 second
 		updateResourceUI(r);
 	}
 }
 
 function updateResourceUI(resource) {
 	$('.'+resource+'-count').html(Math.floor(resources[resource]));
-	$('.'+resource+'-rate').html(Math.round(resourceRates[resource] * planetMultiplier[resource] * 10) / 10);
+	if (!planetMultiplier[resource]) $('.'+resource+'-rate').html('--');
+	else $('.'+resource+'-rate').html(Math.round(resourceRates[resource] * planetMultiplier[resource] * 10) / 10);
 	$('.'+resource+'-level').html(mineData.mineLevels[resource]);
 }
 
