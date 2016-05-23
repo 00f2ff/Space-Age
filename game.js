@@ -98,6 +98,11 @@ function updateMultipliers() {
 	}
 }
 
+// This should happen at some point, but it's going to be brutal
+function updateBuildingPrices(type) {
+
+}
+
 function updateStoragePrices() {
 	var i, r, nextLevel, nextLevelIndex, j, r2, difference;
 	for (i = 0; i < resourceTypes.length; i++) {
@@ -106,7 +111,7 @@ function updateStoragePrices() {
 		nextLevel = storageData.storageLevels[r] + 1;
 		nextLevelIndex = nextLevel - 1;
 		// mine button UI change
-		if (canUpgradeStorage(r, nextLevelIndex)) $('#'+r+'-storage-button').css('color','green');
+		if (canUpgradeBuilding('storage', r, nextLevelIndex)) $('#'+r+'-storage-button').css('color','green');
 		else $('#'+r+'-storage-button').css('color','red');
 		if (nextLevel <= 21) {
 			for (j = 0; j < resourceTypes.length; j++) {
@@ -143,7 +148,7 @@ function updateMinePrices() {
 		nextLevel = mineData.mineLevels[r] + 1;
 		nextLevelIndex = nextLevel - 1;
 		// mine button UI change
-		if (canUpgradeMine(r, nextLevelIndex)) $('#'+r+'-mine-button').css('color','green');
+		if (canUpgradeBuilding('mine', r, nextLevelIndex)) $('#'+r+'-mine-button').css('color','green');
 		else $('#'+r+'-mine-button').css('color','red');
 		if (nextLevel <= 21) {
 			for (j = 0; j < resourceTypes.length; j++) {
@@ -211,48 +216,61 @@ $('button').click(function() {
 	else if (type === 'storage') nextLevel = storageData.storageLevels[resource] + 1;
 	nextLevelIndex = nextLevel - 1;
 	if (nextLevel <= 21) {
-		if (type === 'mine' && canUpgradeMine(resource, nextLevelIndex)) {
-			upgradeMine(resource, nextLevelIndex);
-		} else if (type === 'storage' && canUpgradeStorage(resource, nextLevelIndex)) {
-			upgradeStorage(resource, nextLevelIndex);
+		if (type === 'mine' && canUpgradeBuilding(type, resource, nextLevelIndex)) {
+			upgradeBuilding(type, resource, nextLevelIndex);
+		} else if (type === 'storage' && canUpgradeBuilding(type, resource, nextLevelIndex)) {
+			upgradeBuilding(type, resource, nextLevelIndex);
 		}
 	}
 })
 
-function canUpgradeMine(resource, nextLevelIndex) {
-	var r;
+/*
+ * Abstracted upgrade function with support for different building types
+ *** Todo: Should resource be an optional parameter since this assumes I'm working with mine or storage?
+ */
+function canUpgradeBuilding(type, resource, nextLevelIndex) {
+	var buildingCosts, r; 
+	switch(type) {
+		case 'mine':
+			buildingCosts = mineCosts;
+			break;
+		case 'storage':
+			buildingCosts = storageCosts;
+			break;
+		default:
+			return false;
+			break;
+	}
 	for (var i = 0; i < resourceTypes.length; i++) {
 		r = resourceTypes[i];
-		if (resources[r] < mineCosts[resource][r][nextLevelIndex]) return false;
+		if (resources[r] < buildingCosts[resource][r][nextLevelIndex]) return false;
 	}
 	return true;
 }
 
-function canUpgradeStorage(resource, nextLevelIndex) {
-	var r;
-	for (var i = 0; i < resourceTypes.length; i++) {
-		r = resourceTypes[i];
-		if (resources[r] < storageCosts[resource][r][nextLevelIndex]) return false;
+/*
+ * Abstracted upgrade function with support for different building types
+ *** Todo: Should resource be an optional parameter since this assumes I'm working with mine or storage?
+ */
+function upgradeBuilding(type, resource, nextLevelIndex) {
+	var buildingCosts; 
+	switch(type) {
+		case 'mine':
+			mineData.mineLevels[resource]++;
+			buildingCosts = mineCosts;
+			break;
+		case 'storage':
+			storageData.storageLevels[resource]++;
+			buildingCosts = storageCosts;
+			break;
+		default:
+			return false;
+			break;
 	}
-	return true;
-}
-
-function upgradeMine(resource, nextLevelIndex) {
-	mineData.mineLevels[resource]++;
-	var r;
 	for (var i = 0; i < resourceTypes.length; i++) {
 		r = resourceTypes[i];
-		resources[r] -= mineCosts[resource][r][nextLevelIndex];
+		resources[r] -= buildingCosts[resource][r][nextLevelIndex];
 	}
-}
-
-function upgradeStorage(resource, nextLevelIndex) {
-	storageData.storageLevels[resource]++;
-	var r;
-	for (var i = 0; i < resourceTypes.length; i++) {
-		r = resourceTypes[i];
-		resources[r] -= storageCosts[resource][r][nextLevelIndex];
-	}	
 }
 
 /*
