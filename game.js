@@ -11,10 +11,10 @@ var resources = {
 }
 
 var storage = {
-	crystal: 1000,
-	steel: 1000,
-	titanium: 1000,
-	tritium: 1000
+	crystal: undefined,
+	steel: undefined,
+	titanium: undefined,
+	tritium: undefined
 }
 
 var resourceTypes = ["crystal", "steel", "titanium", "tritium", "energy"];
@@ -106,8 +106,8 @@ function updateStoragePrices() {
 		nextLevel = storageData.storageLevels[r] + 1;
 		nextLevelIndex = nextLevel - 1;
 		// mine button UI change
-		if (canUpgradeStorage(r, nextLevelIndex)) $('#'+r+'-button').css('color','green');
-		else $('#'+r+'-button').css('color','red');
+		if (canUpgradeStorage(r, nextLevelIndex)) $('#'+r+'-storage-button').css('color','green');
+		else $('#'+r+'-storage-button').css('color','red');
 		if (nextLevel <= 21) {
 			for (j = 0; j < resourceTypes.length; j++) {
 				r2 = resourceTypes[j];
@@ -117,8 +117,8 @@ function updateStoragePrices() {
 				// if (resources[r] < mineCosts[r][r2][nextLevelIndex]) $('#'+r+'-mine .'+r2+'-price').addClass('unaffordable');
 				// else $('#'+r+'-mine .'+r2+'-price').addClass('affordable');
 			}
-			var difference = storageData.storage[nextLevelIndex] - storageData.storage[nextLevelIndex-1];
-			$('#'+r+'-mine .storage-increase').html('+'+difference);
+			difference = storageData.storage[nextLevelIndex] - storageData.storage[nextLevelIndex-1];
+			$('#'+r+'-storage .storage-increase').html('+'+difference);
 		} else {
 			for (j = 0; j < resourceTypes.length; j++) {
 				r2 = resourceTypes[j];
@@ -143,8 +143,8 @@ function updateMinePrices() {
 		nextLevel = mineData.mineLevels[r] + 1;
 		nextLevelIndex = nextLevel - 1;
 		// mine button UI change
-		if (canUpgradeMine(r, nextLevelIndex)) $('#'+r+'-button').css('color','green');
-		else $('#'+r+'-button').css('color','red');
+		if (canUpgradeMine(r, nextLevelIndex)) $('#'+r+'-mine-button').css('color','green');
+		else $('#'+r+'-mine-button').css('color','red');
 		if (nextLevel <= 21) {
 			for (j = 0; j < resourceTypes.length; j++) {
 				r2 = resourceTypes[j];
@@ -154,7 +154,7 @@ function updateMinePrices() {
 				// if (resources[r] < mineCosts[r][r2][nextLevelIndex]) $('#'+r+'-mine .'+r2+'-price').addClass('unaffordable');
 				// else $('#'+r+'-mine .'+r2+'-price').addClass('affordable');
 			}
-			var difference = Math.round((mineData.production[nextLevelIndex] - mineData.production[nextLevelIndex-1]) * planetMultiplier[r] * 10) / 10;
+			difference = Math.round((mineData.production[nextLevelIndex] - mineData.production[nextLevelIndex-1]) * planetMultiplier[r] * 10) / 10;
 			$('#'+r+'-mine .rate-increase').html('+'+difference);
 		} else {
 			for (j = 0; j < resourceTypes.length; j++) {
@@ -178,7 +178,8 @@ function updateResources() {
 		r = resourceTypes[i];
 		// update resourceRates
 		resourceRates[r] = mineData.production[mineData.mineLevels[r]-1];
-
+		// update storage
+		storage[r] = storageData.storage[storageData.storageLevels[r]-1]
 		// update resources
 		if (r === 'energy') updateResourceUI(resources[r]); // energy doesn't have a rate
 		else if (resources[r] < storage[r]) resources[r] += (resourceRates[r] * planetMultiplier[r] / 600.0); // resources are per minute and loop runs every 1/10 second
@@ -198,13 +199,22 @@ function updateResourceUI(resource) {
 	$('.'+resource+'-level').html(mineData.mineLevels[resource]);
 }
 
+// supports mine and storage
 $('button').click(function() {
-	var resource = $(this).attr('id').split('-')[0];
-	var nextLevel = mineData.mineLevels[resource] + 1;
-	var nextLevelIndex = nextLevel - 1;
+	var type, resource, nextLevel, nextLevelIndex
+	console.log($(this).parent().parent())
+	type = $(this).parent().parent().attr('id').split('-')[1];
+
+	resource = $(this).attr('id').split('-')[0];
+	// I could use a switch here
+	if (type === 'mine') nextLevel = mineData.mineLevels[resource] + 1;
+	else if (type === 'storage') nextLevel = storageData.storageLevels[resource] + 1;
+	nextLevelIndex = nextLevel - 1;
 	if (nextLevel <= 21) {
-		if (canUpgradeMine(resource, nextLevelIndex)) {
+		if (type === 'mine' && canUpgradeMine(resource, nextLevelIndex)) {
 			upgradeMine(resource, nextLevelIndex);
+		} else if (type === 'storage' && canUpgradeStorage(resource, nextLevelIndex)) {
+			upgradeStorage(resource, nextLevelIndex);
 		}
 	}
 })
@@ -242,7 +252,7 @@ function upgradeStorage(resource, nextLevelIndex) {
 	for (var i = 0; i < resourceTypes.length; i++) {
 		r = resourceTypes[i];
 		resources[r] -= storageCosts[resource][r][nextLevelIndex];
-	}
+	}	
 }
 
 /*
