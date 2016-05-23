@@ -7,6 +7,7 @@
 	<title></title>
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 	<link rel="stylesheet" type="text/css" href="dashboard.css">
+	<link rel="stylesheet" type="text/css" href="base.css">
 
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -65,7 +66,7 @@
 
           <div class="row">
           	<h4 class="sub-header">Resources</h4>
-          	<table class="table">
+          	<table id="resources-table" class="table">
           		<thead>
           			<tr>
           				<th>Resource</th>
@@ -76,23 +77,23 @@
           		<tbody>
           			<tr>
           				<td>Crystal</td>
-          				<td class="crystal-count"></td>
-          				<td class="crystal-rate"></td>
+          				<td><span class="count crystal-count"></span>&nbsp;&nbsp;&nbsp;<span class="count-decrease crystal-count-decrease"></span></td>
+          				<td><span class="rate crystal-rate"></span>&nbsp;&nbsp;&nbsp;<span class="rate-increase crystal-rate-increase"></span></td>
           			</tr>
           			<tr>
           				<td>Steel</td>
-          				<td class="steel-count"></td>
-          				<td class="steel-rate"></td>
+          				<td><span class="count steel-count"></span>&nbsp;&nbsp;&nbsp;<span class="count-decrease steel-count-decrease"></span></td>
+          				<td><span class="rate steel-rate"></span>&nbsp;&nbsp;&nbsp;<span class="rate-increase steel-rate-increase"></span></td>
           			</tr>
           			<tr>
           				<td>Titanium</td>
-          				<td class="titanium-count"></td>
-          				<td class="titanium-rate"></td>
+          				<td><span class="count titanium-count"></span>&nbsp;&nbsp;&nbsp;<span class="count-decrease titanium-count-decrease"></span></td>
+          				<td><span class="rate titanium-rate"></span>&nbsp;&nbsp;&nbsp;<span class="rate-increase titanium-rate-increase"></span></td>
           			</tr>
           			<tr>
           				<td>Tritium</td>
-          				<td class="tritium-count"></td>
-          				<td class="tritium-rate"></td>
+          				<td><span class="count tritium-count"></span>&nbsp;&nbsp;&nbsp;<span class="count-decrease tritium-count-decrease"></span></td>
+          				<td><span class="rate tritium-rate"></span>&nbsp;&nbsp;&nbsp;<span class="rate-increase tritium-rate-increase"></span></td>
           			</tr>
           		</tbody>
           	</table>

@@ -1,0 +1,13 @@
+.count-decrease {
+	/*color: red;*/
+}
+
+.rate-increase {
+	color: blue;
+}
+
+#resources-table td:nth-child(2) {
+	/*text-align: right;*/
+}
+
+#resources-table td, #resources-table th { text-align: left; }

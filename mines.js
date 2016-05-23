@@ -17,31 +17,32 @@ var mineData = {
 		steel: 1,
 		titanium: 1,
 		tritium: 1
+	}	
+}
+
+var mineCosts = {
+	crystal: {
+		crystal: mineData.expensive,
+		steel: mineData.expensive,
+		titanium: mineData.midrange,
+		tritium: mineData.cheap
 	},
-	resourceCosts: {
-		crystal: {
-			crystal: this.expensive,
-			steel: this.expensive,
-			titanium: this.midrange,
-			tritium: this.cheap
-		},
-		steel: {
-			crystal: this.expensive,
-			steel: this.expensive,
-			titanium: this.midrange,
-			tritium: this.cheap
-		},
-		titanium: {
-			crystal: this.expensive,
-			steel: this.midrange,
-			titanium: this.expensive,
-			tritium: this.cheap
-		},
-		tritium: {
-			crystal: this.cheap,
-			steel: this.midrange,
-			titanium: this.expensive,
-			tritium: this.expensive
-		}
+	steel: {
+		crystal: mineData.expensive,
+		steel: mineData.expensive,
+		titanium: mineData.midrange,
+		tritium: mineData.cheap
+	},
+	titanium: {
+		crystal: mineData.expensive,
+		steel: mineData.midrange,
+		titanium: mineData.expensive,
+		tritium: mineData.cheap
+	},
+	tritium: {
+		crystal: mineData.cheap,
+		steel: mineData.midrange,
+		titanium: mineData.expensive,
+		tritium: mineData.expensive
 	}
 }
