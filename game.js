@@ -7,7 +7,7 @@ var resources = {
 	steel: 1000,
 	titanium: 500,
 	tritium: 1000,
-	energy: 0
+	energy: 25
 }
 
 var storage = {
@@ -184,7 +184,7 @@ function updateResources() {
 		// update resourceRates
 		resourceRates[r] = mineData.production[mineData.mineLevels[r]-1];
 		// update storage
-		storage[r] = storageData.storage[storageData.storageLevels[r]-1]
+		storage[r] = storageData.storage[storageData.storageLevels[r]-1];		
 		// update resources
 		if (r === 'energy') updateResourceUI(resources[r]); // energy doesn't have a rate
 		else if (resources[r] < storage[r]) resources[r] += (resourceRates[r] * planetMultiplier[r] / 600.0); // resources are per minute and loop runs every 1/10 second
@@ -274,9 +274,9 @@ function upgradeBuilding(type, resource, nextLevelIndex) {
 /*
  * To Do
  *  - Energy
- *    - The PPG will be level 1 (make sure that equates to full power needs of level 1 of each mine)
+ *    - The PPG will be level 1
  *    - All others won't have a level, and will need to be bought
- *    - Consider putting off implementation of feeder plants to reduce complexity. On the other hand, I could also implement them now
+ *  - Multiple mines
  *  - Periodically test to make sure I don't wait around too long for buildings. If that happens, create new price functions and adjust code to support that
  *  - Planet (start with just Super Terra)
  *    - Everything in this file makes sense in terms of belonging to a planet object (except the sun), but I'm not sure if the privacy awarded by the module design pattern supports multiple implementations. Look into this.
