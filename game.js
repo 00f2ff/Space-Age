@@ -276,11 +276,14 @@ function upgradeBuilding(type, resource, nextLevelIndex) {
 /*
  * To Do
  *  - Energy
+ *    - The PPG will be level 1 (make sure that equates to full power needs of level 1 of each mine)
+ *    - All others won't have a level, and will need to be bought
+ *    - Consider putting off implementation of feeder plants to reduce complexity. On the other hand, I could also implement them now
  *  - Periodically test to make sure I don't wait around too long for buildings. If that happens, create new price functions and adjust code to support that
  *  - Planet (start with just Super Terra)
  *  - Building spots + buildings, backward compatability for new power plants
  *    - Determine if I need to update building spots for allowing storage
  *  - Solar system (aka planet abstraction)
- *  - Tooltips
+ *  - Tooltips (I can put this off by adding to reference, although it's a good idea to also provide tooltips)
  *  - Programmatic UI generation (or build with partials via Node). Show/hide also works
  */
