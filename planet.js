@@ -85,13 +85,13 @@ function Planet(type, sun) {
 	// build specific buildings only for Super Terra
 	if (type === 'superTerra') {
 		this.buildings.storage = {
-			crystal: [1],
-			steel: [1],
-			titanium: [1],
-			tritium: [1]
+			crystal: [0],
+			steel: [0],
+			titanium: [0],
+			tritium: [0]
 		}
 		this.usedBuildingSlots = 4;
-		this.buildings.power.planetaryPowerGenerator = [1];
+		this.buildings.power.planetaryPowerGenerator = [0];
 	}
 }
 
@@ -159,8 +159,8 @@ Planet.prototype.updateUIVariables = function(category, name) {
 		case 'mine':
 			this.mineRates[name] = this.sum('mine', name, 'production') * this.mineMultipliers[name];
 			break;
-		case 'storage':
-			this.storage[name] = this.sum('storage', name, 'storage');
+		case 'capacity':
+			this.storage[name] = this.sum('storage', name, 'capacity');
 			break;
 		default:
 			break;
@@ -181,7 +181,7 @@ Planet.prototype.dataLoop = function() {
 	for (i = 0; i < this.resourceTypes.length; i++) {
 		r = this.resourceTypes[i];
 		increment = this.mineRates[r] / 60 / cyclesPerSecond;
-		// increment resource if less than storage, otherwise set to storage
+		// increment resource if less than capacity, otherwise set to capacity
 		if (this.resources[r] + increment < this.storage[r]) this.resources[r] += increment;
 		else this.resources[r] = this.storage[r];
 	}

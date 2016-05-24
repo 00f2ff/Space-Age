@@ -1,6 +1,12 @@
 
 
 function UI() {
+
+}
+
+// This should probably go somewhere else to not clutter the class, but I only use it here
+String.prototype.capitalize = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
 }
 
 // Put an alert on delete buttons (also make them red background)
@@ -13,7 +19,7 @@ UI.prototype.generateBuildingTable = function(category, effects) {
 	var $table = $('<table class="table" data-category="'+category+'">\
 						<thead>\
 							<tr>\
-								<th>'+category+'</th>\
+								<th>'+category.capitalize()+'</th>\
 								<th>Level</th>\
 								<th>Crystal</th>\
 					            <th>Steel</th>\
@@ -28,7 +34,7 @@ UI.prototype.generateBuildingTable = function(category, effects) {
 	// generate unique headers
 	var $headerRow = $table.find('tr');
 	for (var i = 0; i < effects.length; i++) {
-		$headerRow.append('<th>'+effects[i]+'</th>');
+		$headerRow.append('<th>'+effects[i].capitalize()+'</th>');
 	}
 	// generate header placeholder for upgrade, buy and delete buttons
 	$headerRow.append('<th></th>');
@@ -41,12 +47,12 @@ UI.prototype.generateBuildingTable = function(category, effects) {
 		if (instances.length > 0) {
 			for (var i = 0; i < instances.length; i++) {
 				var index = instances[i];
-				var $row = this.generateBuildingRow($tbody, category, name, effects, index+1); // +1 to go to next level
+				var $row = this.generateBuildingRow($tbody, category, name, effects, index);
 				$tbody.append($row);
 			}
 		} else {
 			// create row that can be bought
-			var $row = this.generateBuildingRow($tbody, category, name, effects, 0);
+			var $row = this.generateBuildingRow($tbody, category, name, effects, -1);
 			$tbody.append($row);
 		}	
 	}
@@ -56,20 +62,28 @@ UI.prototype.generateBuildingTable = function(category, effects) {
 // add a different number of buttons depending on whether building has been bought yet
 UI.prototype.generateBuildingRow = function($tbody, category, name, effects, index) {
 	var instanceData = buildingData[category][name];
-	if (index <= 21) {
+	var nextLevelIndex = index + 1;
+	var level = nextLevelIndex;
+	/*
+	 * To clarify: nextLevelIndex equals the index+1, which means we want to show it to users. 
+	 * However, it's also the index of the cost we want to present for upgrading.
+	 */
+	// Need a naming exception if a building hasn't been bought yet
+	if (nextLevelIndex === 0) level = 1;
+	if (nextLevelIndex <= 21) {
 		var $row = $('<tr>\
-			<td>'+name+'</td>\
-			<td>'+(index+1)+'</td>\
-			<td>'+instanceData.cost.crystal[index]+'</td>\
-			<td>'+instanceData.cost.steel[index]+'</td>\
-			<td>'+instanceData.cost.titanium[index]+'</td>\
-			<td>'+instanceData.cost.tritium[index]+'</td>\
-			<td>'+instanceData.power[index]+'</td>\
+			<td>'+name.capitalize()+'</td>\
+			<td>'+level+'</td>\
+			<td>'+instanceData.cost.crystal[nextLevelIndex]+'</td>\
+			<td>'+instanceData.cost.steel[nextLevelIndex]+'</td>\
+			<td>'+instanceData.cost.titanium[nextLevelIndex]+'</td>\
+			<td>'+instanceData.cost.tritium[nextLevelIndex]+'</td>\
+			<td>'+instanceData.power[nextLevelIndex]+'</td>\
 		</tr>');
 	} else {
 		var $row = $('<tr>\
-			<td>'+name+'</td>\
-			<td>'+(index)+'</td>\
+			<td>'+name.capitalize()+'</td>\
+			<td>'+level+'</td>\
 			<td>--</td>\
 			<td>--</td>\
 			<td>--</td>\
@@ -81,24 +95,28 @@ UI.prototype.generateBuildingRow = function($tbody, category, name, effects, ind
 	// add effect columns
 	for (var j = 0; j < effects.length; j++) {
 		if (effects[j] !== 'difference') {
-			if (index <= 21) $row.append('<td>'+instanceData[effects[j]][index]+'</td>');
-			else $row.append('<td>'+instanceData[effects[j]][index-1]+'</td>');
-		} else if (effects[j] === 'difference' && index > 0) {
-			if (index <= 21) {
-				var difference = instanceData[effects[j-1]][index] - instanceData[effects[j-1]][index-1];
+			// show what it is for current level
+			var effect = instanceData[effects[j]][index];
+			if (!effect) effect = 0;
+			$row.append('<td>'+effect+'</td>');
+		} else if (effects[j] === 'difference' && index >= 0) {
+			if (nextLevelIndex <= 21) {
+				console.log(instanceData[effects[j-1]])
+				var difference = instanceData[effects[j-1]][nextLevelIndex] - instanceData[effects[j-1]][index];
 				$row.append('<td class="increase">+'+difference+'</td>');
 			} else {
 				$row.append('<td>--</td>');
 			}
-		} else if (effects[j] === 'difference' && index === 0) {
-			$row.append('<td class="increase">+'+instanceData[effects[j-1]][index]+'</td>');
+		} else if (effects[j] === 'difference' && index < 0) {
+			// Note: this assumes 'difference' is never first element
+			$row.append('<td class="increase">+'+instanceData[effects[j-1]][nextLevelIndex]+'</td>');
 		}
 	}
 	$buttonTd = $('<td></td>')
-	if (index > 0) {
+	if (nextLevelIndex > 0) {
 		// add upgrade button
 		$upgradeButton = $('<button class="upgrade-button">Upgrade</button>');
-		if (planet.canUpgradeBuilding(category, name, index-1)) $upgradeButton.css('color','green'); // -1 to get back to current index
+		if (planet.canUpgradeBuilding(category, name, index)) $upgradeButton.css('color','green'); // -1 to get back to current index
 		else $upgradeButton.css('color','red');
 		$buttonTd.append($upgradeButton);
 	}
@@ -109,7 +127,7 @@ UI.prototype.generateBuildingRow = function($tbody, category, name, effects, ind
 		else $buyButton.css('color','red');
 		$buttonTd.append($buyButton);
 	}
-	if (index > 0) {
+	if (nextLevelIndex > 0) {
 		// add delete button
 		$deleteButton = $('<button class="delete-button">Delete</button>');
 		$buttonTd.append($deleteButton);

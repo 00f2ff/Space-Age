@@ -8,7 +8,8 @@ var ui = new UI();
 // Then we populate initial resource and building data
 
 ui.generateBuildingTable('mine', ['production', 'difference']);
-ui.generateBuildingTable('storage', ['storage', 'difference']);
+// a planet has storage, and storage has capacity
+ui.generateBuildingTable('storage', ['capacity', 'difference']);
 // Then we start the game loop
 window.setInterval(game, 100);
 
