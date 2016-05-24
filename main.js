@@ -17,3 +17,29 @@ function game() {
 	planet.dataLoop();
 	ui.visualLoop();
 }
+
+//// INTERACTION HANDLERS ////
+$('button').click(function() {
+	switch($(this).attr('class')) {
+		case 'buy-button':
+			console.log($(this).parent().data());
+			// If the index is -1, we just update the row / buy
+			// remember to verify if purchase is acceptable
+			// If the index is >= 0, we buy and regenerate the table (new instance)
+			break;
+		case 'upgrade-button':
+
+			break;
+		case 'delete-button':
+			var del = confirm("Are you sure you want to delete this building?");
+			if (del) {
+
+			} else {
+
+			}
+
+			break;
+		default:
+			break;
+	}
+});

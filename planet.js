@@ -149,6 +149,7 @@ Planet.prototype.buyBuilding = function(category, name) {
 Planet.prototype.deleteBuilding = function(category, name, index) {
 	var deleteIndex = this.buildings[category][name].indexOf(index); // index is the adjusted level
 	if (deleteIndex > -1) this.buildings[category][name].splice(deleteIndex, 1); // remove 1 instance of that index
+	if (category !== 'mine') this.usedBuildingSlots--;
 }
 
 //// RESOURCE FUNCTIONS ////

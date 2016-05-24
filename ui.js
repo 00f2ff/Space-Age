@@ -11,11 +11,10 @@ String.prototype.capitalize = function() {
 
 // Put an alert on delete buttons (also make them red background)
 
-// Note: this is going to get more complicated when I involve availability of mines and whatnot (also buy vs upgrade, etc)
-// Note: I may want to do certain capitalizations / splitting of strings 
-// Do I want to have an attribute pointing to category, name and instance for easier upgrading / click referencing?
 // Also, this should run on start for mines, but only on other tab clicks. It should also remove previous table
 UI.prototype.generateBuildingTable = function(category, effects) {
+	// delete existing one
+	$('.table[data-category="'+category+'"]').remove();
 	var $table = $('<table class="table" data-category="'+category+'">\
 						<thead>\
 							<tr>\
@@ -112,7 +111,7 @@ UI.prototype.generateBuildingRow = function($tbody, category, name, effects, ind
 			$row.append('<td class="increase">+'+instanceData[effects[j-1]][nextLevelIndex]+'</td>');
 		}
 	}
-	$buttonTd = $('<td></td>')
+	$buttonTd = $('<td data-category="'+category+'" data-name="'+name+'" data-index="'+index+'"></td>')
 	if (nextLevelIndex > 0) {
 		// add upgrade button
 		$upgradeButton = $('<button class="upgrade-button">Upgrade</button>');
