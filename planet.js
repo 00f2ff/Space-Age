@@ -99,7 +99,8 @@ function Planet(type, sun) {
 
 Planet.prototype.canUpgradeBuilding = function(category, name, index) {
 	var nextLevelIndex, i, r;
-	nextLevelIndex = this.buildings[category][name][index] + 1;
+	if (index < 0) nextLevelIndex = 0;
+	else nextLevelIndex = this.buildings[category][name][index] + 1;
 	// check not max level
 	if (nextLevelIndex <= 21) {
 		// check available power
@@ -143,6 +144,11 @@ Planet.prototype.buyBuilding = function(category, name) {
 		else this.power -= buildingData[category][name].power[this.buildings[category][name][index]];
 	}
 	this.updateUIVariables(category, name);
+}
+
+Planet.prototype.deleteBuilding = function(category, name, index) {
+	var deleteIndex = this.buildings[category][name].indexOf(index); // index is the adjusted level
+	if (deleteIndex > -1) this.buildings[category][name].splice(deleteIndex, 1); // remove 1 instance of that index
 }
 
 //// RESOURCE FUNCTIONS ////

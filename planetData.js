@@ -4,10 +4,10 @@
 var planetData = {
 	superTerra: {
 		mineMultipliers: {
-			crystalMine: 2,
-			steelMine: 2,
-			titaniumMine: 2,
-			tritiumMine: 2
+			crystal: 2,
+			steel: 2,
+			titanium: 2,
+			tritium: 2
 		},
 		powerMultipliers: {
 			hydropowerPlant: 1,
@@ -20,18 +20,18 @@ var planetData = {
 		},
 		maxBuildingSlots: 12,
 		mineSlots: {
-			crystalMine: 2,
-			steelMine: 2,
-			titaniumMine: 2,
-			tritiumMine: 2
+			crystal: 2,
+			steel: 2,
+			titanium: 2,
+			tritium: 2
 		}
 	},
 	terra: {
 		mineMultipliers: {
-			crystalMine: 1,
-			steelMine: 1,
-			titaniumMine: 1,
-			tritiumMine: 1
+			crystal: 1,
+			steel: 1,
+			titanium: 1,
+			tritium: 1
 		},
 		powerMultipliers: {
 			hydropowerPlant: 1,
@@ -44,18 +44,18 @@ var planetData = {
 		},
 		maxBuildingSlots: 10,
 		mineSlots: {
-			crystalMine: 1,
-			steelMine: 1,
-			titaniumMine: 1,
-			tritiumMine: 1
+			crystal: 1,
+			steel: 1,
+			titanium: 1,
+			tritium: 1
 		}
 	},
 	volcanic: {
 		mineMultipliers: {
-			crystalMine: 1,
-			steelMine: 1.5,
-			titaniumMine: 1.5,
-			tritiumMine: 0
+			crystal: 1,
+			steel: 1.5,
+			titanium: 1.5,
+			tritium: 0
 		},
 		powerMultipliers: {
 			hydropowerPlant: 0,
@@ -68,18 +68,18 @@ var planetData = {
 		},
 		maxBuildingSlots: 10,
 		mineSlots: {
-			crystalMine: 1,
-			steelMine: 2,
-			titaniumMine: 2,
-			tritiumMine: 0
+			crystal: 1,
+			steel: 2,
+			titanium: 2,
+			tritium: 0
 		}
 	},
 	aqua: {
 		mineMultipliers: {
-			crystalMine: 1,
-			steelMine: 0,
-			titaniumMine: 0.5,
-			tritiumMine: 2.5
+			crystal: 1,
+			steel: 0,
+			titanium: 0.5,
+			tritium: 2.5
 		},
 		powerMultipliers: {
 			hydropowerPlant: 1.5,
@@ -92,18 +92,18 @@ var planetData = {
 		},
 		maxBuildingSlots: 7,
 		mineSlots: {
-			crystalMine: 1,
-			steelMine: 0,
-			titaniumMine: 1,
-			tritiumMine: 2
+			crystal: 1,
+			steel: 0,
+			titanium: 1,
+			tritium: 2
 		}
 	},
 	airy: {
 		mineMultipliers: {
-			crystalMine: 3,
-			steelMine: 0,
-			titaniumMine: 0,
-			tritiumMine: 1
+			crystal: 3,
+			steel: 0,
+			titanium: 0,
+			tritium: 1
 		},
 		powerMultipliers: {
 			hydropowerPlant: 1,
@@ -116,18 +116,18 @@ var planetData = {
 		},
 		maxBuildingSlots: 3,
 		mineSlots: {
-			crystalMine: 3,
-			steelMine: 0,
-			titaniumMine: 0,
-			tritiumMine: 1
+			crystal: 3,
+			steel: 0,
+			titanium: 0,
+			tritium: 1
 		}
 	},
 	crag: {
 		mineMultipliers: {
-			crystalMine: 0,
-			steelMine: 1.5,
-			titaniumMine: 2.5,
-			tritiumMine: 0
+			crystal: 0,
+			steel: 1.5,
+			titanium: 2.5,
+			tritium: 0
 		},
 		powerMultipliers: {
 			hydropowerPlant: 0,
@@ -140,18 +140,18 @@ var planetData = {
 		},
 		maxBuildingSlots: 10,
 		mineSlots: {
-			crystalMine: 0,
-			steelMine: 3,
-			titaniumMine: 3,
-			tritiumMine: 0
+			crystal: 0,
+			steel: 3,
+			titanium: 3,
+			tritium: 0
 		}
 	},
 	outcrop: {
 		mineMultipliers: {
-			crystalMine: 0.5,
-			steelMine: 1,
-			titaniumMine: 1.5,
-			tritiumMine: 1
+			crystal: 0.5,
+			steel: 1,
+			titanium: 1.5,
+			tritium: 1
 		},
 		powerMultipliers: {
 			hydropowerPlant: 0.5,
@@ -164,10 +164,10 @@ var planetData = {
 		},
 		maxBuildingSlots: 12,
 		mineSlots: {
-			crystalMine: 1,
-			steelMine: 1,
-			titaniumMine: 2,
-			tritiumMine: 0
+			crystal: 1,
+			steel: 1,
+			titanium: 2,
+			tritium: 0
 		}
 	}
 }
