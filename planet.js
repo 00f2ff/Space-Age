@@ -46,7 +46,7 @@ var planetData = {
 			liquidPowerPlant: 1,
 			furnacePowerPlant: 1,
 			nuclearPowerPlant: 1
-		}
+		},
 		maxBuildingSlots: 12,
 		mineSlots: {
 			crystalMine: 2,
@@ -70,7 +70,7 @@ var planetData = {
 			liquidPowerPlant: 1,
 			furnacePowerPlant: 1,
 			nuclearPowerPlant: 1
-		}
+		},
 		maxBuildingSlots: 10,
 		mineSlots: {
 			crystalMine: 1,
@@ -94,7 +94,7 @@ var planetData = {
 			liquidPowerPlant: 1.5,
 			furnacePowerPlant: 2,
 			nuclearPowerPlant: 0
-		}
+		},
 		maxBuildingSlots: 10,
 		mineSlots: {
 			crystalMine: 1,
@@ -118,7 +118,7 @@ var planetData = {
 			liquidPowerPlant: 1,
 			furnacePowerPlant: 0,
 			nuclearPowerPlant: 1.5
-		}
+		},
 		maxBuildingSlots: 7,
 		mineSlots: {
 			crystalMine: 1,
@@ -142,7 +142,7 @@ var planetData = {
 			liquidPowerPlant: 0.7,
 			furnacePowerPlant: 0.7,
 			nuclearPowerPlant: 0.7
-		}
+		},
 		maxBuildingSlots: 3,
 		mineSlots: {
 			crystalMine: 3,
@@ -166,7 +166,7 @@ var planetData = {
 			liquidPowerPlant: 0.5,
 			furnacePowerPlant: 2,
 			nuclearPowerPlant: 1.5
-		}
+		},
 		maxBuildingSlots: 10,
 		mineSlots: {
 			crystalMine: 0,
@@ -190,7 +190,7 @@ var planetData = {
 			liquidPowerPlant: 1,
 			furnacePowerPlant: 1.5,
 			nuclearPowerPlant: 1
-		}
+		},
 		maxBuildingSlots: 12,
 		mineSlots: {
 			crystalMine: 1,
@@ -252,52 +252,48 @@ function Planet(type, sun) {
 
 		}
 	}
-	this.init();
-
-	function init() {
-		// assign initial values
-		this.resources = {
-			crystal: 1000,
-			steel: 1000,
-			titanium: 500,
-			tritium: 1000
+	// assign initial values
+	this.resources = {
+		crystal: 1000,
+		steel: 1000,
+		titanium: 500,
+		tritium: 1000
+	}
+	this.mineRates = {
+		crystal: 0,
+		steel: 0,
+		titanium: 0,
+		tritium: 0
+	}
+	this.storage = {
+		crystal: 2000,
+		steel: 2000,
+		titanium: 2000,
+		tritium: 2000
+	}
+	this.power = 25;
+	// assign mineMultipliers from sun
+	this.mineMultipliers = this.sun.mineMultipliers;
+	// modify mineMultipliers from planet type
+	for (var mult in this.mineMultipliers) {
+		if (!this.mineMultipliers.hasOwnProperty(mult)) continue;
+		this.mineMultipliers[mult] *= planetData[type].mineMultipliers[mult];
+	}
+	// assign planet type data
+	this.powerMultipliers = planetData[type].powerMultipliers;
+	this.usedBuildingSlots = 0;
+	this.maxBuildingSlots = planetData[type].maxBuildingSlots;
+	this.mineSlots = planetData[type].mineSlots;
+	// build specific buildings only for Super Terra
+	if (type === 'superTerra') {
+		this.buildings.storage = {
+			crystal: [1],
+			steel: [1],
+			titanium: [1],
+			tritium: [1]
 		}
-		this.mineRates = {
-			crystal: 0,
-			steel: 0,
-			titanium: 0,
-			tritium: 0
-		}
-		this.storage = {
-			crystal: 2000,
-			steel: 2000,
-			titanium: 2000,
-			tritium: 2000
-		}
-		this.power = 25;
-		// assign mineMultipliers from sun
-		this.mineMultipliers = this.sun.mineMultipliers;
-		// modify mineMultipliers from planet type
-		for (var mult in this.mineMultipliers) {
-			if (!this.mineMultipliers.hasOwnProperty(mult)) continue;
-			this.mineMultipliers[mult] *= planetData[type].mineMultipliers[mult];
-		}
-		// assign planet type data
-		this.powerMultipliers = planetData[type].powerMultipliers;
-		this.usedBuildingSlots = 0;
-		this.maxBuildingSlots = planetData[type].maxBuildingSlots;
-		this.mineSlots = planetData[type].mineSlots;
-		// build specific buildings only for Super Terra
-		if (type === 'superTerra') {
-			this.buildings.storage = {
-				crystal: [1],
-				steel: [1],
-				titanium: [1],
-				tritium: [1]
-			}
-			this.usedBuildingSlots = 4;
-			this.buildings.power.planetaryPowerGenerator = [1];
-		}
+		this.usedBuildingSlots = 4;
+		this.buildings.power.planetaryPowerGenerator = [1];
 	}
 }
 
@@ -311,8 +307,8 @@ Planet.prototype.canUpgradeBuilding = function(category, name, index) {
 		// check available power
 		if (this.power < buildingData[category][name].power[nextLevelIndex]) return false;
 		// check available resources
-		for (i = 0; i < resourceTypes.length; i++) {
-			r = resourceTypes[i];
+		for (i = 0; i < this.resourceTypes.length; i++) {
+			r = this.resourceTypes[i];
 			if (this.resources[r] < buildingData[category][name].cost[r][nextLevelIndex]) return false;
 		}
 		return true;
@@ -374,11 +370,12 @@ Planet.prototype.sum = function(category, name, attribute) {
 }
 
 // This gets called on each game loop
-Planet.prototype.dataLoop = function(cyclesPerSecond) {
+Planet.prototype.dataLoop = function() {
+	var cyclesPerSecond = 10; // I can't pass this in as a variable because that would execute before interval
 	// modify resources
 	var r, i, increment;
-	for (i = 0; i < resourceTypes.length; i++) {
-		r = resourceTypes[i];
+	for (i = 0; i < this.resourceTypes.length; i++) {
+		r = this.resourceTypes[i];
 		increment = this.mineRates[r] / 60 / cyclesPerSecond;
 		// increment resource if less than storage, otherwise set to storage
 		if (this.resources[r] + increment < this.storage[r]) this.resources[r] += increment;
