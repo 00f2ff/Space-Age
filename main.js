@@ -19,27 +19,22 @@ function game() {
 }
 
 //// INTERACTION HANDLERS ////
-$('button').click(function() {
+$(document).on('click', 'button', function() {
+	var data = $(this).parent().data(); // contains all necessary lookup information to determine outcome of click
 	switch($(this).attr('class')) {
 		case 'buy-button':
-			console.log($(this).parent().data());
-			// If the index is -1, we just update the row / buy
-			// remember to verify if purchase is acceptable
-			// If the index is >= 0, we buy and regenerate the table (new instance)
+			planet.buyBuilding(data.category, data.name);
 			break;
 		case 'upgrade-button':
-
+			planet.upgradeBuilding(data.category, data.name, data.instance);
 			break;
 		case 'delete-button':
 			var del = confirm("Are you sure you want to delete this building?");
-			if (del) {
-
-			} else {
-
-			}
-
+			if (del) planet.deleteBuilding(data.category, data.name, data.instance);
 			break;
 		default:
 			break;
 	}
+	// Regenerate table
+	ui.generateBuildingTable(data.category, data.effects.split(','));
 });

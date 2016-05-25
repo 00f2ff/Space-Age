@@ -46,12 +46,12 @@ UI.prototype.generateBuildingTable = function(category, effects) {
 		if (instances.length > 0) {
 			for (var i = 0; i < instances.length; i++) {
 				var index = instances[i];
-				var $row = this.generateBuildingRow($tbody, category, name, effects, index);
+				var $row = this.generateBuildingRow($tbody, category, name, effects, index, i);
 				$tbody.append($row);
 			}
 		} else {
 			// create row that can be bought
-			var $row = this.generateBuildingRow($tbody, category, name, effects, -1);
+			var $row = this.generateBuildingRow($tbody, category, name, effects, -1, -1); // instanceIndex won't be referenced in handler anyway
 			$tbody.append($row);
 		}	
 	}
@@ -59,20 +59,17 @@ UI.prototype.generateBuildingTable = function(category, effects) {
 }
 
 // add a different number of buttons depending on whether building has been bought yet
-UI.prototype.generateBuildingRow = function($tbody, category, name, effects, index) {
+UI.prototype.generateBuildingRow = function($tbody, category, name, effects, index, instanceIndex) {
 	var instanceData = buildingData[category][name];
 	var nextLevelIndex = index + 1;
-	var level = nextLevelIndex;
 	/*
 	 * To clarify: nextLevelIndex equals the index+1, which means we want to show it to users. 
 	 * However, it's also the index of the cost we want to present for upgrading.
 	 */
-	// Need a naming exception if a building hasn't been bought yet
-	if (nextLevelIndex === 0) level = 1;
 	if (nextLevelIndex <= 21) {
 		var $row = $('<tr>\
 			<td>'+name.capitalize()+'</td>\
-			<td>'+level+'</td>\
+			<td>'+nextLevelIndex+'</td>\
 			<td>'+instanceData.cost.crystal[nextLevelIndex]+'</td>\
 			<td>'+instanceData.cost.steel[nextLevelIndex]+'</td>\
 			<td>'+instanceData.cost.titanium[nextLevelIndex]+'</td>\
@@ -82,7 +79,7 @@ UI.prototype.generateBuildingRow = function($tbody, category, name, effects, ind
 	} else {
 		var $row = $('<tr>\
 			<td>'+name.capitalize()+'</td>\
-			<td>'+level+'</td>\
+			<td>'+nextLevelIndex+'</td>\
 			<td>--</td>\
 			<td>--</td>\
 			<td>--</td>\
@@ -100,7 +97,6 @@ UI.prototype.generateBuildingRow = function($tbody, category, name, effects, ind
 			$row.append('<td>'+effect+'</td>');
 		} else if (effects[j] === 'difference' && index >= 0) {
 			if (nextLevelIndex <= 21) {
-				console.log(instanceData[effects[j-1]])
 				var difference = instanceData[effects[j-1]][nextLevelIndex] - instanceData[effects[j-1]][index];
 				$row.append('<td class="increase">+'+difference+'</td>');
 			} else {
@@ -111,7 +107,8 @@ UI.prototype.generateBuildingRow = function($tbody, category, name, effects, ind
 			$row.append('<td class="increase">+'+instanceData[effects[j-1]][nextLevelIndex]+'</td>');
 		}
 	}
-	$buttonTd = $('<td data-category="'+category+'" data-name="'+name+'" data-index="'+index+'"></td>')
+	$buttonTd = $('<td></td>')
+	$buttonTd.attr({'data-category': category, 'data-name': name, 'data-index': index, 'data-instance': instanceIndex, 'data-effects': effects})
 	if (nextLevelIndex > 0) {
 		// add upgrade button
 		$upgradeButton = $('<button class="upgrade-button">Upgrade</button>');

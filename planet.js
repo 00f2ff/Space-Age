@@ -97,10 +97,10 @@ function Planet(type, sun) {
 
 //// BUILDING FUNCTIONS ////
 
-Planet.prototype.canUpgradeBuilding = function(category, name, index) {
+Planet.prototype.canUpgradeBuilding = function(category, name, instance) {
 	var nextLevelIndex, i, r;
-	if (index < 0) nextLevelIndex = 0;
-	else nextLevelIndex = this.buildings[category][name][index] + 1;
+	if (instance < 0) nextLevelIndex = 0;
+	else nextLevelIndex = this.buildings[category][name][instance] + 1;
 	// check not max level
 	if (nextLevelIndex <= 21) {
 		// check available power
@@ -114,13 +114,14 @@ Planet.prototype.canUpgradeBuilding = function(category, name, index) {
 	} else return false;
 }
 
-Planet.prototype.upgradeBuilding = function(category, name, index) {
-	if (this.canUpgradeBuilding(category, name, index)) {
+// Instance in this case is the index of a particular level index
+Planet.prototype.upgradeBuilding = function(category, name, instance) {
+	if (this.canUpgradeBuilding(category, name, instance)) {
 		// increase level
-		this.buildings[category][name][index]++;
+		this.buildings[category][name][instance]++;
 		// modify power
-		if ('category' === power) this.power += buildingData[category][name].production[this.buildings[category][name][index]];
-		else this.power -= buildingData[category][name].power[this.buildings[category][name][index]];
+		if (category === 'power') this.power += buildingData[category][name].production[this.buildings[category][name][instance]];
+		else this.power -= buildingData[category][name].power[this.buildings[category][name][instance]];
 	}
 	this.updateUIVariables(category, name);
 }
@@ -128,6 +129,7 @@ Planet.prototype.upgradeBuilding = function(category, name, index) {
 Planet.prototype.canBuyBuilding = function(category, name) {
 	// check available building / mine slots
 	if (category === 'mine') {
+		// console.log('here2')
 		if (this.buildings.mine[name].length === this.mineSlots[name]) return false;
 	} else {
 		if (this.usedBuildingSlots === this.maxBuildingSlots) return false;
@@ -136,20 +138,25 @@ Planet.prototype.canBuyBuilding = function(category, name) {
 }
 
 Planet.prototype.buyBuilding = function(category, name) {
-	if (canBuyBuilding(category, name)) {
-		this.buildings[category][name].push(1); // add a level 1 building
+	if (this.canBuyBuilding(category, name)) {
+		// console.log('here');
+		this.buildings[category][name].push(0); // add a level 1 building
+		var instanceIndex = this.buildings[category][name][this.buildings[category][name].length - 1];
+		// console.log(instanceIndex)
 		if (category !== 'mine') this.usedBuildingSlots++;
 		// modify power
-		if ('category' === power) this.power += buildingData[category][name].production[this.buildings[category][name][index]];
-		else this.power -= buildingData[category][name].power[this.buildings[category][name][index]];
+		if (category === 'power') this.power += buildingData[category][name].production[this.buildings[category][name][instanceIndex]];
+		else this.power -= buildingData[category][name].power[this.buildings[category][name][instanceIndex]];
 	}
 	this.updateUIVariables(category, name);
+	console.log(this.power)
 }
 
-Planet.prototype.deleteBuilding = function(category, name, index) {
-	var deleteIndex = this.buildings[category][name].indexOf(index); // index is the adjusted level
-	if (deleteIndex > -1) this.buildings[category][name].splice(deleteIndex, 1); // remove 1 instance of that index
-	if (category !== 'mine') this.usedBuildingSlots--;
+Planet.prototype.deleteBuilding = function(category, name, instance) {
+	var deleteIndex = this.buildings[category][name].indexOf(instance); // instance is the adjusted level
+	this.power += buildingData[category][name].power[this.buildings[category][name][deleteIndex]]; // increase power
+	if (deleteIndex > -1) this.buildings[category][name].splice(deleteIndex, 1); // remove 1 instance
+	if (category !== 'mine') this.usedBuildingSlots--; // increase available slots
 }
 
 //// RESOURCE FUNCTIONS ////
