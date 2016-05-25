@@ -6,10 +6,11 @@ var planet = new Planet('superTerra', sun);
 // Then we initiate the UI
 var ui = new UI();
 // Then we populate initial resource and building data
-
+ui.generateResourceTable();
 ui.generateBuildingTable('mine', ['production', 'difference']);
 // a planet has storage, and storage has capacity
 ui.generateBuildingTable('storage', ['capacity', 'difference']);
+ui.generateBuildingTable('power', ['production', 'difference']);
 // Then we start the game loop
 window.setInterval(game, 100);
 
@@ -46,9 +47,6 @@ $(document).on('click', 'button', function() {
 
 /*
  * To Do
- *  - Energy
- *    - The PPG will be level 1
- *    - All others won't have a level, and will need to be bought
  *  - Periodically test to make sure I don't wait around too long for buildings. If that happens, create new price functions and adjust code to support that
  *  - Solar system (aka planet abstraction)
  *  - Tooltips (I can put this off by adding to reference, although it's a good idea to also provide tooltips)

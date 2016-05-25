@@ -52,28 +52,35 @@ UI.prototype.generateBuildingTable = function(category, attributes) {
 			$tbody.append($row);
 		}	
 	}
-	$('.container-fluid').append($table); // I should stick this in a row
+	$('.container-fluid').append($table); // I should stick this in a .row
 }
 
-UI.prototype.addAttributeColumnsToRow = function(attributes, buildingClass, level, $row) {
+UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, buildingClass, level, $row) {
 	var nextLevel = level + 1;
 	var attributeValue, difference;
 	for (var j = 0; j < attributes.length; j++) {
 		if (attributes[j] !== 'difference') {
 			// show what attribute value is for current level
-			attributeValue = buildingClass[attributes[j]](level); // e.g. mine.production(1)
+			attributeValue = buildingClass[attributes[j]](level); // e.g. mine.production(2)
+			if (category === 'mine') attributeValue *= planet.mineMultipliers[name]; // this is not generalizable
+			else if (category === 'power') attributeValue *= planet.powerMultipliers[name];
 			$row.append('<td>'+attributeValue+'</td>');
 		} else if (attributes[j] === 'difference' && level > 0) {
 			if (nextLevel <= 21) {
 				// calculate difference in attribute values
 				difference = buildingClass[attributes[j]](nextLevel) - buildingClass[attributes[j]](level);
+				if (category === 'mine') difference *= planet.mineMultipliers[name]; // this is not generalizable
+				else if (category === 'power') difference *= planet.powerMultipliers[name];
 				$row.append('<td class="increase">+'+difference+'</td>');
 			} else {
 				$row.append('<td>--</td>');
 			}
-		} else if (attributes[j] === 'difference' && index === 0) { // buy case
+		} else if (attributes[j] === 'difference' && level === 0) { // buy case
 			// Note: this assumes 'difference' is never first element
-			$row.append('<td class="increase">+'+buildingClass[attributes[j]](nextLevel)+'</td>');
+			attributeValue = buildingClass[attributes[j]](nextLevel); // e.g. mine.production(1)
+			if (category === 'mine') attributeValue *= planet.mineMultipliers[name]; // this is not generalizable
+			else if (category === 'power') attributeValue *= planet.powerMultipliers[name];
+			$row.append('<td class="increase">+'+attributeValue+'</td>');
 		}
 	}
 	return $row;
@@ -146,20 +153,89 @@ UI.prototype.generateBuildingRow = function($tbody, category, name, attributes, 
 			<td>--</td>\
 		</tr>');
 	}
-	$row = this.addAttributeColumnsToRow(attributes, buildingClass, level, $row)
+	$row = this.addAttributeColumnsToRow(category, name, attributes, buildingClass, level, $row)
 	$row = this.addButtonColumnToRow(category, name, level, instance, attributes, $row);
 	return $row;
 }
 
+UI.prototype.generateResourceTable = function() {
+	var $table = $('<table class="table" data-category="resources">\
+						<thead>\
+							<tr>\
+								<th>Resource</th>\
+								<th>Count</th>\
+								<th>Storage</th>\
+					            <th>Rate</th>\
+					            <th>Multiplier</th>\
+							</tr>\
+						</thead>\
+						<tbody>\
+						</tbody>\
+					</table>');
+	var $tbody = $table.find('tbody');
+	var $row;
+	for (r in planet.resourceTypes) {
+		if (!planet.resourceTypes.hasOwnProperty(r)) continue;
+		// append resource information to row
+		$row = $('<tr data-resource="'+r+'">\
+					<td>'+r.capitalize()+'</td>\
+					<td class="count">'+planet.resources[r]+'</td>\
+					<td class="storage">'+planet.storage[r]+'</td>\
+					<td class="rate">'+planet.mineRates[r]+'</td>\
+					<td class="multiplier">'+planet.mineMultipliers[r]+'</td>\
+				</tr>');
+		$tbody.append($row);
+	}
+	// Add a special row for power
+	$row = $('<tr data-resource="power">\
+				<td>Power</td>\
+				<td class="count">'+planet.power+'</td>\
+				<td class="storage">--</td>\
+				<td class="rate">--</td>\
+				<td class="multiplier">--</td>\
+			</tr>');
+	$tbody.append($row);
+	$('.container-fluid').append($table); // I should stick this in a .row
+}
+
+// I'm being lazy and just redrawing tables on click
+// Rationale: it's less work that figuring out how to insert rows upon buy
 UI.prototype.updateBuildingInformation = function() {
 	// update all of that
 }
 
-UI.prototype.updateUIVariableInformation = function() {
-	// this repopulates resource amounts, storage and mineRates
+// This repopulates resource amounts, storage and multipliers without requiring a full redraw of the table
+UI.prototype.updateResourceRow = function(resource, attribute) {
+	// Note: Attribute doesn't mean attribute in the algorithm class sense (e.g. is count, storage, rate, etc)
+	var $td = $('tr[data-resource="'+resource+'" td.'+attribute);
+	var value;
+	if (resource === 'power') value = planet.power;
+	else {
+		switch(attribute) {
+			case 'count':
+				value = planet.resources[resource];
+				break;
+			case 'storage':
+				value = planet.storage[resource];
+				break;
+			case 'rate':
+				value = planet.mineRates[resource];
+				break;
+			case 'multiplier':
+				value = planet.mineMultipliers[resource];
+				break;
+			default: 
+				break;
+		}
+	}
+	// set cell value
+	$td.html(value);
 }
 
 UI.prototype.visualLoop = function() {
-	// calls the various things
-	// this.generateBuildingTable('mine', ['production', 'difference']);
+	// update all resource counts
+	for (var i = 0; i < planet.resourceTypes; i++) {
+		this.updateResourceRow(planet.resourceTypes[i], 'count');
+	}
+	this.updateResourceRow('power', 'count');
 }
