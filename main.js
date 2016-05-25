@@ -37,4 +37,19 @@ $(document).on('click', 'button', function() {
 	}
 	// Regenerate table
 	ui.generateBuildingTable(data.category, data.effects.split(','));
+	// console.log(planet.power);
+	console.log(planet.resources);
+	console.log(planet.mineRates);
+	// console.log(planet.storage);
 });
+
+
+/*
+ * To Do
+ *  - Energy
+ *    - The PPG will be level 1
+ *    - All others won't have a level, and will need to be bought
+ *  - Periodically test to make sure I don't wait around too long for buildings. If that happens, create new price functions and adjust code to support that
+ *  - Solar system (aka planet abstraction)
+ *  - Tooltips (I can put this off by adding to reference, although it's a good idea to also provide tooltips)
+ */

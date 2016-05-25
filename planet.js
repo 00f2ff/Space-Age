@@ -110,7 +110,7 @@ Planet.prototype.canUpgradeBuilding = function(category, name, instance) {
 			r = this.resourceTypes[i];
 			if (this.resources[r] < buildingData[category][name].cost[r][nextLevelIndex]) return false;
 		}
-		return true;
+		return this.canAfford(category, name, nextLevelIndex);
 	} else return false;
 }
 
@@ -123,13 +123,13 @@ Planet.prototype.upgradeBuilding = function(category, name, instance) {
 		if (category === 'power') this.power += buildingData[category][name].production[this.buildings[category][name][instance]];
 		else this.power -= buildingData[category][name].power[this.buildings[category][name][instance]];
 	}
+	this.spend(category, name, this.buildings[category][name][instance]);
 	this.updateUIVariables(category, name);
 }
 
 Planet.prototype.canBuyBuilding = function(category, name) {
 	// check available building / mine slots
 	if (category === 'mine') {
-		// console.log('here2')
 		if (this.buildings.mine[name].length === this.mineSlots[name]) return false;
 	} else {
 		if (this.usedBuildingSlots === this.maxBuildingSlots) return false;
@@ -139,17 +139,32 @@ Planet.prototype.canBuyBuilding = function(category, name) {
 
 Planet.prototype.buyBuilding = function(category, name) {
 	if (this.canBuyBuilding(category, name)) {
-		// console.log('here');
 		this.buildings[category][name].push(0); // add a level 1 building
 		var instanceIndex = this.buildings[category][name][this.buildings[category][name].length - 1];
-		// console.log(instanceIndex)
 		if (category !== 'mine') this.usedBuildingSlots++;
 		// modify power
 		if (category === 'power') this.power += buildingData[category][name].production[this.buildings[category][name][instanceIndex]];
 		else this.power -= buildingData[category][name].power[this.buildings[category][name][instanceIndex]];
 	}
+	this.spend(category, name, this.buildings[category][name][instanceIndex]);
 	this.updateUIVariables(category, name);
-	console.log(this.power)
+}
+
+Planet.prototype.canAfford = function(category, name, instance) {
+	var buildingResources = buildingData[category][name].cost;
+	for (var r in this.resources) {
+		if (!this.resources.hasOwnProperty(r)) continue;
+		if (this.resources[r] < buildingResources[r][instance]) return false;
+	}
+	return true;
+}
+
+Planet.prototype.spend = function(category, name, instance) {
+	var buildingResources = buildingData[category][name].cost;
+	for (var r in this.resources) {
+		if (!this.resources.hasOwnProperty(r)) continue;
+		this.resources[r] -= buildingResources[r][instance];
+	}
 }
 
 Planet.prototype.deleteBuilding = function(category, name, instance) {
@@ -165,6 +180,7 @@ Planet.prototype.deleteBuilding = function(category, name, instance) {
 Planet.prototype.updateUIVariables = function(category, name) {
 	switch(category) {
 		case 'mine':
+			console.log(this.mineMultipliers)
 			this.mineRates[name] = this.sum('mine', name, 'production') * this.mineMultipliers[name];
 			break;
 		case 'capacity':
@@ -177,8 +193,12 @@ Planet.prototype.updateUIVariables = function(category, name) {
 
 // Helper to calculate a sum of a particular attribute given a building level array
 Planet.prototype.sum = function(category, name, attribute) {
-	// Sse ECMAScript 6 for inlined reduce function
-	return this.buildings[category][name].reduce((a, b) => a + buildingData[category][name][attribute][b], 0);
+	var total = 0,
+		instances = this.buildings[category][name];
+	for (var i = 0; i < instances.length; i++) {
+		total += buildingData[category][name][attribute][instances[i]];
+	}
+	return total;
 }
 
 // This gets called on each game loop
