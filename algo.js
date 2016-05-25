@@ -139,3 +139,97 @@ function Storage() {
 		}
 	}
 }
+
+// I'm going to figure out how to implement feeder plants later
+function Power() {
+	this.production = function(level) {
+		var constant = 10,
+			divisor = 9.1;
+		return Math.floor(Math.pow(constant, (1 + (level - 1) / divisor) ) );
+	}
+
+	this.ppgProduction = function(level) {
+		var constant = 50,
+			divisor = 17.0;
+		return Math.floor(Math.pow(constant, (1 + (level - 1) / divisor) ) );
+	}
+
+	this.power = function(level) {
+		return 0;
+	}
+
+	this.ppgHigh = function(level) {
+		var constant = 200,
+			divisor = 23.5;
+		return Math.floor(Math.pow(constant, (1 + (level - 1) / divisor) ) );
+	}
+
+	this.ppgLow = function(level) {
+		return this.ppgHigh(level) / 2;
+	}
+
+	this.high = function(level) {
+		var constant = 20,
+			divisor = 10.8;
+		return Math.floor(Math.pow(constant, (1 + (level - 1) / divisor) ) );
+	}
+
+	this.medium = function(level) {
+		var constant = 20,
+			divisor = 11.6;
+		return Math.floor(Math.pow(constant, (1 + (level - 1) / divisor) ) );
+	}
+
+	this.low = function(level) {
+		var constant = 10,
+			divisor = 9.7;
+		return Math.floor(Math.pow(constant, (1 + (level - 1) / divisor) ) );
+	}
+
+	this.cost = function(level, type) {
+		switch(type) {
+			case 'hydro':
+				return {
+					crystal: this.mid(level),
+					steel: this.mid(level),
+					titanium: this.low(level),
+					tritium: this.high(level)
+				}
+				break;
+			case 'wind':
+				return {
+					crystal: this.mid(level),
+					steel: this.mid(level),
+					titanium: this.mid(level),
+					tritium: this.mid(level)
+				}
+				break;
+			case 'thermal':
+				return {
+					crystal: this.mid(level),
+					steel: this.low(level),
+					titanium: this.low(level),
+					tritium: this.mid(level)
+				}
+				break;
+			case 'tritium':
+				return {
+					crystal: this.high(level),
+					steel: this.mid(level),
+					titanium: this.low(level),
+					tritium: this.mid(level)
+				}
+				break;
+			case 'ppg':
+				return {
+					crystal: this.ppgHigh(level),
+					steel: this.ppgLow(level),
+					titanium: this.ppgLow(level),
+					tritium: this.ppgLow(level)
+				}
+				break;
+			default:
+				break;
+		}
+	}
+}
