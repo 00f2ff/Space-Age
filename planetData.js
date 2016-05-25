@@ -10,13 +10,13 @@ var planetData = {
 			tritium: 2
 		},
 		powerMultipliers: {
-			hydropowerPlant: 1,
-			thermalPowerPlant: 1,
-			windPowerPlant: 1,
-			planetaryPowerGenerator: 1,
-			liquidPowerPlant: 1,
-			furnacePowerPlant: 1,
-			nuclearPowerPlant: 1
+			hydro: 1,
+			thermal: 1,
+			wind: 1,
+			ppg: 1,
+			liquid: 1,
+			furnace: 1,
+			nuclear: 1
 		},
 		maxBuildingSlots: 12,
 		mineSlots: {
@@ -34,13 +34,13 @@ var planetData = {
 			tritium: 1
 		},
 		powerMultipliers: {
-			hydropowerPlant: 1,
-			thermalPowerPlant: 1,
-			windPowerPlant: 1,
-			planetaryPowerGenerator: 0,
-			liquidPowerPlant: 1,
-			furnacePowerPlant: 1,
-			nuclearPowerPlant: 1
+			hydro: 1,
+			thermal: 1,
+			wind: 1,
+			ppg: 0,
+			liquid: 1,
+			furnace: 1,
+			nuclear: 1
 		},
 		maxBuildingSlots: 10,
 		mineSlots: {
@@ -58,13 +58,13 @@ var planetData = {
 			tritium: 0
 		},
 		powerMultipliers: {
-			hydropowerPlant: 0,
-			thermalPowerPlant: 2,
-			windPowerPlant: 1.5,
-			planetaryPowerGenerator: 0,
-			liquidPowerPlant: 1.5,
-			furnacePowerPlant: 2,
-			nuclearPowerPlant: 0
+			hydro: 0,
+			thermal: 2,
+			wind: 1.5,
+			ppg: 0,
+			liquid: 1.5,
+			furnace: 2,
+			nuclear: 0
 		},
 		maxBuildingSlots: 10,
 		mineSlots: {
@@ -82,13 +82,13 @@ var planetData = {
 			tritium: 2.5
 		},
 		powerMultipliers: {
-			hydropowerPlant: 1.5,
-			thermalPowerPlant: 0.5,
-			windPowerPlant: 1.5,
-			planetaryPowerGenerator: 0,
-			liquidPowerPlant: 1,
-			furnacePowerPlant: 0,
-			nuclearPowerPlant: 1.5
+			hydro: 1.5,
+			thermal: 0.5,
+			wind: 1.5,
+			ppg: 0,
+			liquid: 1,
+			furnace: 0,
+			nuclear: 1.5
 		},
 		maxBuildingSlots: 7,
 		mineSlots: {
@@ -106,13 +106,13 @@ var planetData = {
 			tritium: 1
 		},
 		powerMultipliers: {
-			hydropowerPlant: 1,
-			thermalPowerPlant: 0,
-			windPowerPlant: 2.9,
-			planetaryPowerGenerator: 0,
-			liquidPowerPlant: 0.7,
-			furnacePowerPlant: 0.7,
-			nuclearPowerPlant: 0.7
+			hydro: 1,
+			thermal: 0,
+			wind: 2.9,
+			ppg: 0,
+			liquid: 0.7,
+			furnace: 0.7,
+			nuclear: 0.7
 		},
 		maxBuildingSlots: 3,
 		mineSlots: {
@@ -130,13 +130,13 @@ var planetData = {
 			tritium: 0
 		},
 		powerMultipliers: {
-			hydropowerPlant: 0,
-			thermalPowerPlant: 1,
-			windPowerPlant: 1,
-			planetaryPowerGenerator: 0,
-			liquidPowerPlant: 0.5,
-			furnacePowerPlant: 2,
-			nuclearPowerPlant: 1.5
+			hydro: 0,
+			thermal: 1,
+			wind: 1,
+			ppg: 0,
+			liquid: 0.5,
+			furnace: 2,
+			nuclear: 1.5
 		},
 		maxBuildingSlots: 10,
 		mineSlots: {
@@ -154,13 +154,13 @@ var planetData = {
 			tritium: 1
 		},
 		powerMultipliers: {
-			hydropowerPlant: 0.5,
-			thermalPowerPlant: 0.5,
-			windPowerPlant: 1.5,
-			planetaryPowerGenerator: 0,
-			liquidPowerPlant: 1,
-			furnacePowerPlant: 1.5,
-			nuclearPowerPlant: 1
+			hydro: 0.5,
+			thermal: 0.5,
+			wind: 1.5,
+			ppg: 0,
+			liquid: 1,
+			furnace: 1.5,
+			nuclear: 1
 		},
 		maxBuildingSlots: 12,
 		mineSlots: {

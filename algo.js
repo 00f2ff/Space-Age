@@ -233,3 +233,7 @@ function Power() {
 		}
 	}
 }
+
+var mine = new Mine();
+var storage = new Storage();
+var power = new Power();
