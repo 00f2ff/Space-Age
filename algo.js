@@ -34,7 +34,7 @@ function Mine() {
 	this.cost = function(level, type) {
 		switch(type) {
 			case 'crystal':
-				console.log(type, level)
+				// console.log(type, level)
 				return {
 					crystal: this.high(level),
 					steel: this.high(level),

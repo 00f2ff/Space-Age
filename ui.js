@@ -59,6 +59,9 @@ UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, bui
 	var nextLevel = level + 1;
 	var attributeValue, difference;
 	for (var j = 0; j < attributes.length; j++) {
+		// exception for ppg
+		if (category === 'power' && name === 'ppg' && attributes[j] === 'production') attributes[j] = 'ppgProduction';
+		else if (category === 'power' && name !== 'ppg' && attributes[j] === 'production') {attributes[j] = 'production';}
 		if (attributes[j] !== 'difference') {
 			// show what attribute value is for current level
 			attributeValue = buildingClass[attributes[j]](level); // e.g. mine.production(2)
@@ -131,7 +134,7 @@ UI.prototype.generateBuildingRow = function($tbody, category, name, attributes, 
 	// determine costs
 	powerCost = buildingClass.power(nextLevel);
 	resourceCost = buildingClass.cost(nextLevel, name);
-	// console.log(resourceCost)
+	// console.log(resourceCost);
 	var nextLevel = level + 1;
 	if (nextLevel <= 21) {
 		var $row = $('<tr>\
@@ -175,12 +178,12 @@ UI.prototype.generateResourceTable = function() {
 					</table>');
 	var $tbody = $table.find('tbody');
 	var $row;
-	for (r in planet.resourceTypes) {
-		if (!planet.resourceTypes.hasOwnProperty(r)) continue;
+	for (r in planet.resources) {
+		if (!planet.resources.hasOwnProperty(r)) continue;
 		// append resource information to row
 		$row = $('<tr data-resource="'+r+'">\
 					<td>'+r.capitalize()+'</td>\
-					<td class="count">'+planet.resources[r]+'</td>\
+					<td class="count">'+Math.floor(planet.resources[r])+'</td>\
 					<td class="storage">'+planet.storage[r]+'</td>\
 					<td class="rate">'+planet.mineRates[r]+'</td>\
 					<td class="multiplier">'+planet.mineMultipliers[r]+'</td>\
@@ -208,7 +211,7 @@ UI.prototype.updateBuildingInformation = function() {
 // This repopulates resource amounts, storage and multipliers without requiring a full redraw of the table
 UI.prototype.updateResourceRow = function(resource, attribute) {
 	// Note: Attribute doesn't mean attribute in the algorithm class sense (e.g. is count, storage, rate, etc)
-	var $td = $('tr[data-resource="'+resource+'" td.'+attribute);
+	var $td = $('tr[data-resource="'+resource+'"] td.'+attribute);
 	var value;
 	if (resource === 'power') value = planet.power;
 	else {
@@ -230,12 +233,12 @@ UI.prototype.updateResourceRow = function(resource, attribute) {
 		}
 	}
 	// set cell value
-	$td.html(value);
+	$td.text(value);
 }
 
 UI.prototype.visualLoop = function() {
 	// update all resource counts
-	for (var i = 0; i < planet.resourceTypes; i++) {
+	for (var i = 0; i < planet.resourceTypes.length; i++) {
 		this.updateResourceRow(planet.resourceTypes[i], 'count');
 	}
 	this.updateResourceRow('power', 'count');

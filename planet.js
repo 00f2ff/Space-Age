@@ -23,10 +23,10 @@ function Planet(type, sun) {
 			hydro: [],
 			thermal: [],
 			wind: [],
-			ppg: [],
-			liquid: [],
-			furnace: [],
-			nuclear: []
+			ppg: []//,
+			// liquid: [],
+			// furnace: [],
+			// nuclear: []
 		},
 		economy: {
 			tradeCenter: [],
@@ -69,7 +69,7 @@ function Planet(type, sun) {
 		titanium: 2000,
 		tritium: 2000
 	}
-	this.power = 25;
+	this.power = 50;
 	// assign mineMultipliers from sun
 	this.mineMultipliers = this.sun.mineMultipliers;
 	// modify mineMultipliers from planet type
