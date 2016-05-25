@@ -22,6 +22,7 @@ function game() {
 //// INTERACTION HANDLERS ////
 $(document).on('click', 'button', function() {
 	var data = $(this).parent().data(); // contains all necessary lookup information to determine outcome of click
+	// change in data and on UI <-- should auto update...
 	switch($(this).attr('class')) {
 		case 'buy-button':
 			planet.buyBuilding(data.category, data.name);
@@ -38,9 +39,10 @@ $(document).on('click', 'button', function() {
 	}
 	// Regenerate table
 	ui.generateBuildingTable(data.category, data.attributes.split(','));
-	console.log(planet.power);
-	console.log(planet.resources);
-	console.log(planet.mineRates);
+	ui.generateResourceTable();
+	// console.log(planet.power);
+	// console.log(planet.resources);
+	// console.log(planet.mineRates);
 	// console.log(planet.storage);
 });
 

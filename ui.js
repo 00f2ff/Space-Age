@@ -43,12 +43,12 @@ UI.prototype.generateBuildingTable = function(category, attributes) {
 		if (instances.length > 0) {
 			for (var i = 0; i < instances.length; i++) {
 				var level = instances[i];
-				var $row = this.generateBuildingRow($tbody, category, name, attributes, level, instances[i]);
+				var $row = this.generateBuildingRow($tbody, category, name, attributes, level, i);
 				$tbody.append($row);
 			}
 		} else {
 			// create row that can be bought
-			var $row = this.generateBuildingRow($tbody, category, name, attributes, 0, undefined);
+			var $row = this.generateBuildingRow($tbody, category, name, attributes, 0, -1);
 			$tbody.append($row);
 		}	
 	}
@@ -90,12 +90,13 @@ UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, bui
 }
 
 UI.prototype.addButtonColumnToRow = function(category, name, level, instance, attributes, $row) {
-	$buttonTd = $('<td></td>')
+	$buttonTd = $('<td></td>');
+	if (category === 'mine') console.log(name, level, instance);
 	$buttonTd.attr({'data-category': category, 'data-name': name, 'data-level': level, 'data-instance': instance, 'data-attributes': attributes})
 	if (level > 0) {
 		// add upgrade button
 		$upgradeButton = $('<button class="upgrade-button">Upgrade</button>');
-		if (planet.canUpgradeBuilding(category, name, level)) $upgradeButton.css('color','green');
+		if (planet.canUpgradeBuilding(category, name, instance)) $upgradeButton.css('color','green');
 		else $upgradeButton.css('color','red');
 		$buttonTd.append($upgradeButton);
 	}
@@ -135,7 +136,7 @@ UI.prototype.generateBuildingRow = function($tbody, category, name, attributes, 
 	// determine costs
 	powerCost = buildingClass.power(nextLevel);
 	resourceCost = buildingClass.cost(nextLevel, name);
-	console.log(resourceCost);
+	// console.log(resourceCost);
 	var nextLevel = level + 1;
 	if (nextLevel <= 21) {
 		var $row = $('<tr>\
@@ -164,6 +165,8 @@ UI.prototype.generateBuildingRow = function($tbody, category, name, attributes, 
 }
 
 UI.prototype.generateResourceTable = function() {
+	// delete existing one
+	$('.table[data-category="resources"]').remove();
 	var $table = $('<table class="table" data-category="resources">\
 						<thead>\
 							<tr>\
@@ -225,6 +228,7 @@ UI.prototype.updateResourceRow = function(resource, attribute) {
 				break;
 			case 'rate':
 				value = planet.mineRates[resource];
+				// console.log(value);
 				break;
 			case 'multiplier':
 				value = planet.mineMultipliers[resource];

@@ -1,0 +1,6 @@
+
+
+
+BUGS
+
+- Mines are able to be upgraded once past what's allowed
