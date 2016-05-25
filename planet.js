@@ -99,8 +99,10 @@ function Planet(type, sun) {
 
 Planet.prototype.canUpgradeBuilding = function(category, name, instance) {
 	var nextLevelIndex, i, r;
-	if (instance < 0) nextLevelIndex = 0;
+	if (instance < 0) nextLevelIndex = 0; // check because canBuyBuilding calls this function
 	else nextLevelIndex = this.buildings[category][name][instance] + 1;
+	if (category === 'mine' && name === 'crystal') {console.log(category, name, instance, nextLevelIndex);console.log('---')}
+	
 	// check not max level
 	if (nextLevelIndex <= 21) {
 		// check available power
@@ -110,7 +112,8 @@ Planet.prototype.canUpgradeBuilding = function(category, name, instance) {
 			r = this.resourceTypes[i];
 			if (this.resources[r] < buildingData[category][name].cost[r][nextLevelIndex]) return false;
 		}
-		return this.canAfford(category, name, nextLevelIndex);
+		return true;
+		// return this.canAfford(category, name, nextLevelIndex); // why do I need to check twice? some bug probably
 	} else return false;
 }
 

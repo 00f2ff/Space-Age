@@ -37,7 +37,7 @@ $(document).on('click', 'button', function() {
 	}
 	// Regenerate table
 	ui.generateBuildingTable(data.category, data.effects.split(','));
-	// console.log(planet.power);
+	console.log(planet.power);
 	console.log(planet.resources);
 	console.log(planet.mineRates);
 	// console.log(planet.storage);
@@ -52,4 +52,17 @@ $(document).on('click', 'button', function() {
  *  - Periodically test to make sure I don't wait around too long for buildings. If that happens, create new price functions and adjust code to support that
  *  - Solar system (aka planet abstraction)
  *  - Tooltips (I can put this off by adding to reference, although it's a good idea to also provide tooltips)
+ */
+
+
+
+ /*
+   I wonder if there's an easier way to do all of this. I'm spending a lot of time debugging because of weird index dependencies
+   and list arrangements. I think I can simplify all of this by:
+   1) Creating cost, production and energy use functions
+   	-- Don't worry about sticking to the particulars of my previous data, since it might not even be scaled well
+   2) Looking into the constructor pattern (and maybe playing around more with data-attributes)
+
+
+
  */

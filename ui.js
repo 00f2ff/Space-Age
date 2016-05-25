@@ -112,7 +112,7 @@ UI.prototype.generateBuildingRow = function($tbody, category, name, effects, ind
 	if (nextLevelIndex > 0) {
 		// add upgrade button
 		$upgradeButton = $('<button class="upgrade-button">Upgrade</button>');
-		if (planet.canUpgradeBuilding(category, name, index)) $upgradeButton.css('color','green'); // -1 to get back to current index
+		if (planet.canUpgradeBuilding(category, name, index-1)) $upgradeButton.css('color','green'); // -1 to get back to current index
 		else $upgradeButton.css('color','red');
 		$buttonTd.append($upgradeButton);
 	}
