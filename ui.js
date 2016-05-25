@@ -43,12 +43,12 @@ UI.prototype.generateBuildingTable = function(category, attributes) {
 		if (instances.length > 0) {
 			for (var i = 0; i < instances.length; i++) {
 				var level = instances[i];
-				var $row = this.generateBuildingRow($tbody, category, name, attributes, level, i);
+				var $row = this.generateBuildingRow($tbody, category, name, attributes, level, instances[i]);
 				$tbody.append($row);
 			}
 		} else {
 			// create row that can be bought
-			var $row = this.generateBuildingRow($tbody, category, name, attributes, 0, 0);
+			var $row = this.generateBuildingRow($tbody, category, name, attributes, 0, undefined);
 			$tbody.append($row);
 		}	
 	}
@@ -67,14 +67,14 @@ UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, bui
 			attributeValue = buildingClass[attributes[j]](level); // e.g. mine.production(2)
 			if (category === 'mine') attributeValue *= planet.mineMultipliers[name]; // this is not generalizable
 			else if (category === 'power') attributeValue *= planet.powerMultipliers[name];
-			$row.append('<td>'+attributeValue+'</td>');
+			$row.append('<td>'+Math.floor(attributeValue)+'</td>');
 		} else if (attributes[j] === 'difference' && level > 0) {
 			if (nextLevel <= 21) {
 				// calculate difference in attribute values
 				difference = buildingClass[attributes[j-1]](nextLevel) - buildingClass[attributes[j-1]](level);
 				if (category === 'mine') difference *= planet.mineMultipliers[name]; // this is not generalizable
 				else if (category === 'power') difference *= planet.powerMultipliers[name];
-				$row.append('<td class="increase">+'+difference+'</td>');
+				$row.append('<td class="increase">+'+Math.floor(difference)+'</td>');
 			} else {
 				$row.append('<td>--</td>');
 			}
@@ -83,7 +83,7 @@ UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, bui
 			attributeValue = buildingClass[attributes[j-1]](nextLevel); // e.g. mine.production(1)
 			if (category === 'mine') attributeValue *= planet.mineMultipliers[name]; // this is not generalizable
 			else if (category === 'power') attributeValue *= planet.powerMultipliers[name];
-			$row.append('<td class="increase">+'+attributeValue+'</td>');
+			$row.append('<td class="increase">+'+Math.floor(attributeValue)+'</td>');
 		}
 	}
 	return $row;
@@ -131,10 +131,11 @@ UI.prototype.generateBuildingRow = function($tbody, category, name, attributes, 
 		default:
 			break;
 	}
+	var nextLevel = level + 1;
 	// determine costs
 	powerCost = buildingClass.power(nextLevel);
 	resourceCost = buildingClass.cost(nextLevel, name);
-	// console.log(resourceCost);
+	console.log(resourceCost);
 	var nextLevel = level + 1;
 	if (nextLevel <= 21) {
 		var $row = $('<tr>\

@@ -188,6 +188,12 @@ function Power() {
 	}
 
 	this.cost = function(level, type) {
+		console.log(type, level, {
+					crystal: this.medium(level),
+					steel: this.medium(level),
+					titanium: this.low(level),
+					tritium: this.high(level)
+				});
 		switch(type) {
 			case 'hydro':
 				return {
@@ -209,14 +215,6 @@ function Power() {
 				return {
 					crystal: this.medium(level),
 					steel: this.low(level),
-					titanium: this.low(level),
-					tritium: this.medium(level)
-				}
-				break;
-			case 'tritium':
-				return {
-					crystal: this.high(level),
-					steel: this.medium(level),
 					titanium: this.low(level),
 					tritium: this.medium(level)
 				}

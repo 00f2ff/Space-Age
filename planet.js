@@ -139,7 +139,7 @@ Planet.prototype.spend = function(resourceCost) {
 }
 
 // Helper to calculate a sum of a particular attribute given a building level array (other than power)
-Planet.prototype.sum = function(buildingClass, attribute) {
+Planet.prototype.sum = function(category, name, buildingClass, attribute) {
 	var total = 0,
 		instances = this.buildings[category][name];
 	for (var i = 0; i < instances.length; i++) {
@@ -157,14 +157,14 @@ Planet.prototype.updatePlanetData = function(category, name, level) {
 			// decrease power
 			this.power -= mine.power(level);
 			// recalculate mine production
-			this.mineRates[name] = this.sum(buildingClass, 'production') * this.mineMultipliers[name];
+			this.mineRates[name] = this.sum(category, name, buildingClass, 'production') * this.mineMultipliers[name];
 			break;
 		case 'storage':
 			buildingClass = storage;
 			// decrease power
 			this.power -= storage.power(level);
 			// recalculate storage
-			this.storage[name] = this.sum(buildingClass, 'capacity');
+			this.storage[name] = this.sum(category, name, buildingClass, 'capacity');
 			break;
 		case 'power':
 			buildingClass = power;

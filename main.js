@@ -37,7 +37,7 @@ $(document).on('click', 'button', function() {
 			break;
 	}
 	// Regenerate table
-	ui.generateBuildingTable(data.category, data.effects.split(','));
+	ui.generateBuildingTable(data.category, data.attributes.split(','));
 	console.log(planet.power);
 	console.log(planet.resources);
 	console.log(planet.mineRates);
