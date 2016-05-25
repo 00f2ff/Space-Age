@@ -68,7 +68,7 @@ UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, bui
 		} else if (attributes[j] === 'difference' && level > 0) {
 			if (nextLevel <= 21) {
 				// calculate difference in attribute values
-				difference = buildingClass[attributes[j]](nextLevel) - buildingClass[attributes[j]](level);
+				difference = buildingClass[attributes[j-1]](nextLevel) - buildingClass[attributes[j-1]](level);
 				if (category === 'mine') difference *= planet.mineMultipliers[name]; // this is not generalizable
 				else if (category === 'power') difference *= planet.powerMultipliers[name];
 				$row.append('<td class="increase">+'+difference+'</td>');
@@ -77,7 +77,7 @@ UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, bui
 			}
 		} else if (attributes[j] === 'difference' && level === 0) { // buy case
 			// Note: this assumes 'difference' is never first element
-			attributeValue = buildingClass[attributes[j]](nextLevel); // e.g. mine.production(1)
+			attributeValue = buildingClass[attributes[j-1]](nextLevel); // e.g. mine.production(1)
 			if (category === 'mine') attributeValue *= planet.mineMultipliers[name]; // this is not generalizable
 			else if (category === 'power') attributeValue *= planet.powerMultipliers[name];
 			$row.append('<td class="increase">+'+attributeValue+'</td>');
@@ -89,7 +89,7 @@ UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, bui
 UI.prototype.addButtonColumnToRow = function(category, name, level, instance, attributes, $row) {
 	$buttonTd = $('<td></td>')
 	$buttonTd.attr({'data-category': category, 'data-name': name, 'data-level': level, 'data-instance': instance, 'data-attributes': attributes})
-	if (nextLevel > 0) {
+	if (level > 0) {
 		// add upgrade button
 		$upgradeButton = $('<button class="upgrade-button">Upgrade</button>');
 		if (planet.canUpgradeBuilding(category, name, level)) $upgradeButton.css('color','green');
@@ -104,7 +104,7 @@ UI.prototype.addButtonColumnToRow = function(category, name, level, instance, at
 		else $buyButton.css('color','red');
 		$buttonTd.append($buyButton);
 	}
-	if (nextLevel > 0) {
+	if (level > 0) {
 		// add delete button
 		$deleteButton = $('<button class="delete-button">Delete</button>');
 		$buttonTd.append($deleteButton);
@@ -131,6 +131,7 @@ UI.prototype.generateBuildingRow = function($tbody, category, name, attributes, 
 	// determine costs
 	powerCost = buildingClass.power(nextLevel);
 	resourceCost = buildingClass.cost(nextLevel, name);
+	// console.log(resourceCost)
 	var nextLevel = level + 1;
 	if (nextLevel <= 21) {
 		var $row = $('<tr>\

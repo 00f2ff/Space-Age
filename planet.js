@@ -103,7 +103,7 @@ Planet.prototype.canUpgradeBuilding = function(category, name, instance) {
 	else nextLevel = this.buildings[category][name][instance] + 1;
 	// check not max level
 	var powerCost, resourceCost, buildingClass;
-	if (nextLevelIndex <= 21) {
+	if (nextLevel <= 21) {
 		switch(category) {
 			case 'mine': 
 				buildingClass = mine;

@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 	<title></title>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+	<link rel="stylesheet" href="lib/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="base.css">
 
 	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -31,54 +31,6 @@
       <div class="col-md-8"> 
         <!-- resource data here -->
         <h4 class="sub-header">Resources</h4>
-        <table id="resources-table" class="table">
-          <thead>
-            <tr>
-              <th>Resource</th>
-              <th>Count</th>
-              <th>Storage</th>
-              <th>Rate / min</th> <!-- tooltip about how this is scaled -->
-              <th>Multiplier</th> <!-- this could use a tooltip -->
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Crystal</td>
-              <td><span class="count crystal-count"></span></td>
-              <td><span class="storage crystal-storage"></span></td>
-              <td><span class="rate crystal-rate"></span></td>
-              <td><span class="multiplier crystal-multiplier"></span></td>
-            </tr>
-            <tr>
-              <td>Steel</td>
-              <td><span class="count steel-count"></span></td>
-              <td><span class="storage steel-storage"></span></td>
-              <td><span class="rate steel-rate"></span></td>
-              <td><span class="multiplier steel-multiplier"></span></td>
-            </tr>
-            <tr>
-              <td>Titanium</td>
-              <td><span class="count titanium-count"></span></td>
-              <td><span class="storage titanium-storage"></span></td>
-              <td><span class="rate titanium-rate"></span></td>
-              <td><span class="multiplier titanium-multiplier"></span></td>
-            </tr>
-            <tr>
-              <td>Tritium</td>
-              <td><span class="count tritium-count"></span></td>
-              <td><span class="storage tritium-storage"></span></td>
-              <td><span class="rate tritium-rate"></span></td>
-              <td><span class="multiplier tritium-multiplier"></span></td>
-            </tr>
-            <tr>
-              <td>Power</td>
-              <td><span class="count power-count"></span></td>
-              <td><span class="storage power-storage"></span>--</td>
-              <td><span class="rate power-rate">--</span></td>
-              <td><span class="multiplier power-multiplier">--</span></td>
-            </tr>
-          </tbody>
-        </table>
       </div>
     </div>
 
@@ -96,25 +48,17 @@
     </div>
 
     <!-- MINES -->
-    <div class="row">
-      <h4 class="sub-header">Mines</h4> <!-- I know that steel is not mined but whatever -->
+   <!--  <div class="row">
       
-    </div>
-
-    <!-- power -->
+    </div> -->
 
 
-    <!-- STORAGE -->
-    <div class="row">
-      <h4 class="sub-header">Storage</h4> 
-      
-    </div>
 
+<script src="lib/jquery-1.11.3.min.js"></script>
+<script src="lib/bootstrap.min.js"></script>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-
-<script type="text/javascript" src="buildingData.js"></script>
+<!-- <script type="text/javascript" src="buildingData.js"></script> -->
+<script type="text/javascript" src="algo.js"></script>
 <script type="text/javascript" src="sun.js"></script>
 <script type="text/javascript" src="planetData.js"></script>
 <script type="text/javascript" src="planet.js"></script>

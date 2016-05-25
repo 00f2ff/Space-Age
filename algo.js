@@ -34,17 +34,18 @@ function Mine() {
 	this.cost = function(level, type) {
 		switch(type) {
 			case 'crystal':
+				console.log(type, level)
 				return {
 					crystal: this.high(level),
 					steel: this.high(level),
-					titanium: this.mid(level),
+					titanium: this.medium(level),
 					tritium: this.low(level)
 				}
 				break;
 			case 'steel':
 				return {
 					crystal: this.high(level),
-					steel: this.mid(level),
+					steel: this.medium(level),
 					titanium: this.high(level),
 					tritium: this.low(level)
 				}
@@ -52,7 +53,7 @@ function Mine() {
 			case 'titanium':
 				return {
 					crystal: this.high(level),
-					steel: this.mid(level),
+					steel: this.medium(level),
 					titanium: this.high(level),
 					tritium: this.low(level)
 				}
@@ -60,7 +61,7 @@ function Mine() {
 			case 'tritium':
 				return {
 					crystal: this.low(level),
-					steel: this.mid(level),
+					steel: this.medium(level),
 					titanium: this.high(level),
 					tritium: this.high(level)
 				}
@@ -105,31 +106,31 @@ function Storage() {
 			case 'crystal':
 				return {
 					crystal: this.high(level),
-					steel: this.mid(level),
+					steel: this.medium(level),
 					titanium: this.power(level),
-					tritium: this.mid(level)
+					tritium: this.medium(level)
 				}
 				break;
 			case 'steel':
 				return {
-					crystal: this.mid(level),
+					crystal: this.medium(level),
 					steel: this.low(level),
 					titanium: this.low(level),
-					tritium: this.mid(level)
+					tritium: this.medium(level)
 				}
 				break;
 			case 'titanium':
 				return {
-					crystal: this.mid(level),
+					crystal: this.medium(level),
 					steel: this.low(level),
 					titanium: this.low(level),
-					tritium: this.mid(level)
+					tritium: this.medium(level)
 				}
 				break;
 			case 'tritium':
 				return {
-					crystal: this.mid(level),
-					steel: this.mid(level),
+					crystal: this.medium(level),
+					steel: this.medium(level),
 					titanium: this.power(level),
 					tritium: this.high(level)
 				}
@@ -190,34 +191,34 @@ function Power() {
 		switch(type) {
 			case 'hydro':
 				return {
-					crystal: this.mid(level),
-					steel: this.mid(level),
+					crystal: this.medium(level),
+					steel: this.medium(level),
 					titanium: this.low(level),
 					tritium: this.high(level)
 				}
 				break;
 			case 'wind':
 				return {
-					crystal: this.mid(level),
-					steel: this.mid(level),
-					titanium: this.mid(level),
-					tritium: this.mid(level)
+					crystal: this.medium(level),
+					steel: this.medium(level),
+					titanium: this.medium(level),
+					tritium: this.medium(level)
 				}
 				break;
 			case 'thermal':
 				return {
-					crystal: this.mid(level),
+					crystal: this.medium(level),
 					steel: this.low(level),
 					titanium: this.low(level),
-					tritium: this.mid(level)
+					tritium: this.medium(level)
 				}
 				break;
 			case 'tritium':
 				return {
 					crystal: this.high(level),
-					steel: this.mid(level),
+					steel: this.medium(level),
 					titanium: this.low(level),
-					tritium: this.mid(level)
+					tritium: this.medium(level)
 				}
 				break;
 			case 'ppg':
