@@ -53,6 +53,10 @@ $(document).on('click', 'button', function() {
 });
 
 $(document).on('click', 'li a', function() {
+	$('li.active').removeClass('active');
+
+	$(this).parent().addClass('active');
+	
 	switch($(this).text().toLowerCase()) {
 		case 'mine':
 			ui.generateBuildingTable('mine', ['production', 'difference']);
