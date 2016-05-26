@@ -45,7 +45,7 @@ $(document).on('click', 'button', function() {
 
 /*
  * To Do
- *  - Production in tables is current production, but may be confused with nextLevel production. Consider moving this around
+ *  - 
  *  - Buildings
  *  - Technology
  *  - Research (IBRT)
@@ -54,5 +54,9 @@ $(document).on('click', 'button', function() {
  *  - Periodically test to make sure I don't wait around too long for buildings. If that happens, create new price functions and adjust code to support that
  *  
  *  - Tooltips (I can put this off by adding to reference, although it's a good idea to also provide tooltips)
+ *
+ *
+ * Considerations
+ *  - Update UI / delete conditionals to stop users from deleting their mines if they only have 1 (bump to first level)
  */
 

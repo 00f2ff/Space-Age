@@ -111,7 +111,8 @@ UI.prototype.addButtonColumnToRow = function(category, name, level, instance, at
 		$buttonTd.append($buyButton);
 	}
 	// extra conditions to save users from themselves (planet.deleteBuilding has built-in protections as well)
-	if (level > 0 && ((category === 'storage' && level > 1) || (name === 'ppg' && level > 1))) {
+	var revert = ((category === 'mine' || category === 'storage') && planet.buildings[category][name].length === 1 && level === 1) || (name === 'ppg' && level === 1);
+	if (!revert && level > 0) {
 		// add delete button
 		$deleteButton = $('<button class="delete-button">Delete</button>');
 		$buttonTd.append($deleteButton);

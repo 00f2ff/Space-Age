@@ -90,6 +90,17 @@ function Planet(type, sun) {
 			titanium: [1],
 			tritium: [1]
 		}
+		this.buildings.mine = {
+			crystal: [1],
+			steel: [1],
+			titanium: [1],
+			tritium: [1]
+		}
+		// start mineRates
+		for (var r in this.mineMultipliers) {
+			if (!this.mineMultipliers.hasOwnProperty(r)) continue;
+			this.mineRates[r] = mine.production(1) * this.mineMultipliers[r];
+		}
 		this.usedBuildingSlots = 4;
 		this.buildings.power.ppg = [1];
 	}
@@ -239,31 +250,34 @@ Planet.prototype.buyBuilding = function(category, name) {
 }
 
 Planet.prototype.deleteBuilding = function(category, name, level, instance) {
-	// remove 1 instance of level
-	this.buildings[category][name].splice(instance, 1);
+	// only delete instance when it's a secondary mine, storage, or non-ppg power plant
+	// otherwise revert to level 1
+	var revert = (((category === 'mine' || category === 'storage') && this.buildings[category][name].length === 1 && level > 1) || name === 'ppg');
+	if (revert) this.buildings[category][name][instance] = 1; // reset instance level
+	else this.buildings[category][name].splice(instance, 1); // remove 1 instance of level
 	switch(category) {
 		case 'mine':
 			// adjust power
 			this.power += this.sum(category, name, mine, 'power', level);
+			if (revert) this.power -= mine.power(1);
 			break;
 		case 'storage':
 			// adjust power
 			this.power += this.sum(category, name, storage, 'power', level);
-			// don't let users screw themselves by preventing any future resource production
-			this.buildings[category][name].push(1);
-			// adjust building slots
-			this.usedBuildingSlots--;
+			if (revert) this.power -= storage.power(1);
+			else this.usedBuildingSlots--; // adjust building slots
 			break;
 		case 'power':
 			// adjust power (power does not compound)
-			if (name === 'ppg') {
+			if (revert && name === 'ppg') { // shouldn't need second conditional, but there just in case
 				this.power -= power.ppgProduction(level);
 				// don't let users screw themselves by deleting their core power base
 				this.power += power.ppgProduction(1);
-				this.buildings[category][name].push(1);
-			} else this.power -= power.production(level);
-			// adjust building slots
-			this.usedBuildingSlots--;
+			} else {
+				this.power -= power.production(level);
+				// adjust building slots
+				this.usedBuildingSlots--;
+			}
 			break;
 		default:
 			break;
