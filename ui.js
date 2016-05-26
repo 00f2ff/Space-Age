@@ -207,12 +207,12 @@ UI.prototype.addButtonColumnToRow = function(category, name, attributes, level, 
 		// add upgrade button
 		$upgradeButton = $('<button class="upgrade-button">Upgrade</button>');
 
-		if (planet.canUpgradeBuilding(category, name, level)) {
-			$upgradeButton.css('color','green');
-		}
-		else {
-			$upgradeButton.css('color','red');
-		}
+		// if (planet.canUpgradeBuilding(category, name, level)) {
+		// 	$upgradeButton.css('color','green');
+		// }
+		// else {
+		// 	$upgradeButton.css('color','red');
+		// }
 
 		$buttonTd.append($upgradeButton);
 	}
@@ -225,12 +225,12 @@ UI.prototype.addButtonColumnToRow = function(category, name, attributes, level, 
 		// add buy button
 		$buyButton = $('<button class="buy-button">Buy</button>');
 
-		if (planet.canBuyBuilding(category, name)) {
-			$buyButton.css('color','green');
-		}
-		else {
-			$buyButton.css('color','red');
-		}
+		// if (planet.canBuyBuilding(category, name)) {
+		// 	$buyButton.css('color','green');
+		// }
+		// else {
+		// 	$buyButton.css('color','red');
+		// }
 
 		$buttonTd.append($buyButton);
 	}
