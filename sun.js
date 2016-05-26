@@ -1,6 +1,8 @@
 function Sun() {
 	this.strength = Math.round(Math.random() * 4 + 1);
+
 	var effect = (this.strength - 3) * 0.05;
+	
 	if (this.strength === 3) {
 		this.mineMultipliers = {
 			crystal: 1,

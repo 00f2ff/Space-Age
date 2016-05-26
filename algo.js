@@ -1,34 +1,43 @@
 
+// I may add more functions in the future, but for now Mine, Storage and Power all use calculate
+function Global() {
+	this.calculate = function(constant, divisor) {
+		return Math.floor(Math.pow(constant, (1 + (level - 1) / divisor) ) );
+	}
+}
+
+var glob = new Global();
+
 // This is the sort of thing I could turn into a module
 function Mine() {
 	this.production = function(level) {
 		var constant = 10,
 			divisor = 10.0;
-		return Math.floor(Math.pow(constant, (1 + (level - 1) / divisor) ) );
+		return glob.calculate(constant, divisor);
 	}
 
 	this.power = function(level) {
 		var constant = 5,
 			divisor = 7.0;
-		return Math.floor(Math.pow(constant, (1 + (level - 1) / divisor) ) );
+		return glob.calculate(constant, divisor);
 	}
 
 	this.high = function(level) {
 		var constant = 20,
 			divisor = 8.7;
-		return Math.floor(Math.pow(constant, (1 + (level - 1) / divisor) ) );
+		return glob.calculate(constant, divisor);
 	}
 
 	this.medium = function(level) {
 		var constant = 20,
 			divisor = 9.65;
-		return Math.floor(Math.pow(constant, (1 + (level - 1) / divisor) ) );
+		return glob.calculate(constant, divisor);
 	}
 
 	this.low = function(level) {
 		var constant = 20,
 			divisor = 10.1;
-		return Math.floor(Math.pow(constant, (1 + (level - 1) / divisor) ) );
+		return glob.calculate(constant, divisor);
 	}
 
 	this.cost = function(level, type) {
@@ -76,7 +85,7 @@ function Storage() {
 	this.capacity = function(level) {
 		var constant = 2000,
 			divisor = 41.8;
-		return Math.floor(Math.pow(constant, (1 + (level - 1) / divisor) ) );
+		return glob.calculate(constant, divisor);
 	}
 
 	this.power = function(level) {
@@ -86,19 +95,19 @@ function Storage() {
 	this.high = function(level) {
 		var constant = 20,
 			divisor = 8.5;
-		return Math.floor(Math.pow(constant, (1 + (level - 1) / divisor) ) );
+		return glob.calculate(constant, divisor);
 	}
 
 	this.medium = function(level) {
 		var constant = 20,
 			divisor = 8.7;
-		return Math.floor(Math.pow(constant, (1 + (level - 1) / divisor) ) );
+		return glob.calculate(constant, divisor);
 	}
 
 	this.low = function(level) {
 		var constant = 20,
 			divisor = 9.5;
-		return Math.floor(Math.pow(constant, (1 + (level - 1) / divisor) ) );
+		return glob.calculate(constant, divisor);
 	}
 
 	this.cost = function(level, type) {
@@ -146,13 +155,13 @@ function Power() {
 	this.production = function(level) {
 		var constant = 10,
 			divisor = 9.1;
-		return Math.floor(Math.pow(constant, (1 + (level - 1) / divisor) ) );
+		return glob.calculate(constant, divisor);
 	}
 
 	this.ppgProduction = function(level) {
 		var constant = 50,
 			divisor = 17.0;
-		return Math.floor(Math.pow(constant, (1 + (level - 1) / divisor) ) );
+		return glob.calculate(constant, divisor);
 	}
 
 	this.power = function(level) {
@@ -162,7 +171,7 @@ function Power() {
 	this.ppgHigh = function(level) {
 		var constant = 200,
 			divisor = 23.5;
-		return Math.floor(Math.pow(constant, (1 + (level - 1) / divisor) ) );
+		return glob.calculate(constant, divisor);
 	}
 
 	this.ppgLow = function(level) {
@@ -172,19 +181,19 @@ function Power() {
 	this.high = function(level) {
 		var constant = 20,
 			divisor = 10.8;
-		return Math.floor(Math.pow(constant, (1 + (level - 1) / divisor) ) );
+		return glob.calculate(constant, divisor);
 	}
 
 	this.medium = function(level) {
 		var constant = 20,
 			divisor = 11.6;
-		return Math.floor(Math.pow(constant, (1 + (level - 1) / divisor) ) );
+		return glob.calculate(constant, divisor);
 	}
 
 	this.low = function(level) {
 		var constant = 10,
 			divisor = 9.7;
-		return Math.floor(Math.pow(constant, (1 + (level - 1) / divisor) ) );
+		return glob.calculate(constant, divisor);
 	}
 
 	this.cost = function(level, type) {

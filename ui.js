@@ -1,5 +1,7 @@
 
-
+/*
+ * The class that contains all DOM modifications
+ */
 function UI() {
 
 }

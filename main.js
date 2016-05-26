@@ -1,16 +1,23 @@
 
 // First there's a sun
 var sun = new Sun();
+
 // Then there's your first planet
 var planet = new Planet('superTerra', sun);
+
 // Then we initiate the UI
 var ui = new UI();
+
 // Then we populate initial resource and building data
 ui.generateResourceTable();
+
 ui.generateBuildingTable('mine', ['production', 'difference']);
+
 // a planet has storage, and storage has capacity
 ui.generateBuildingTable('storage', ['capacity', 'difference']);
+
 ui.generateBuildingTable('power', ['production', 'difference']);
+
 // Then we start the game loop
 window.setInterval(game, 100);
 
@@ -22,6 +29,7 @@ function game() {
 //// INTERACTION HANDLERS ////
 $(document).on('click', 'button', function() {
 	var data = $(this).parent().data(); // contains all necessary lookup information to determine outcome of click
+
 	// change in data and on UI <-- should auto update...
 	switch($(this).attr('class')) {
 		case 'buy-button':
@@ -39,6 +47,7 @@ $(document).on('click', 'button', function() {
 	}
 	// Regenerate table
 	ui.generateBuildingTable(data.category, data.attributes.split(','));
+
 	ui.generateResourceTable();
 });
 
@@ -46,7 +55,7 @@ $(document).on('click', 'button', function() {
 /*
  * To Do
  *  - 
- *  - Buildings
+ *  - Buildings (fleet, economy, etc)
  *  - Technology
  *  - Research (IBRT)
  *  - Ships / missions
@@ -57,6 +66,6 @@ $(document).on('click', 'button', function() {
  *
  *
  * Considerations
- *  - Update UI / delete conditionals to stop users from deleting their mines if they only have 1 (bump to first level)
+ *  
  */
 
