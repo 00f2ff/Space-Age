@@ -26,7 +26,8 @@ String.prototype.capitalize = function() {
  */
 UI.prototype.generateBuildingTable = function(category, attributes) {
 	// delete existing one
-	$('.table[data-category="'+category+'"]').remove();
+	$('#active-wrapper').empty();
+	// $('.table[data-category="'+category+'"]').remove();
 
 	var $table,
 		$headerRow,
@@ -94,7 +95,7 @@ UI.prototype.generateBuildingTable = function(category, attributes) {
 			$tbody.append($row);
 		}	
 	}
-	$('.container-fluid').append($table); // I should stick this in a .row
+	$('#active-wrapper').append($table);
 }
 
 /*
@@ -315,8 +316,7 @@ UI.prototype.generateBuildingRow = function(category, name, attributes, level, i
 
 	$row = this.addAttributeColumnsToRow(category, name, attributes, buildingClass, level, $row)
 
-	$row = this.addButtonColumnToRow(category, name, level, instance, attributes, $row);
-
+	$row = this.addButtonColumnToRow(category, name, attributes, level, instance, $row);
 	return $row;
 }
 
@@ -327,6 +327,8 @@ UI.prototype.generateBuildingRow = function(category, name, attributes, level, i
  */
 UI.prototype.generateResourceTable = function() {
 	// delete existing one
+	// $('#active-wrapper').empty();
+	// console.log($('#active-wrapper'))
 	$('.table[data-category="resources"]').remove();
 
 	var $table,
@@ -375,7 +377,7 @@ UI.prototype.generateResourceTable = function() {
 
 	$tbody.append($row);
 
-	$('.container-fluid').append($table); // I should stick this in a .row
+	$('#resources-wrapper').append($table); // I should stick this in a .row
 }
 
 // I'm being lazy and just redrawing tables on click

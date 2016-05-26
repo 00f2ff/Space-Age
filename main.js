@@ -14,9 +14,9 @@ ui.generateResourceTable();
 ui.generateBuildingTable('mine', ['production', 'difference']);
 
 // a planet has storage, and storage has capacity
-ui.generateBuildingTable('storage', ['capacity', 'difference']);
+// ui.generateBuildingTable('storage', ['capacity', 'difference']);
 
-ui.generateBuildingTable('power', ['production', 'difference']);
+// ui.generateBuildingTable('power', ['production', 'difference']);
 
 // Then we start the game loop
 window.setInterval(game, 100);
@@ -46,10 +46,27 @@ $(document).on('click', 'button', function() {
 			break;
 	}
 	// Regenerate table
+	console.log(data.attributes)
 	ui.generateBuildingTable(data.category, data.attributes.split(','));
 
 	ui.generateResourceTable();
 });
+
+$(document).on('click', 'li a', function() {
+	switch($(this).text().toLowerCase()) {
+		case 'mine':
+			ui.generateBuildingTable('mine', ['production', 'difference']);
+			break;
+		case 'storage':
+			ui.generateBuildingTable('storage', ['capacity', 'difference']);
+			break;
+		case 'power':
+			ui.generateBuildingTable('power', ['production', 'difference']);
+			break;
+		default:
+			break;
+	}
+})
 
 
 /*

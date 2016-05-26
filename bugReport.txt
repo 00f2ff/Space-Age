@@ -3,4 +3,3 @@
 
 BUGS
 
-- Need a check (probably in button column function to verify whether things can be purchased as resources go up)
