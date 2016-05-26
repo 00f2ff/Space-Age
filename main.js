@@ -28,11 +28,11 @@ $(document).on('click', 'button', function() {
 			planet.buyBuilding(data.category, data.name);
 			break;
 		case 'upgrade-button':
-			planet.upgradeBuilding(data.category, data.name, data.instance);
+			planet.upgradeBuilding(data.category, data.name, data.level, data.instance);
 			break;
 		case 'delete-button':
 			var del = confirm("Are you sure you want to delete this building?");
-			if (del) planet.deleteBuilding(data.category, data.name, data.instance);
+			if (del) planet.deleteBuilding(data.category, data.name, data.level, data.instance);
 			break;
 		default:
 			break;

@@ -91,12 +91,12 @@ UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, bui
 
 UI.prototype.addButtonColumnToRow = function(category, name, level, instance, attributes, $row) {
 	$buttonTd = $('<td></td>');
-	if (category === 'mine') console.log(name, level, instance);
+	// if (category === 'mine') console.log(name, level, instance);
 	$buttonTd.attr({'data-category': category, 'data-name': name, 'data-level': level, 'data-instance': instance, 'data-attributes': attributes})
 	if (level > 0) {
 		// add upgrade button
 		$upgradeButton = $('<button class="upgrade-button">Upgrade</button>');
-		if (planet.canUpgradeBuilding(category, name, instance)) $upgradeButton.css('color','green');
+		if (planet.canUpgradeBuilding(category, name, level)) $upgradeButton.css('color','green');
 		else $upgradeButton.css('color','red');
 		$buttonTd.append($upgradeButton);
 	}

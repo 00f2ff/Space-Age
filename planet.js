@@ -97,10 +97,9 @@ function Planet(type, sun) {
 
 //// BUILDING FUNCTIONS ////
 
-Planet.prototype.canUpgradeBuilding = function(category, name, instance) {
+Planet.prototype.canUpgradeBuilding = function(category, name, level) {
 	var nextLevel, i, r;
-	if (instance === 0) nextLevel = 1; // check because canBuyBuilding calls this function
-	else nextLevel = this.buildings[category][name][instance] + 1;
+	nextLevel = level + 1;
 	// check not max level
 	var powerCost, resourceCost, buildingClass;
 	if (nextLevel <= 21) {
@@ -118,7 +117,9 @@ Planet.prototype.canUpgradeBuilding = function(category, name, instance) {
 				break;
 		}
 		// determine costs
+
 		powerCost = buildingClass.power(nextLevel);
+		if (category === 'mine' && name === 'crystal') console.log(this.power, powerCost);
 		resourceCost = buildingClass.cost(nextLevel, name);
 		// check if costs acceptable
 		if (this.power < powerCost) return false;
@@ -139,11 +140,18 @@ Planet.prototype.spend = function(resourceCost) {
 }
 
 // Helper to calculate a sum of a particular attribute given a building level array (other than power)
-Planet.prototype.sum = function(category, name, buildingClass, attribute) {
-	var total = 0,
-		instances = this.buildings[category][name];
-	for (var i = 0; i < instances.length; i++) {
-		total += buildingClass[attribute](instances[i]); // e.g. mine.production(2)
+Planet.prototype.sum = function(category, name, buildingClass, attribute, level) {
+	var total = 0;
+	// polymorphism provided by level parameter (won't be 0)
+	if (level) {
+		for (var l = 1; l < level + 1; l++) {
+			total += buildingClass[attribute](l);
+		}
+	} else {
+		var instances = this.buildings[category][name];
+		for (var i = 0; i < instances.length; i++) {
+			total += buildingClass[attribute](instances[i]); // e.g. mine.production(2)
+		}
 	}
 	return total;
 }
@@ -181,12 +189,18 @@ Planet.prototype.updatePlanetData = function(category, name, level) {
 	this.spend(resourceCost);
 }
 
-// Instance is the index of a particular level
-Planet.prototype.upgradeBuilding = function(category, name, instance) {
-	if (this.canUpgradeBuilding(category, name, instance)) {
+/*
+ * Type    Parameter    Definition
+ * String  category	    The category of a building (e.g. mine, power, storage)
+ * String  name			The name of a building (e.g. crystal, ppg)
+ * Int     level        The level of the building to be upgraded
+ * Int     instance     The building index of this particular level
+ */
+Planet.prototype.upgradeBuilding = function(category, name, level, instance) {
+	if (this.canUpgradeBuilding(category, name, level)) {
 		// increase level
-		this.buildings[category][name][instance]++;
-		var level = this.buildings[category][name][instance];
+		level++;
+		this.buildings[category][name][instance] = level;
 		// make all changes in memory
 		this.updatePlanetData(category, name, level);
 	}
@@ -204,33 +218,31 @@ Planet.prototype.canBuyBuilding = function(category, name) {
 
 Planet.prototype.buyBuilding = function(category, name) {
 	if (this.canBuyBuilding(category, name)) {
-		this.buildings[category][name].push(1); // add a level 1 building
 		var level = 1;
+		this.buildings[category][name].push(level); // add a level 1 building
 		// make all changes in memory
 		this.updatePlanetData(category, name, level);
 	}
 }
 
-Planet.prototype.deleteBuilding = function(category, name, level) {
-	// find the instance of the building level we want to delete (we're just choosing 1, so order doesn't matter)
-	var instance = this.buildings[category][name].indexOf(level);
+Planet.prototype.deleteBuilding = function(category, name, level, instance) {
 	// remove 1 instance of level
 	this.buildings[category][name].splice(instance, 1);
 	switch(category) {
 		case 'mine':
 			// adjust power
-			this.power += mine.power(level);
+			this.power += this.sum(category, name, mine, 'power', level);
 			break;
 		case 'storage':
 			// adjust power
-			this.power += storage.power(level);
+			this.power += this.sum(category, name, storage, 'power', level);
 			// adjust building slots
 			this.usedBuildingSlots--;
 			break;
 		case 'power':
 			// adjust power
-			if (name === 'ppg') this.power -= power.ppgProduction(level);
-			else this.power -= power.production(level);
+			if (name === 'ppg') this.power -= this.sum(category, name, power, 'ppgProduction', level);
+			else this.power -= this.sum(category, name, power, 'production', level);
 			// adjust building slots
 			this.usedBuildingSlots--;
 			break;
