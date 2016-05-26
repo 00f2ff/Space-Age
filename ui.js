@@ -30,7 +30,9 @@ UI.prototype.generateBuildingTable = function(category, attributes) {
 	// generate unique headers
 	var $headerRow = $table.find('tr');
 	for (var i = 0; i < attributes.length; i++) {
-		$headerRow.append('<th>'+attributes[i].capitalize()+'</th>');
+		var attribute = attributes[i].capitalize();
+		if (attribute === 'Production' || attribute === 'Capacity') attribute = 'Current ' + attribute;
+		$headerRow.append('<th>'+attribute+'</th>');
 	}
 	// generate header placeholder for upgrade, buy and delete buttons
 	$headerRow.append('<th></th>');
@@ -143,11 +145,11 @@ UI.prototype.generateBuildingRow = function($tbody, category, name, attributes, 
 		var $row = $('<tr>\
 			<td>'+name.capitalize()+'</td>\
 			<td>'+level+'</td>\
-			<td>'+resourceCost.crystal+'</td>\
-			<td>'+resourceCost.steel+'</td>\
-			<td>'+resourceCost.titanium+'</td>\
-			<td>'+resourceCost.tritium+'</td>\
-			<td>'+powerCost+'</td>\
+			<td>'+Math.floor(resourceCost.crystal)+'</td>\
+			<td>'+Math.floor(resourceCost.steel)+'</td>\
+			<td>'+Math.floor(resourceCost.titanium)+'</td>\
+			<td>'+Math.floor(resourceCost.tritium)+'</td>\
+			<td>'+Math.floor(powerCost)+'</td>\
 		</tr>');
 	} else {
 		var $row = $('<tr>\
@@ -174,7 +176,7 @@ UI.prototype.generateResourceTable = function() {
 								<th>Resource</th>\
 								<th>Count</th>\
 								<th>Storage</th>\
-					            <th>Rate</th>\
+					            <th>Rate / min</th>\
 					            <th>Multiplier</th>\
 							</tr>\
 						</thead>\
@@ -189,8 +191,8 @@ UI.prototype.generateResourceTable = function() {
 		$row = $('<tr data-resource="'+r+'">\
 					<td>'+r.capitalize()+'</td>\
 					<td class="count">'+Math.floor(planet.resources[r])+'</td>\
-					<td class="storage">'+planet.storage[r]+'</td>\
-					<td class="rate">'+planet.mineRates[r]+'</td>\
+					<td class="storage">'+Math.floor(planet.storage[r])+'</td>\
+					<td class="rate">'+Math.floor(planet.mineRates[r])+'</td>\
 					<td class="multiplier">'+planet.mineMultipliers[r]+'</td>\
 				</tr>');
 		$tbody.append($row);
@@ -239,7 +241,7 @@ UI.prototype.updateResourceRow = function(resource, attribute) {
 		}
 	}
 	// set cell value
-	$td.text(value);
+	$td.text(Math.floor(value));
 }
 
 UI.prototype.visualLoop = function() {
