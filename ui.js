@@ -445,7 +445,7 @@ UI.prototype.updateButtonStyle = function() {
 
 		data = bb.parent().data();
 
-		if (planet.canUpgradeBuilding(data.category, data.name, data.level)) {
+		if (planet.canBuyBuilding(data.category, data.name)) {
 			bb.css('color','green');
 		}
 		else {
@@ -458,7 +458,7 @@ UI.prototype.updateButtonStyle = function() {
 
 		data = ub.parent().data();
 
-		if (planet.canBuyBuilding(data.category, data.name)) {
+		if (planet.canUpgradeBuilding(data.category, data.name, data.level)) {
 			ub.css('color','green');
 		}
 		else {
