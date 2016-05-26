@@ -25,7 +25,18 @@ String.prototype.capitalize = function() {
 UI.prototype.generateBuildingTable = function(category, attributes) {
 	// delete existing one
 	$('.table[data-category="'+category+'"]').remove();
-	var $table = $('<table class="table" data-category="'+category+'">\
+
+	var $table,
+		$headerRow,
+		i,
+		attribute,
+		$tbody,
+		name,
+		instances,
+		level,
+		$row;
+
+	$table = $('<table class="table" data-category="'+category+'">\
 						<thead>\
 							<tr>\
 								<th>'+category.capitalize()+'</th>\
@@ -40,30 +51,44 @@ UI.prototype.generateBuildingTable = function(category, attributes) {
 						<tbody>\
 						</tbody>\
 					</table>');
+
 	// generate unique headers
-	var $headerRow = $table.find('tr');
-	for (var i = 0; i < attributes.length; i++) {
-		var attribute = attributes[i].capitalize();
-		if (attribute === 'Production' || attribute === 'Capacity') attribute = 'Current ' + attribute;
+	$headerRow = $table.find('tr');
+
+	for (i = 0; i < attributes.length; i++) {
+		attribute = attributes[i].capitalize();
+		if (attribute === 'Production' || attribute === 'Capacity') {
+			attribute = 'Current ' + attribute;
+		}
+
 		$headerRow.append('<th>'+attribute+'</th>');
 	}
+
 	// generate header placeholder for upgrade, buy and delete buttons
 	$headerRow.append('<th></th>');
+
 	// generate body
-	var $tbody = $table.find('tbody');
-	for (var name in planet.buildings[category]) {
+	$tbody = $table.find('tbody');
+
+	for (name in planet.buildings[category]) {
 		if (!planet.buildings[category].hasOwnProperty(name)) continue;
+
 		// loop through building instances
-		var instances = planet.buildings[category][name];
+		instances = planet.buildings[category][name];
+
 		if (instances.length > 0) {
-			for (var i = 0; i < instances.length; i++) {
-				var level = instances[i];
-				var $row = this.generateBuildingRow(category, name, attributes, level, i);
+			for (i = 0; i < instances.length; i++) {
+				level = instances[i];
+
+				$row = this.generateBuildingRow(category, name, attributes, level, i);
+
 				$tbody.append($row);
 			}
-		} else {
+		} 
+		else {
 			// create row that can be bought
-			var $row = this.generateBuildingRow(category, name, attributes, 0, -1);
+			$row = this.generateBuildingRow(category, name, attributes, 0, -1);
+
 			$tbody.append($row);
 		}	
 	}
@@ -84,36 +109,65 @@ UI.prototype.generateBuildingTable = function(category, attributes) {
  * return $
  */
 UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, buildingClass, level, $row) {
-	var nextLevel = level + 1;
-	var attributeValue, difference;
-	for (var j = 0; j < attributes.length; j++) {
+	var nextLevel = level + 1,
+		attributeValue, 
+		difference,
+		j;
+
+	for (j = 0; j < attributes.length; j++) {
 		// exception for ppg
-		if (category === 'power' && name === 'ppg' && attributes[j] === 'production') attributes[j] = 'ppgProduction';
-		else if (category === 'power' && name !== 'ppg' && attributes[j] === 'production') {attributes[j] = 'production';}
+		if (category === 'power' && name === 'ppg' && attributes[j] === 'production') {
+			attributes[j] = 'ppgProduction';
+		}
+		else if (category === 'power' && name !== 'ppg' && attributes[j] === 'production') {
+			attributes[j] = 'production';
+		}
 		if (attributes[j] !== 'difference') {
 			// show what attribute value is for current level
 			attributeValue = buildingClass[attributes[j]](level); // e.g. mine.production(2)
-			if (category === 'mine') attributeValue *= planet.mineMultipliers[name]; // this is not generalizable
-			else if (category === 'power') attributeValue *= planet.powerMultipliers[name];
+
+			if (category === 'mine') {
+				attributeValue *= planet.mineMultipliers[name]; // this is not generalizable
+			}
+			else if (category === 'power') {
+				attributeValue *= planet.powerMultipliers[name];
+			}
+
 			$row.append('<td>'+Math.floor(attributeValue)+'</td>');
-		} else if (attributes[j] === 'difference' && level > 0) {
+		} 
+		else if (attributes[j] === 'difference' && level > 0) {
 			if (nextLevel <= 21) {
 				// calculate difference in attribute values
 				difference = buildingClass[attributes[j-1]](nextLevel) - buildingClass[attributes[j-1]](level);
-				if (category === 'mine') difference *= planet.mineMultipliers[name]; // this is not generalizable
-				else if (category === 'power') difference *= planet.powerMultipliers[name];
+
+				if (category === 'mine') {
+					difference *= planet.mineMultipliers[name]; // this is not generalizable
+				}
+				else if (category === 'power') {
+					difference *= planet.powerMultipliers[name];
+				}
+
 				$row.append('<td class="increase">+'+Math.floor(difference)+'</td>');
-			} else {
+			} 
+			else {
 				$row.append('<td>--</td>');
 			}
-		} else if (attributes[j] === 'difference' && level === 0) { // buy case
+		} 
+		else if (attributes[j] === 'difference' && level === 0) { // buy case
 			// Note: this assumes 'difference' is never first element
 			attributeValue = buildingClass[attributes[j-1]](nextLevel); // e.g. mine.production(1)
-			if (category === 'mine') attributeValue *= planet.mineMultipliers[name]; // this is not generalizable
-			else if (category === 'power') attributeValue *= planet.powerMultipliers[name];
+
+			if (category === 'mine') {
+				attributeValue *= planet.mineMultipliers[name]; // this is not generalizable
+			}
+			else if (category === 'power') {
+				attributeValue *= planet.powerMultipliers[name];
+			}
+
 			$row.append('<td class="increase">+'+Math.floor(attributeValue)+'</td>');
 		}
 	}
+
 	return $row;
 }
 
@@ -132,31 +186,66 @@ UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, bui
  * return $
  */
 UI.prototype.addButtonColumnToRow = function(category, name, attributes, level, instance, $row) {
-	$buttonTd = $('<td></td>');
-	$buttonTd.attr({'data-category': category, 'data-name': name, 'data-level': level, 'data-instance': instance, 'data-attributes': attributes})
+	var $buttonTd = $('<td></td>'),
+		$upgradeButton,
+		revert,
+		$deleteButton;
+
+	$buttonTd.attr({
+		'data-category': category, 
+		'data-name': name, 
+		'data-level': level, 
+		'data-instance': instance, 
+		'data-attributes': attributes
+	});
+
 	if (level > 0) {
+
 		// add upgrade button
 		$upgradeButton = $('<button class="upgrade-button">Upgrade</button>');
-		if (planet.canUpgradeBuilding(category, name, level)) $upgradeButton.css('color','green');
-		else $upgradeButton.css('color','red');
+
+		if (planet.canUpgradeBuilding(category, name, level)) {
+			$upgradeButton.css('color','green');
+		}
+		else {
+			$upgradeButton.css('color','red');
+		}
+
 		$buttonTd.append($upgradeButton);
 	}
 	// Big string of conditionals to allow both buildings with and without existing instances be have the chance of a buy button
-	if (category === 'mine' || (category === 'power' && name !== 'ppg') || category === 'storage' || planet.buildings[category][name].length === 0) {
+	if (category === 'mine' || 
+		(category === 'power' && name !== 'ppg') || 
+		category === 'storage' || 
+		planet.buildings[category][name].length === 0) {
+
 		// add buy button
 		$buyButton = $('<button class="buy-button">Buy</button>');
-		if (planet.canBuyBuilding(category, name)) $buyButton.css('color','green');
-		else $buyButton.css('color','red');
+
+		if (planet.canBuyBuilding(category, name)) {
+			$buyButton.css('color','green');
+		}
+		else {
+			$buyButton.css('color','red');
+		}
+
 		$buttonTd.append($buyButton);
 	}
 	// extra conditions to save users from themselves (planet.deleteBuilding has built-in protections as well)
-	var revert = ((category === 'mine' || category === 'storage') && planet.buildings[category][name].length === 1 && level === 1) || (name === 'ppg' && level === 1);
+	revert = ((category === 'mine' || category === 'storage') && 
+					planet.buildings[category][name].length === 1 && 
+					level === 1) || 
+					(name === 'ppg' && level === 1);
+
 	if (!revert && level > 0) {
 		// add delete button
 		$deleteButton = $('<button class="delete-button">Delete</button>');
+
 		$buttonTd.append($deleteButton);
 	}
+
 	$row.append($buttonTd);
+
 	return $row;
 }
 
@@ -173,7 +262,12 @@ UI.prototype.addButtonColumnToRow = function(category, name, attributes, level, 
  * return $
  */
 UI.prototype.generateBuildingRow = function(category, name, attributes, level, instance) {
-	var buildingClass, powerCost, resourceCost;
+	var buildingClass, 
+		powerCost, 
+		resourceCost,
+		nextLevel,
+		$row;
+
 	switch(category) {
 		case 'mine': 
 			buildingClass = mine;
@@ -187,13 +281,15 @@ UI.prototype.generateBuildingRow = function(category, name, attributes, level, i
 		default:
 			break;
 	}
-	var nextLevel = level + 1;
+
+	nextLevel = level + 1;
 	// determine costs
 	powerCost = buildingClass.power(nextLevel);
+
 	resourceCost = buildingClass.cost(nextLevel, name);
-	var nextLevel = level + 1;
+
 	if (nextLevel <= 21) {
-		var $row = $('<tr>\
+		$row = $('<tr>\
 			<td>'+name.capitalize()+'</td>\
 			<td>'+level+'</td>\
 			<td>'+Math.floor(resourceCost.crystal)+'</td>\
@@ -202,8 +298,9 @@ UI.prototype.generateBuildingRow = function(category, name, attributes, level, i
 			<td>'+Math.floor(resourceCost.tritium)+'</td>\
 			<td>'+Math.floor(powerCost)+'</td>\
 		</tr>');
-	} else {
-		var $row = $('<tr>\
+	} 
+	else {
+		$row = $('<tr>\
 			<td>'+name.capitalize()+'</td>\
 			<td>'+level+'</td>\
 			<td>--</td>\
@@ -213,8 +310,11 @@ UI.prototype.generateBuildingRow = function(category, name, attributes, level, i
 			<td>--</td>\
 		</tr>');
 	}
+
 	$row = this.addAttributeColumnsToRow(category, name, attributes, buildingClass, level, $row)
+
 	$row = this.addButtonColumnToRow(category, name, level, instance, attributes, $row);
+
 	return $row;
 }
 
@@ -226,7 +326,13 @@ UI.prototype.generateBuildingRow = function(category, name, attributes, level, i
 UI.prototype.generateResourceTable = function() {
 	// delete existing one
 	$('.table[data-category="resources"]').remove();
-	var $table = $('<table class="table" data-category="resources">\
+
+	var $table,
+		$tbody,
+		$row,
+		r;
+
+	$table = $('<table class="table" data-category="resources">\
 						<thead>\
 							<tr>\
 								<th>Resource</th>\
@@ -239,8 +345,9 @@ UI.prototype.generateResourceTable = function() {
 						<tbody>\
 						</tbody>\
 					</table>');
-	var $tbody = $table.find('tbody');
-	var $row;
+
+	$tbody = $table.find('tbody');
+
 	for (r in planet.resources) {
 		if (!planet.resources.hasOwnProperty(r)) continue;
 		// append resource information to row
@@ -251,8 +358,10 @@ UI.prototype.generateResourceTable = function() {
 					<td class="rate">'+Math.floor(planet.mineRates[r])+'</td>\
 					<td class="multiplier">'+planet.mineMultipliers[r]+'</td>\
 				</tr>');
+
 		$tbody.append($row);
 	}
+
 	// Add a special row for power
 	$row = $('<tr data-resource="power">\
 				<td>Power</td>\
@@ -261,7 +370,9 @@ UI.prototype.generateResourceTable = function() {
 				<td class="rate">--</td>\
 				<td class="multiplier">--</td>\
 			</tr>');
+
 	$tbody.append($row);
+
 	$('.container-fluid').append($table); // I should stick this in a .row
 }
 
@@ -281,9 +392,12 @@ UI.prototype.updateBuildingInformation = function() {
  * Return void;
  */
 UI.prototype.updateResourceRow = function(resource, attribute) {
-	var $td = $('tr[data-resource="'+resource+'"] td.'+attribute);
-	var value;
-	if (resource === 'power') value = planet.power;
+	var $td = $('tr[data-resource="'+resource+'"] td.'+attribute),
+		value;
+
+	if (resource === 'power') {
+		value = planet.power;
+	}
 	else {
 		switch(attribute) {
 			case 'count':
@@ -303,6 +417,7 @@ UI.prototype.updateResourceRow = function(resource, attribute) {
 				break;
 		}
 	}
+
 	// set cell value
 	$td.text(Math.floor(value));
 }
@@ -313,19 +428,38 @@ UI.prototype.updateResourceRow = function(resource, attribute) {
  * Return void;
  */
 UI.prototype.updateButtonStyle = function() {
-	$buyButtons = $('.buy-button');
-	for (var i = 0; i < $buyButtons.length; i++) {
-		var bb = $($buyButtons[i]);
-		var data = bb.parent().data();
-		if (planet.canUpgradeBuilding(data.category, data.name, data.level)) bb.css('color','green');
-		else bb.css('color','red');
+	var $buyButtons = $('.buy-button'),
+		i,
+		bb,
+		data,
+		j,
+		ub,
+		$upgradeButtons = $('.upgrade-button');
+
+	for (i = 0; i < $buyButtons.length; i++) {
+		bb = $($buyButtons[i]);
+
+		data = bb.parent().data();
+
+		if (planet.canUpgradeBuilding(data.category, data.name, data.level)) {
+			bb.css('color','green');
+		}
+		else {
+			bb.css('color','red');
+		}
 	}
-	$upgradeButtons = $('.upgrade-button');
-	for (var j = 0; j < $upgradeButtons.length; j++) {
-		var ub = $($upgradeButtons[j]);
-		var data = ub.parent().data();
-		if (planet.canBuyBuilding(data.category, data.name)) ub.css('color','green');
-		else ub.css('color','red');
+
+	for (j = 0; j < $upgradeButtons.length; j++) {
+		ub = $($upgradeButtons[j]);
+
+		data = ub.parent().data();
+
+		if (planet.canBuyBuilding(data.category, data.name)) {
+			ub.css('color','green');
+		}
+		else {
+			ub.css('color','red');
+		}
 	}
 }
 
@@ -335,8 +469,9 @@ UI.prototype.updateButtonStyle = function() {
  * Return void;
  */
 UI.prototype.visualLoop = function() {
+	var i;
 	// update all resource counts
-	for (var i = 0; i < planet.resourceTypes.length; i++) {
+	for (i = 0; i < planet.resourceTypes.length; i++) {
 		this.updateResourceRow(planet.resourceTypes[i], 'count');
 	}
 	this.updateResourceRow('power', 'count');
