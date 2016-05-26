@@ -93,7 +93,6 @@ UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, bui
 
 UI.prototype.addButtonColumnToRow = function(category, name, level, instance, attributes, $row) {
 	$buttonTd = $('<td></td>');
-	// if (category === 'mine') console.log(name, level, instance);
 	$buttonTd.attr({'data-category': category, 'data-name': name, 'data-level': level, 'data-instance': instance, 'data-attributes': attributes})
 	if (level > 0) {
 		// add upgrade button
@@ -140,7 +139,6 @@ UI.prototype.generateBuildingRow = function($tbody, category, name, attributes, 
 	// determine costs
 	powerCost = buildingClass.power(nextLevel);
 	resourceCost = buildingClass.cost(nextLevel, name);
-	// console.log(resourceCost);
 	var nextLevel = level + 1;
 	if (nextLevel <= 21) {
 		var $row = $('<tr>\
@@ -245,10 +243,31 @@ UI.prototype.updateResourceRow = function(resource, attribute) {
 	$td.text(Math.floor(value));
 }
 
+/*
+ * Changes upgrade and buy button styles based on resource / power availability
+ */
+UI.prototype.updateButtonStyle = function() {
+	$buyButtons = $('.buy-button');
+	for (var i = 0; i < $buyButtons.length; i++) {
+		var bb = $($buyButtons[i]);
+		var data = bb.parent().data();
+		if (planet.canUpgradeBuilding(data.category, data.name, data.level)) bb.css('color','green');
+		else bb.css('color','red');
+	}
+	$upgradeButtons = $('.upgrade-button');
+	for (var j = 0; j < $upgradeButtons.length; j++) {
+		var ub = $($upgradeButtons[j]);
+		var data = ub.parent().data();
+		if (planet.canBuyBuilding(data.category, data.name)) ub.css('color','green');
+		else ub.css('color','red');
+	}
+}
+
 UI.prototype.visualLoop = function() {
 	// update all resource counts
 	for (var i = 0; i < planet.resourceTypes.length; i++) {
 		this.updateResourceRow(planet.resourceTypes[i], 'count');
 	}
 	this.updateResourceRow('power', 'count');
+	this.updateButtonStyle();
 }

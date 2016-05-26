@@ -232,7 +232,6 @@ Planet.prototype.canBuyBuilding = function(category, name) {
 	if (category === 'mine') {
 		if (this.buildings.mine[name].length === this.mineSlots[name]) return false;
 	} else {
-		console.log(this.usedBuildingSlots, this.maxBuildingSlots)
 		if (this.usedBuildingSlots === this.maxBuildingSlots) return false;
 	}
 	return this.canUpgradeBuilding(category, name, 0); // 0 sets nextLevel to 1
