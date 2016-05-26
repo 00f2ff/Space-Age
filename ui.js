@@ -4,11 +4,24 @@ function UI() {
 
 }
 
-// This should probably go somewhere else to not clutter the class, but I only use it here
+/*
+ * Extension of String.prototype that capitalizes the first letter of a string
+ *
+ * return String
+ */
 String.prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 }
 
+/*
+ * Generates a table for a specific building category
+ *
+ * Type      Parameter   Description
+ * String    category    The building category for the table
+ * [String]  attributes  Additional table columns specific to the building type
+ *
+ * return $
+ */
 UI.prototype.generateBuildingTable = function(category, attributes) {
 	// delete existing one
 	$('.table[data-category="'+category+'"]').remove();
@@ -45,18 +58,31 @@ UI.prototype.generateBuildingTable = function(category, attributes) {
 		if (instances.length > 0) {
 			for (var i = 0; i < instances.length; i++) {
 				var level = instances[i];
-				var $row = this.generateBuildingRow($tbody, category, name, attributes, level, i);
+				var $row = this.generateBuildingRow(category, name, attributes, level, i);
 				$tbody.append($row);
 			}
 		} else {
 			// create row that can be bought
-			var $row = this.generateBuildingRow($tbody, category, name, attributes, 0, -1);
+			var $row = this.generateBuildingRow(category, name, attributes, 0, -1);
 			$tbody.append($row);
 		}	
 	}
 	$('.container-fluid').append($table); // I should stick this in a .row
 }
 
+/*
+ * Helper function for UI.generateBuildingTable adds attribute columns (<td> elements) to a row and returns it
+ *
+ * Type      Parameter      Description
+ * String    category       The building category for the table
+ * String    name           The name of the building
+ * [String]  attributes     Additional table columns specific to the building type
+ * Object    buildingClass  The specific class of the building
+ * Int       level          The building's current level
+ * $         $row           The previously constructed row for the <td> elements to be appended to
+ *
+ * return $
+ */
 UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, buildingClass, level, $row) {
 	var nextLevel = level + 1;
 	var attributeValue, difference;
@@ -91,7 +117,21 @@ UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, bui
 	return $row;
 }
 
-UI.prototype.addButtonColumnToRow = function(category, name, level, instance, attributes, $row) {
+/*
+ * Helper function for UI.generateBuildingTable that builds a <td> element containing buttons and
+ * returns a row appended with it.
+ *
+ * Type      Parameter   Description
+ * String    category    The building category for the table
+ * String    name        The name of the building
+ * [String]  attributes  Additional table columns specific to the building type
+ * Int       level       The building's current level
+ * Int       instance    The index of the building's level in Planet.buildings[category][name]
+ * $         $row        The previously constructed row for the <td> element to be appended to
+ *
+ * return $
+ */
+UI.prototype.addButtonColumnToRow = function(category, name, attributes, level, instance, $row) {
 	$buttonTd = $('<td></td>');
 	$buttonTd.attr({'data-category': category, 'data-name': name, 'data-level': level, 'data-instance': instance, 'data-attributes': attributes})
 	if (level > 0) {
@@ -120,7 +160,19 @@ UI.prototype.addButtonColumnToRow = function(category, name, level, instance, at
 	return $row;
 }
 
-UI.prototype.generateBuildingRow = function($tbody, category, name, attributes, level, instance) {
+/*
+ * Helper function for UI.generateBuildingTable that builds and returns a row of data
+ *
+ * Type      Parameter   Description
+ * String    category    The building category for the table
+ * String    name        The name of the building
+ * [String]  attributes  Additional table columns specific to the building type
+ * Int       level       The building's current level
+ * Int       instance    The index of the building's level in Planet.buildings[category][name]
+ *
+ * return $
+ */
+UI.prototype.generateBuildingRow = function(category, name, attributes, level, instance) {
 	var buildingClass, powerCost, resourceCost;
 	switch(category) {
 		case 'mine': 
@@ -166,6 +218,11 @@ UI.prototype.generateBuildingRow = function($tbody, category, name, attributes, 
 	return $row;
 }
 
+/*
+ * Generates the table that contains resource information
+ * 
+ * Return void;
+ */
 UI.prototype.generateResourceTable = function() {
 	// delete existing one
 	$('.table[data-category="resources"]').remove();
@@ -214,9 +271,16 @@ UI.prototype.updateBuildingInformation = function() {
 	// update all of that
 }
 
-// This repopulates resource amounts, storage and multipliers without requiring a full redraw of the table
+/*
+ * Repopulates resource amounts, storage and multipliers without requiring a full redraw of the table
+ *
+ * Type    Parameter  Description
+ * String  resource   The particular resource that will be updated
+ * String  attribute  A class that indicates which cell will change
+ * 
+ * Return void;
+ */
 UI.prototype.updateResourceRow = function(resource, attribute) {
-	// Note: Attribute doesn't mean attribute in the algorithm class sense (e.g. is count, storage, rate, etc)
 	var $td = $('tr[data-resource="'+resource+'"] td.'+attribute);
 	var value;
 	if (resource === 'power') value = planet.power;
@@ -245,6 +309,8 @@ UI.prototype.updateResourceRow = function(resource, attribute) {
 
 /*
  * Changes upgrade and buy button styles based on resource / power availability
+ * 
+ * Return void;
  */
 UI.prototype.updateButtonStyle = function() {
 	$buyButtons = $('.buy-button');
@@ -263,6 +329,11 @@ UI.prototype.updateButtonStyle = function() {
 	}
 }
 
+/*
+ * Houses UI changes that need to be made every interval
+ * 
+ * Return void;
+ */
 UI.prototype.visualLoop = function() {
 	// update all resource counts
 	for (var i = 0; i < planet.resourceTypes.length; i++) {
