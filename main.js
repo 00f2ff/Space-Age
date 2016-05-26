@@ -40,15 +40,12 @@ $(document).on('click', 'button', function() {
 	// Regenerate table
 	ui.generateBuildingTable(data.category, data.attributes.split(','));
 	ui.generateResourceTable();
-	// console.log(planet.power);
-	// console.log(planet.resources);
-	// console.log(planet.mineRates);
-	// console.log(planet.storage);
 });
 
 
 /*
  * To Do
+ *  - Production in tables is current production, but may be confused with nextLevel production. Consider moving this around
  *  - Buildings
  *  - Technology
  *  - Research (IBRT)

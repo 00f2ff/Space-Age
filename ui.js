@@ -100,15 +100,16 @@ UI.prototype.addButtonColumnToRow = function(category, name, level, instance, at
 		else $upgradeButton.css('color','red');
 		$buttonTd.append($upgradeButton);
 	}
-	// *** What is the purpose of this big or thing?
-	if (category === 'mine' || category === 'power' || category === 'storage' || planet.buildings[category][name].length === 0) {
+	// Big string of conditionals to allow both buildings with and without existing instances be have the chance of a buy button
+	if (category === 'mine' || (category === 'power' && name !== 'ppg') || category === 'storage' || planet.buildings[category][name].length === 0) {
 		// add buy button
 		$buyButton = $('<button class="buy-button">Buy</button>');
 		if (planet.canBuyBuilding(category, name)) $buyButton.css('color','green');
 		else $buyButton.css('color','red');
 		$buttonTd.append($buyButton);
 	}
-	if (level > 0) {
+	// extra conditions to save users from themselves (planet.deleteBuilding has built-in protections as well)
+	if (level > 0 && ((category === 'storage' && level > 1) || (name === 'ppg' && level > 1))) {
 		// add delete button
 		$deleteButton = $('<button class="delete-button">Delete</button>');
 		$buttonTd.append($deleteButton);

@@ -119,7 +119,6 @@ Planet.prototype.canUpgradeBuilding = function(category, name, level) {
 		// determine costs
 
 		powerCost = buildingClass.power(nextLevel);
-		if (category === 'mine' && name === 'crystal') console.log(this.power, powerCost);
 		resourceCost = buildingClass.cost(nextLevel, name);
 		// check if costs acceptable
 		if (this.power < powerCost) return false;
@@ -156,6 +155,8 @@ Planet.prototype.sum = function(category, name, buildingClass, attribute, level)
 	return total;
 }
 
+// Planet.prototype.addPowerPlant
+
 // Helper to update a planet's data after upgrade or purchase
 Planet.prototype.updatePlanetData = function(category, name, level) {
 	var buildingClass, resourceCost;
@@ -176,9 +177,18 @@ Planet.prototype.updatePlanetData = function(category, name, level) {
 			break;
 		case 'power':
 			buildingClass = power;
-			// increase power
-			if (name === 'ppg') this.power += (power.ppgProduction(level) * this.powerMultipliers[name]);
-			else this.power += (power.production(level) * this.powerMultipliers[name]);
+			// increase power (sums differently than mineRates or storage)
+			if (name === 'ppg') {
+				// remove previous level (if there is one)
+				if (level > 1) this.power -= (power.ppgProduction(level - 1) * this.powerMultipliers[name]);
+				// add current level
+				this.power += (power.ppgProduction(level) * this.powerMultipliers[name]);
+			} else {
+				// remove previous level
+				if (level > 1) this.power -= (power.production(level - 1) * this.powerMultipliers[name]);
+				// add current level
+				this.power += (power.production(level) * this.powerMultipliers[name]);
+			}
 			break;
 		default:
 			break;
@@ -211,6 +221,7 @@ Planet.prototype.canBuyBuilding = function(category, name) {
 	if (category === 'mine') {
 		if (this.buildings.mine[name].length === this.mineSlots[name]) return false;
 	} else {
+		console.log(this.usedBuildingSlots, this.maxBuildingSlots)
 		if (this.usedBuildingSlots === this.maxBuildingSlots) return false;
 	}
 	return this.canUpgradeBuilding(category, name, 0); // 0 sets nextLevel to 1
@@ -220,6 +231,8 @@ Planet.prototype.buyBuilding = function(category, name) {
 	if (this.canBuyBuilding(category, name)) {
 		var level = 1;
 		this.buildings[category][name].push(level); // add a level 1 building
+		// increase used building slots
+		if (category !== 'mine') this.usedBuildingSlots++;
 		// make all changes in memory
 		this.updatePlanetData(category, name, level);
 	}
@@ -236,13 +249,19 @@ Planet.prototype.deleteBuilding = function(category, name, level, instance) {
 		case 'storage':
 			// adjust power
 			this.power += this.sum(category, name, storage, 'power', level);
+			// don't let users screw themselves by preventing any future resource production
+			this.buildings[category][name].push(1);
 			// adjust building slots
 			this.usedBuildingSlots--;
 			break;
 		case 'power':
-			// adjust power
-			if (name === 'ppg') this.power -= this.sum(category, name, power, 'ppgProduction', level);
-			else this.power -= this.sum(category, name, power, 'production', level);
+			// adjust power (power does not compound)
+			if (name === 'ppg') {
+				this.power -= power.ppgProduction(level);
+				// don't let users screw themselves by deleting their core power base
+				this.power += power.ppgProduction(1);
+				this.buildings[category][name].push(1);
+			} else this.power -= power.production(level);
 			// adjust building slots
 			this.usedBuildingSlots--;
 			break;

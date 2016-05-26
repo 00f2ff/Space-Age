@@ -3,4 +3,3 @@
 
 BUGS
 
-- Power += and -= system isn't ideal. There are bugs in power plant upgrading because I'm not resetting a particular plant's production
