@@ -236,6 +236,56 @@ function Power() {
 	}
 }
 
+function Economy() {
+
+}
+
+function Fleet() {
+
+}
+
+function Defense() {
+
+}
+
+function Technology() {
+	
+}
+
+
+// , 
+// 	economy: {
+
+// 	},
+// 	fleet: {
+// 		fleet_base: {
+// 			fleets: 
+// 			power: [],
+// 			cost: {
+
+// 			}
+// 		},
+// 		military_shipyard: {
+
+// 		},
+// 		neutral_shipyard: {
+
+// 		},
+// 		customization_shipyard: {
+
+// 		}
+// 	},
+// 	defense: {
+// 		defense_factory: {
+
+// 		}
+// 	},
+// 	technology: {
+// 		purifier: {
+
+// 		}
+// 	}
+
 var mine = new Mine();
 var storage = new Storage();
 var power = new Power();

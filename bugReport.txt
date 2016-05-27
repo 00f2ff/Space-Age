@@ -3,4 +3,4 @@
 
 BUGS
 
-- Coloring error for upgrade buttons
+ 
