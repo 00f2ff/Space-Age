@@ -285,8 +285,8 @@ function Fleet() {
 		if (type === 'fleet_base') {
 			return {
 				crystal: global.calculate(level, 300, 27.5),
-				steel: global.calculate(level, 300, 27.5) / 2,
-				titanium: global.calculate(level, 300, 27.5) / 2,
+				steel: Math.floor(global.calculate(level, 300, 27.5) / 2),
+				titanium: Math.floor(global.calculate(level, 300, 27.5) / 2),
 				tritium: global.calculate(level, 300, 27.5)
 			}
 		}
@@ -312,12 +312,17 @@ function Defense() {
 		}
 	}
 
-	this.power = function(type, level) { // I should change Energy to something like this too (or change how this all works)
-
+	this.power = function(level) {
+		return level * 10;
 	}
 
-	this.cost = function(type, level) {
-
+	this.cost = function(level) {
+		return {
+			crystal: global.calculate(level, 300, 31.8),
+			steel: global.calculate(level, 200, 29.2),
+			titanium: global.calculate(level, 200, 29.2),
+			tritium: global.calculate(level, 200, 29.2)
+		}
 	}
 }
 
@@ -328,11 +333,16 @@ function Technology() {
 	}
 
 	this.power = function(level) {
-
+		return level * 20;
 	}
 
 	this.cost = function(level) {
-
+		return {
+			crystal: global.calculate(level, 1000, 37.4),
+			steel: Math.floor(global.calculate(level, 1000, 37.4) / 2),
+			titanium: Math.floor(global.calculate(level, 1000, 37.4) / 2),
+			tritium: Math.floor(global.calculate(level, 1000, 37.4) / 2)
+		}
 	}
 }
 
