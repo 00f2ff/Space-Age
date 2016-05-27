@@ -11,68 +11,46 @@ var glob = new Global();
 // This is the sort of thing I could turn into a module
 function Mine() {
 	this.production = function(level) {
-		var constant = 10,
-			divisor = 10.0;
-		return glob.calculate(level, constant, divisor);
+		return glob.calculate(level, 10, 10.0);
 	}
 
 	this.power = function(level) {
-		var constant = 5,
-			divisor = 7.0;
-		return glob.calculate(level, constant, divisor);
+		return glob.calculate(level, 5, 7.0);
 	}
 
-	this.high = function(level) {
-		var constant = 20,
-			divisor = 8.7;
-		return glob.calculate(level, constant, divisor);
-	}
-
-	this.medium = function(level) {
-		var constant = 20,
-			divisor = 9.65;
-		return glob.calculate(level, constant, divisor);
-	}
-
-	this.low = function(level) {
-		var constant = 20,
-			divisor = 10.1;
-		return glob.calculate(level, constant, divisor);
-	}
-
-	this.cost = function(level, type) {
+	this.cost = function(type, level) {
 		switch(type) {
 			case 'crystal':
 				// console.log(type, level)
 				return {
-					crystal: this.high(level),
-					steel: this.high(level),
-					titanium: this.medium(level),
-					tritium: this.low(level)
+					crystal: glob.calculate(level, 20, 8.7),
+					steel: glob.calculate(level, 20, 8.7),
+					titanium: glob.calculate(level, 20, 9.65),
+					tritium: glob.calculate(level, 20, 10.1)
 				}
 				break;
 			case 'steel':
 				return {
-					crystal: this.high(level),
-					steel: this.medium(level),
-					titanium: this.high(level),
-					tritium: this.low(level)
+					crystal: glob.calculate(level, 20, 8.7),
+					steel: glob.calculate(level, 20, 9.65),
+					titanium: glob.calculate(level, 20, 8.7),
+					tritium: glob.calculate(level, 20, 10.1)
 				}
 				break;
 			case 'titanium':
 				return {
-					crystal: this.high(level),
-					steel: this.medium(level),
-					titanium: this.high(level),
-					tritium: this.low(level)
+					crystal: glob.calculate(level, 20, 8.7),
+					steel: glob.calculate(level, 20, 9.65),
+					titanium: glob.calculate(level, 20, 8.7),
+					tritium: glob.calculate(level, 20, 10.1)
 				}
 				break;
 			case 'tritium':
 				return {
-					crystal: this.low(level),
-					steel: this.medium(level),
-					titanium: this.high(level),
-					tritium: this.high(level)
+					crystal: glob.calculate(level, 20, 10.1),
+					steel: glob.calculate(level, 20, 9.65),
+					titanium: glob.calculate(level, 20, 8.7),
+					tritium: glob.calculate(level, 20, 8.7)
 				}
 				break;
 			default:
@@ -83,65 +61,45 @@ function Mine() {
 
 function Storage() {
 	this.capacity = function(level) {
-		var constant = 2000,
-			divisor = 41.8;
-		return glob.calculate(level, constant, divisor);
+		return glob.calculate(level, 2000, 41.8);
 	}
 
 	this.power = function(level) {
 		return 0;
 	}
 
-	this.high = function(level) {
-		var constant = 20,
-			divisor = 8.5;
-		return glob.calculate(level, constant, divisor);
-	}
-
-	this.medium = function(level) {
-		var constant = 20,
-			divisor = 8.7;
-		return glob.calculate(level, constant, divisor);
-	}
-
-	this.low = function(level) {
-		var constant = 20,
-			divisor = 9.5;
-		return glob.calculate(level, constant, divisor);
-	}
-
-	this.cost = function(level, type) {
+	this.cost = function(type, level) {
 		switch(type) {
 			case 'crystal':
 				return {
-					crystal: this.high(level),
-					steel: this.medium(level),
-					titanium: this.power(level),
-					tritium: this.medium(level)
+					crystal: glob.calculate(level, 20, 8.5),
+					steel: glob.calculate(level, 20, 8.7),
+					titanium: 0,
+					tritium: glob.calculate(level, 20, 8.7)
 				}
 				break;
 			case 'steel':
 				return {
-					crystal: this.medium(level),
-					steel: this.low(level),
-					titanium: this.low(level),
-					tritium: this.medium(level)
+					crystal: glob.calculate(level, 20, 8.7),
+					steel: glob.calculate(level, 20, 9.5),
+					titanium: glob.calculate(level, 20, 9.5),
+					tritium: glob.calculate(level, 20, 8.7)
 				}
 				break;
 			case 'titanium':
 				return {
-					crystal: this.medium(level),
-					steel: this.low(level),
-					titanium: this.low(level),
-					tritium: this.medium(level)
+					crystal: glob.calculate(level, 20, 8.7),
+					steel: glob.calculate(level, 20, 9.5),
+					titanium: glob.calculate(level, 20, 9.5),
+					tritium: glob.calculate(level, 20, 8.7)
 				}
 				break;
 			case 'tritium':
 				return {
-					crystal: this.medium(level),
-					steel: this.medium(level),
-					titanium: this.power(level),
-					tritium: this.high(level)
+					crystal: glob.calculate(level, 20, 8.7),
+					steel: glob.calculate(level, 20, 8.7),
+					titanium: 0,
+					tritium: glob.calculate(level, 20, 8.5)
 				}
 				break;
 			default:
@@ -152,82 +110,53 @@ function Storage() {
 
 // I'm going to figure out how to implement feeder plants later
 function Power() {
-	this.production = function(level) {
-		var constant = 10,
-			divisor = 9.1;
-		return glob.calculate(level, constant, divisor);
+	this.production = function(type, level) {
+		if(type === 'planetary_power_generator') {
+			return glob.calculate(level, 50, 17.0);
+		}
+		else if (type === 'hydro_power_plant' || type === 'wind_power_plant' || type === 'thermal_power_plant') {
+			return glob.calculate(level, 10, 9.1);
+		}		
 	}
 
-	this.ppgProduction = function(level) {
-		var constant = 50,
-			divisor = 17.0;
-		return glob.calculate(level, constant, divisor);
-	}
+	// need special function for energy multipliers
 
 	this.power = function(level) {
 		return 0;
 	}
 
-	this.ppgHigh = function(level) {
-		var constant = 200,
-			divisor = 23.5;
-		return glob.calculate(level, constant, divisor);
-	}
-
-	this.ppgLow = function(level) {
-		return this.ppgHigh(level) / 2;
-	}
-
-	this.high = function(level) {
-		var constant = 20,
-			divisor = 10.8;
-		return glob.calculate(level, constant, divisor);
-	}
-
-	this.medium = function(level) {
-		var constant = 20,
-			divisor = 11.6;
-		return glob.calculate(level, constant, divisor);
-	}
-
-	this.low = function(level) {
-		var constant = 10,
-			divisor = 9.7;
-		return glob.calculate(level, constant, divisor);
-	}
-
-	this.cost = function(level, type) {
+	this.cost = function(type, level) {
 		switch(type) {
-			case 'hydro':
+			case 'hydro_power_plant':
 				return {
-					crystal: this.medium(level),
-					steel: this.medium(level),
-					titanium: this.low(level),
-					tritium: this.high(level)
+					crystal: glob.calculate(level, 20, 11.6),
+					steel: glob.calculate(level, 20, 11.6),
+					titanium: glob.calculate(level, 10, 9.7),
+					tritium: glob.calculate(level, 20, 10.8)
 				}
 				break;
-			case 'wind':
+			case 'wind_power_plant':
 				return {
-					crystal: this.medium(level),
-					steel: this.medium(level),
-					titanium: this.medium(level),
-					tritium: this.medium(level)
+					crystal: glob.calculate(level, 20, 11.6),
+					steel: glob.calculate(level, 20, 11.6),
+					titanium: glob.calculate(level, 20, 11.6),
+					tritium: glob.calculate(level, 20, 11.6)
 				}
 				break;
-			case 'thermal':
+			case 'thermal_power_plant':
 				return {
-					crystal: this.medium(level),
-					steel: this.low(level),
-					titanium: this.low(level),
-					tritium: this.medium(level)
+					crystal: glob.calculate(level, 20, 11.6),
+					steel: glob.calculate(level, 10, 9.7),
+					titanium: glob.calculate(level, 10, 9.7),
+					tritium: glob.calculate(level, 20, 11.6)
 				}
 				break;
-			case 'ppg':
+			case 'planetary_power_generator':
 				return {
-					crystal: this.ppgHigh(level),
-					steel: this.ppgLow(level),
-					titanium: this.ppgLow(level),
-					tritium: this.ppgLow(level)
+					crystal: glob.calculate(level, 200, 23.5),
+					steel: Math.floor(glob.calculate(level, 200, 23.5) / 2),
+					titanium: Math.floor(glob.calculate(level, 200, 23.5) / 2),
+					tritium: Math.floor(glob.calculate(level, 200, 23.5) / 2)
 				}
 				break;
 			default:
@@ -271,7 +200,7 @@ function Fleet() {
 		}
 	}
 
-	this.power = function(type, level) { // I should change Power to something like this too (or change how this all works)
+	this.power = function(type, level) {
 		if (type === 'fleet_base') {
 			return glob.calculate(level, 10, 11.7);
 		}
