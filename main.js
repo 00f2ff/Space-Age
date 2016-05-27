@@ -56,7 +56,7 @@ $(document).on('click', 'li a', function() {
 	$('li.active').removeClass('active');
 
 	$(this).parent().addClass('active');
-	
+
 	switch($(this).text().toLowerCase()) {
 		case 'mine':
 			ui.generateBuildingTable('mine', ['production', 'difference']);
@@ -75,7 +75,7 @@ $(document).on('click', 'li a', function() {
 
 /*
  * To Do
- *  - 
+ *  - Switch all 2+ word names to snake_case instead of camelCase for more clarity / easier time with proper capitalization
  *  - Buildings (fleet, economy, etc)
  *  - Technology
  *  - Research (IBRT)

@@ -237,55 +237,88 @@ function Power() {
 }
 
 function Economy() {
+	this.traders = function(level) {
+		return level;
+	}
 
+	this.power = function(level) {
+
+	}
+
+	this.cost = function(level) {
+		return {
+			crystal: global.calculate(level),
+			steel: global.calculate(level),
+			titanium: global.calculate(level),
+			tritium: global.calculate(level)
+		}
+	}
 }
 
 function Fleet() {
+	// just for fleet_base
+	this.fleets = function(level) {
+		return level;
+	}
 
+	// just for customization_shipyard
+	this.shipRateMultiplier = function(level) {
+		if (level < 21) {
+			return (100 - level) / 100.0; // 99 - 80
+		}
+		else {
+			return 0.75;
+		}
+	}
+
+	this.power = function(type, level) { // I should change Power to something like this too (or change how this all works)
+
+	}
+
+	this.cost = function(type, level) {
+
+	}
 }
 
 function Defense() {
+	this.defenseRateMultiplier = function(level) { // think about moving this function into global for rates
+		if (level < 21) {
+			return (100 - level) / 100.0; // 99 - 80
+		}
+		else {
+			return 0.75;
+		}
+	}
 
+	this.power = function(type, level) { // I should change Energy to something like this too (or change how this all works)
+
+	}
+
+	this.cost = function(type, level) {
+
+	}
 }
 
 function Technology() {
-	
+	this.batchSize = function(level) { // This function is correct, but I don't know how much this matters if I don't take time into consideration
+	// look into how Crank does timing. That may be a good implementation
+		return 5 + level * 5;
+	}
+
+	this.power = function(level) {
+
+	}
+
+	this.cost = function(level) {
+
+	}
 }
 
+var mine       = new Mine(),
+	storage    = new Storage(),
+	power      = new Power(),
+	economy    = new Economy(),
+	fleet      = new Fleet(),
+	defense    = new Defense(),
+	technology = new Technology();
 
-// , 
-// 	economy: {
-
-// 	},
-// 	fleet: {
-// 		fleet_base: {
-// 			fleets: 
-// 			power: [],
-// 			cost: {
-
-// 			}
-// 		},
-// 		military_shipyard: {
-
-// 		},
-// 		neutral_shipyard: {
-
-// 		},
-// 		customization_shipyard: {
-
-// 		}
-// 	},
-// 	defense: {
-// 		defense_factory: {
-
-// 		}
-// 	},
-// 	technology: {
-// 		purifier: {
-
-// 		}
-// 	}
-
-var mine = new Mine();
-var storage = new Storage();
-var power = new Power();
