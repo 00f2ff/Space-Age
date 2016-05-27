@@ -247,10 +247,10 @@ function Economy() {
 
 	this.cost = function(level) {
 		return {
-			crystal: global.calculate(level, 200, 24.2),
-			steel: global.calculate(level, 200, 23.5),
+			crystal: glob.calculate(level, 200, 24.2),
+			steel: glob.calculate(level, 200, 23.5),
 			titanium: 0,
-			tritium: global.calculate(level, 200, 23.8)
+			tritium: glob.calculate(level, 200, 23.8)
 		}
 	}
 }
@@ -273,30 +273,30 @@ function Fleet() {
 
 	this.power = function(type, level) { // I should change Power to something like this too (or change how this all works)
 		if (type === 'fleet_base') {
-			return global.calculate(level, 10, 11.7);
+			return glob.calculate(level, 10, 11.7);
 		}
 		// All shipyards have same requirements
 		else {
-			return global.calculate(level, 10, 13.5);
+			return glob.calculate(level, 10, 13.5);
 		}
 	}
 
 	this.cost = function(type, level) {
 		if (type === 'fleet_base') {
 			return {
-				crystal: global.calculate(level, 300, 27.5),
-				steel: Math.floor(global.calculate(level, 300, 27.5) / 2),
-				titanium: Math.floor(global.calculate(level, 300, 27.5) / 2),
-				tritium: global.calculate(level, 300, 27.5)
+				crystal: glob.calculate(level, 300, 27.5),
+				steel: Math.floor(glob.calculate(level, 300, 27.5) / 2),
+				titanium: Math.floor(glob.calculate(level, 300, 27.5) / 2),
+				tritium: glob.calculate(level, 300, 27.5)
 			}
 		}
 		// All shipyards have same requirements
 		else {
 			return {
-				crystal: global.calculate(level, 200, 21.9),
-				steel: global.calculate(level, 200, 21.1),
+				crystal: glob.calculate(level, 200, 21.9),
+				steel: glob.calculate(level, 200, 21.1),
 				titanium: 0,
-				tritium: global.calculate(level, 200, 21.4)
+				tritium: glob.calculate(level, 200, 21.4)
 			}
 		}
 	}
@@ -318,10 +318,10 @@ function Defense() {
 
 	this.cost = function(level) {
 		return {
-			crystal: global.calculate(level, 300, 31.8),
-			steel: global.calculate(level, 200, 29.2),
-			titanium: global.calculate(level, 200, 29.2),
-			tritium: global.calculate(level, 200, 29.2)
+			crystal: glob.calculate(level, 300, 31.8),
+			steel: glob.calculate(level, 200, 29.2),
+			titanium: glob.calculate(level, 200, 29.2),
+			tritium: glob.calculate(level, 200, 29.2)
 		}
 	}
 }
@@ -338,10 +338,10 @@ function Technology() {
 
 	this.cost = function(level) {
 		return {
-			crystal: global.calculate(level, 1000, 37.4),
-			steel: Math.floor(global.calculate(level, 1000, 37.4) / 2),
-			titanium: Math.floor(global.calculate(level, 1000, 37.4) / 2),
-			tritium: Math.floor(global.calculate(level, 1000, 37.4) / 2)
+			crystal: glob.calculate(level, 1000, 37.4),
+			steel: Math.floor(glob.calculate(level, 1000, 37.4) / 2),
+			titanium: Math.floor(glob.calculate(level, 1000, 37.4) / 2),
+			tritium: Math.floor(glob.calculate(level, 1000, 37.4) / 2)
 		}
 	}
 }
