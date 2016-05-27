@@ -1,19 +1,11 @@
 
 import math
+import sys
 
-s = []
-for i in range(1,22):
-	constant = 200
+def requirements(constant, divisor):
+	s = []
+	for i in range(1,22):
+		s.append(math.floor(constant**(1+(i-1)/divisor)))
+	print s
 
-	divisor = 23.5
-
-	s.append(math.floor(constant**(1+(i-1)/divisor)))
-
-print s
-
-"""
-[20,40,80,120,200,300,400,550,700,900,1200,1600,2100,2200,2400,2600,3200,3500,3700,4200,5000]
-[20,30,45,70,105,155,225,330,420,600,900,1000,1200,1400,1500,1700,2000,2500,2700,2900,3400]
-[5,10,10,20,30,40,50,80,80,160,250,250,350,350,400,500,500,1000,1000,1000,1100]
-
-"""
+requirements(float(sys.argv[1]), float(sys.argv[2]))

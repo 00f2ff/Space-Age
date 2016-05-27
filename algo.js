@@ -242,15 +242,15 @@ function Economy() {
 	}
 
 	this.power = function(level) {
-
+		return 5 + level * 5; // this function is duplicated in Technology
 	}
 
 	this.cost = function(level) {
 		return {
-			crystal: global.calculate(level),
-			steel: global.calculate(level),
-			titanium: global.calculate(level),
-			tritium: global.calculate(level)
+			crystal: global.calculate(level, 200, 24.2),
+			steel: global.calculate(level, 200, 23.5),
+			titanium: 0,
+			tritium: global.calculate(level, 200, 23.8)
 		}
 	}
 }
@@ -272,11 +272,33 @@ function Fleet() {
 	}
 
 	this.power = function(type, level) { // I should change Power to something like this too (or change how this all works)
-
+		if (type === 'fleet_base') {
+			return global.calculate(level, 10, 11.7);
+		}
+		// All shipyards have same requirements
+		else {
+			return global.calculate(level, 10, 13.5);
+		}
 	}
 
 	this.cost = function(type, level) {
-
+		if (type === 'fleet_base') {
+			return {
+				crystal: global.calculate(level, 300, 27.5),
+				steel: global.calculate(level, 300, 27.5) / 2,
+				titanium: global.calculate(level, 300, 27.5) / 2,
+				tritium: global.calculate(level, 300, 27.5)
+			}
+		}
+		// All shipyards have same requirements
+		else {
+			return {
+				crystal: global.calculate(level, 200, 21.9),
+				steel: global.calculate(level, 200, 21.1),
+				titanium: 0,
+				tritium: global.calculate(level, 200, 21.4)
+			}
+		}
 	}
 }
 
