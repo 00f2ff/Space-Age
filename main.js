@@ -76,8 +76,10 @@ $(document).on('click', 'li a', function() {
 /*
  * To Do
  *  - Switch all 2+ word names to snake_case instead of camelCase for more clarity / easier time with proper capitalization
- *  - Buildings (fleet, economy, etc)
- *  - Technology
+ *  - Check bug report for naming / syntax things I need to change
+ *  - Add input-output power plants (will need special scalability UI; probably worth sticking in its own table below other plants)
+ *  - Other building table + UI support
+ *  - Special building / ship / defense unlock file + classes
  *  - Research (IBRT)
  *  - Ships / missions
  *  - Solar system (aka planet abstraction)

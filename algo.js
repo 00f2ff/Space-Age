@@ -119,7 +119,7 @@ function Power() {
 		}		
 	}
 
-	// need special function for energy multipliers
+	// need special function for input-output
 
 	this.power = function(level) {
 		return 0;
