@@ -3,11 +3,3 @@
 
 BUGS
 
-- Need to add '_power_plant' to all not ppg
-	- This is fine for multipliers as well, since there isn't more than one type of plant for each type of power
-- Need to change ppg to 'planetary_power_generator'
-- Need to make any other changes in regards to naming (I think mines and storage are ok as-is)
-- Need to change ui.js and planet.js to account for:
-	- Naming convention changes
-	- Change of some instances of power(level) to power(type, level), as well as cost / production, etc
-		- Also, change from 'level, type' to 'type, level' if applicable

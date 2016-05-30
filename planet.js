@@ -24,31 +24,31 @@ function Planet(type, sun) {
 			tritium: []
 		},
 		power: {
-			hydro: [],
-			thermal: [],
-			wind: [],
-			ppg: []//,
+			hydro_power_plant: [],
+			thermal_power_plant: [],
+			wind_power_plant: [],
+			planetary_power_generator: []//,
 			// liquid: [],
 			// furnace: [],
 			// nuclear: []
 		},
 		economy: {
-			tradeCenter: [],
-			purifier: []
+			trade_center: []
 		},
 		fleet: {
-			fleetBase: [],
-			militaryShipyard: [],
-			neutralShipyard: []
+			fleet_base: [],
+			military_shipyard: [],
+			neutral_shipyard: [],
+			customization_shipyard: []
 		},
 		defense: {
-			defenseFactory: []
+			defense_factory: []
 		},
 		craft: {
 
 		},
 		technology: {
-
+			purifier: []
 		},
 		reference: {
 
@@ -88,6 +88,7 @@ function Planet(type, sun) {
 
 		this.mineMultipliers[mult] *= planetData[type].mineMultipliers[mult];
 	}
+
 	// assign planet type data
 	this.powerMultipliers = planetData[type].powerMultipliers;
 
@@ -96,7 +97,7 @@ function Planet(type, sun) {
 	this.mineSlots = planetData[type].mineSlots;
 
 	// build specific buildings only for Super Terra
-	if (type === 'superTerra') {
+	if (type === 'super_terra') {
 		this.buildings.storage = {
 			crystal: [1],
 			steel: [1],
@@ -115,12 +116,12 @@ function Planet(type, sun) {
 		for (r in this.mineMultipliers) {
 			if (!this.mineMultipliers.hasOwnProperty(r)) continue;
 
-			this.mineRates[r] = mine.production(1) * this.mineMultipliers[r];
+			this.mineRates[r] = mine.production(r, 1) * this.mineMultipliers[r];
 		}
 
 		this.usedBuildingSlots = 4;
 
-		this.buildings.power.ppg = [1];
+		this.buildings.power.planetary_power_generator = [1];
 	}
 }
 
@@ -160,9 +161,9 @@ Planet.prototype.canUpgradeBuilding = function(category, name, level) {
 		}
 
 		// determine costs
-		powerCost = buildingClass.power(nextLevel);
+		powerCost = buildingClass.power(name, nextLevel);
 
-		resourceCost = buildingClass.cost(nextLevel, name);
+		resourceCost = buildingClass.cost(name, nextLevel);
 
 		// check if costs acceptable
 		if (this.power < powerCost) {
@@ -220,14 +221,14 @@ Planet.prototype.sum = function(category, name, buildingClass, attribute, level)
 	// polymorphism provided by level parameter (won't be 0)
 	if (level) {
 		for (l = 1; l < level + 1; l++) {
-			total += buildingClass[attribute](l);
+			total += buildingClass[attribute](name, l);
 		}
 	} 
 	else {
 		var instances = this.buildings[category][name];
 
 		for (i = 0; i < instances.length; i++) {
-			total += buildingClass[attribute](instances[i]); // e.g. mine.production(2)
+			total += buildingClass[attribute](name, instances[i]); // e.g. mine.production('crystal', 2)
 		}
 	}
 
@@ -253,7 +254,7 @@ Planet.prototype.updatePlanetData = function(category, name, level) {
 			buildingClass = mine;
 
 			// decrease power
-			this.power -= mine.power(level);
+			this.power -= mine.power(name, level);
 
 			// recalculate mine production
 			this.mineRates[name] = this.sum(category, name, buildingClass, 'production') * this.mineMultipliers[name];
@@ -262,7 +263,7 @@ Planet.prototype.updatePlanetData = function(category, name, level) {
 			buildingClass = storage;
 
 			// decrease power
-			this.power -= storage.power(level);
+			this.power -= storage.power(name, level);
 
 			// recalculate storage
 			this.storage[name] = this.sum(category, name, buildingClass, 'capacity');
@@ -271,23 +272,23 @@ Planet.prototype.updatePlanetData = function(category, name, level) {
 			buildingClass = power;
 
 			// increase power (sums differently than mineRates or storage)
-			if (name === 'ppg') {
+			if (name === 'planetary_power_generator') {
 				// remove previous level (if there is one)
 				if (level > 1) {
-					this.power -= (power.ppgProduction(level - 1) * this.powerMultipliers[name]);
+					this.power -= (power.production(name, level - 1) * this.powerMultipliers[name]);
 				}
 
 				// add current level
-				this.power += (power.ppgProduction(level) * this.powerMultipliers[name]);
+				this.power += (power.production(name, level) * this.powerMultipliers[name]);
 			} 
 			else {
 				// remove previous level
 				if (level > 1) {
-					this.power -= (power.production(level - 1) * this.powerMultipliers[name]);
+					this.power -= (power.production(name, level - 1) * this.powerMultipliers[name]);
 				}
 
 				// add current level
-				this.power += (power.production(level) * this.powerMultipliers[name]);
+				this.power += (power.production(name, level) * this.powerMultipliers[name]);
 			}
 			break;
 		default:
@@ -295,7 +296,7 @@ Planet.prototype.updatePlanetData = function(category, name, level) {
 	}
 
 	// determine costs
-	resourceCost = buildingClass.cost(level, name);
+	resourceCost = buildingClass.cost(name, level);
 
 	// purchase
 	this.spend(resourceCost);
@@ -391,7 +392,7 @@ Planet.prototype.deleteBuilding = function(category, name, level, instance) {
 	var revert = ((category === 'mine' || category === 'storage') && 
 					this.buildings[category][name].length === 1 && 
 					level > 1) || 
-					name === 'ppg';
+					name === 'planetary_power_generator';
 
 	if (revert) {
 		this.buildings[category][name][instance] = 1; // reset instance level
@@ -406,7 +407,7 @@ Planet.prototype.deleteBuilding = function(category, name, level, instance) {
 			this.power += this.sum(category, name, mine, 'power', level);
 
 			if (revert) {
-				this.power -= mine.power(1);
+				this.power -= mine.power(name, 1);
 			}
 			break;
 		case 'storage':
@@ -414,7 +415,7 @@ Planet.prototype.deleteBuilding = function(category, name, level, instance) {
 			this.power += this.sum(category, name, storage, 'power', level);
 
 			if (revert) {
-				this.power -= storage.power(1);
+				this.power -= storage.power(name, 1);
 			}
 			else {
 				this.usedBuildingSlots--; // adjust building slots
@@ -422,15 +423,12 @@ Planet.prototype.deleteBuilding = function(category, name, level, instance) {
 			break;
 		case 'power':
 			// adjust power (power does not compound)
-			if (revert && name === 'ppg') { // shouldn't need second conditional, but there just in case
-				this.power -= power.ppgProduction(level);
-
+			this.power -= power.production(name, level);
+			if (revert && name === 'planetary_power_generator') { // shouldn't need second conditional, but there just in case
 				// don't let users screw themselves by deleting their core power base
-				this.power += power.ppgProduction(1);
+				this.power += power.production(name, 1);
 			} 
 			else {
-				this.power -= power.production(level);
-
 				// adjust building slots
 				this.usedBuildingSlots--;
 			}

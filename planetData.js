@@ -2,7 +2,7 @@
  * This contains planet rate and building spot data
  */
 var planetData = {
-	superTerra: {
+	super_terra: {
 		mineMultipliers: {
 			crystal: 2,
 			steel: 2,
@@ -10,10 +10,10 @@ var planetData = {
 			tritium: 2
 		},
 		powerMultipliers: {
-			hydro: 1,
-			thermal: 1,
-			wind: 1,
-			ppg: 1,
+			hydro_power_plant: 1,
+			thermal_power_plant: 1,
+			wind_power_plant: 1,
+			planetary_power_generator: 1,
 			liquid: 1,
 			furnace: 1,
 			nuclear: 1
@@ -34,10 +34,10 @@ var planetData = {
 			tritium: 1
 		},
 		powerMultipliers: {
-			hydro: 1,
-			thermal: 1,
-			wind: 1,
-			ppg: 0,
+			hydro_power_plant: 1,
+			thermal_power_plant: 1,
+			wind_power_plant: 1,
+			planetary_power_generator: 0,
 			liquid: 1,
 			furnace: 1,
 			nuclear: 1
@@ -58,10 +58,10 @@ var planetData = {
 			tritium: 0
 		},
 		powerMultipliers: {
-			hydro: 0,
-			thermal: 2,
-			wind: 1.5,
-			ppg: 0,
+			hydro_power_plant: 0,
+			thermal_power_plant: 2,
+			wind_power_plant: 1.5,
+			planetary_power_generator: 0,
 			liquid: 1.5,
 			furnace: 2,
 			nuclear: 0
@@ -82,10 +82,10 @@ var planetData = {
 			tritium: 2.5
 		},
 		powerMultipliers: {
-			hydro: 1.5,
-			thermal: 0.5,
-			wind: 1.5,
-			ppg: 0,
+			hydro_power_plant: 1.5,
+			thermal_power_plant: 0.5,
+			wind_power_plant: 1.5,
+			planetary_power_generator: 0,
 			liquid: 1,
 			furnace: 0,
 			nuclear: 1.5
@@ -106,10 +106,10 @@ var planetData = {
 			tritium: 1
 		},
 		powerMultipliers: {
-			hydro: 1,
-			thermal: 0,
-			wind: 2.9,
-			ppg: 0,
+			hydro_power_plant: 1,
+			thermal_power_plant: 0,
+			wind_power_plant: 2.9,
+			planetary_power_generator: 0,
 			liquid: 0.7,
 			furnace: 0.7,
 			nuclear: 0.7
@@ -130,10 +130,10 @@ var planetData = {
 			tritium: 0
 		},
 		powerMultipliers: {
-			hydro: 0,
-			thermal: 1,
-			wind: 1,
-			ppg: 0,
+			hydro_power_plant: 0,
+			thermal_power_plant: 1,
+			wind_power_plant: 1,
+			planetary_power_generator: 0,
 			liquid: 0.5,
 			furnace: 2,
 			nuclear: 1.5
@@ -154,10 +154,10 @@ var planetData = {
 			tritium: 1
 		},
 		powerMultipliers: {
-			hydro: 0.5,
-			thermal: 0.5,
-			wind: 1.5,
-			ppg: 0,
+			hydro_power_plant: 0.5,
+			thermal_power_plant: 0.5,
+			wind_power_plant: 1.5,
+			planetary_power_generator: 0,
 			liquid: 1,
 			furnace: 1.5,
 			nuclear: 1

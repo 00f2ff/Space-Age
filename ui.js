@@ -118,17 +118,10 @@ UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, bui
 		j;
 
 	for (j = 0; j < attributes.length; j++) {
-		// exception for ppg
-		if (category === 'power' && name === 'ppg' && attributes[j] === 'production') {
-			attributes[j] = 'ppgProduction';
-		}
-		else if (category === 'power' && name !== 'ppg' && attributes[j] === 'production') {
-			attributes[j] = 'production';
-		}
 		if (attributes[j] !== 'difference') {
 			// show what attribute value is for current level
-			attributeValue = buildingClass[attributes[j]](level); // e.g. mine.production(2)
-
+			attributeValue = buildingClass[attributes[j]](name, level); // e.g. power.production('wind_power_plant', 2) 
+			
 			if (category === 'mine') {
 				attributeValue *= planet.mineMultipliers[name]; // this is not generalizable
 			}
@@ -141,7 +134,7 @@ UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, bui
 		else if (attributes[j] === 'difference' && level > 0) {
 			if (nextLevel <= 21) {
 				// calculate difference in attribute values
-				difference = buildingClass[attributes[j-1]](nextLevel) - buildingClass[attributes[j-1]](level);
+				difference = buildingClass[attributes[j-1]](name, nextLevel) - buildingClass[attributes[j-1]](name, level);
 
 				if (category === 'mine') {
 					difference *= planet.mineMultipliers[name]; // this is not generalizable
@@ -158,7 +151,7 @@ UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, bui
 		} 
 		else if (attributes[j] === 'difference' && level === 0) { // buy case
 			// Note: this assumes 'difference' is never first element
-			attributeValue = buildingClass[attributes[j-1]](nextLevel); // e.g. mine.production(1)
+			attributeValue = buildingClass[attributes[j-1]](name, nextLevel); // e.g. mine.production('crystal', 1)
 
 			if (category === 'mine') {
 				attributeValue *= planet.mineMultipliers[name]; // this is not generalizable
@@ -218,7 +211,7 @@ UI.prototype.addButtonColumnToRow = function(category, name, attributes, level, 
 	}
 	// Big string of conditionals to allow both buildings with and without existing instances be have the chance of a buy button
 	if (category === 'mine' || 
-		(category === 'power' && name !== 'ppg') || 
+		(category === 'power' && name !== 'planetary_power_generator') || 
 		category === 'storage' || 
 		planet.buildings[category][name].length === 0) {
 
@@ -238,7 +231,7 @@ UI.prototype.addButtonColumnToRow = function(category, name, attributes, level, 
 	revert = ((category === 'mine' || category === 'storage') && 
 					planet.buildings[category][name].length === 1 && 
 					level === 1) || 
-					(name === 'ppg' && level === 1);
+					(name === 'planetary_power_generator' && level === 1);
 
 	if (!revert && level > 0) {
 		// add delete button
@@ -287,9 +280,9 @@ UI.prototype.generateBuildingRow = function(category, name, attributes, level, i
 
 	nextLevel = level + 1;
 	// determine costs
-	powerCost = buildingClass.power(nextLevel);
+	powerCost = buildingClass.power(name, nextLevel);
 
-	resourceCost = buildingClass.cost(nextLevel, name);
+	resourceCost = buildingClass.cost(name, nextLevel);
 
 	if (nextLevel <= 21) {
 		$row = $('<tr>\

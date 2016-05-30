@@ -3,7 +3,7 @@
 var sun = new Sun();
 
 // Then there's your first planet
-var planet = new Planet('superTerra', sun);
+var planet = new Planet('super_terra', sun);
 
 // Then we initiate the UI
 var ui = new UI();
@@ -46,10 +46,10 @@ $(document).on('click', 'button', function() {
 			break;
 	}
 	// Regenerate table
-	console.log(data.attributes)
 	ui.generateBuildingTable(data.category, data.attributes.split(','));
 
 	ui.generateResourceTable();
+	console.log(planet)
 });
 
 $(document).on('click', 'li a', function() {
@@ -75,8 +75,6 @@ $(document).on('click', 'li a', function() {
 
 /*
  * To Do
- *  - Switch all 2+ word names to snake_case instead of camelCase for more clarity / easier time with proper capitalization
- *  - Check bug report for naming / syntax things I need to change
  *  - Add input-output power plants (will need special scalability UI; probably worth sticking in its own table below other plants)
  *  - Other building table + UI support
  *  - Special building / ship / defense unlock file + classes
@@ -89,6 +87,7 @@ $(document).on('click', 'li a', function() {
  *
  *
  * Considerations
- *  
+ *  - snake_case for attributes such as mineMultipliers to make them look less like functions
+ *  - prevent shifting of button UI from upgrade / buy to upgrade / buy / delete (separate columns, redo part of ui.js)
  */
 
