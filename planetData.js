@@ -18,8 +18,8 @@ var planetData = {
 			furnace: 1,
 			nuclear: 1
 		},
-		maxBuildingSlots: 12,
-		mineSlots: {
+		max_building_slots: 12,
+		mine_slots: {
 			crystal: 2,
 			steel: 2,
 			titanium: 2,
@@ -42,8 +42,8 @@ var planetData = {
 			furnace: 1,
 			nuclear: 1
 		},
-		maxBuildingSlots: 10,
-		mineSlots: {
+		max_building_slots: 10,
+		mine_slots: {
 			crystal: 1,
 			steel: 1,
 			titanium: 1,
@@ -66,8 +66,8 @@ var planetData = {
 			furnace: 2,
 			nuclear: 0
 		},
-		maxBuildingSlots: 10,
-		mineSlots: {
+		max_building_slots: 10,
+		mine_slots: {
 			crystal: 1,
 			steel: 2,
 			titanium: 2,
@@ -90,8 +90,8 @@ var planetData = {
 			furnace: 0,
 			nuclear: 1.5
 		},
-		maxBuildingSlots: 7,
-		mineSlots: {
+		max_building_slots: 7,
+		mine_slots: {
 			crystal: 1,
 			steel: 0,
 			titanium: 1,
@@ -114,8 +114,8 @@ var planetData = {
 			furnace: 0.7,
 			nuclear: 0.7
 		},
-		maxBuildingSlots: 3,
-		mineSlots: {
+		max_building_slots: 3,
+		mine_slots: {
 			crystal: 3,
 			steel: 0,
 			titanium: 0,
@@ -138,8 +138,8 @@ var planetData = {
 			furnace: 2,
 			nuclear: 1.5
 		},
-		maxBuildingSlots: 10,
-		mineSlots: {
+		max_building_slots: 10,
+		mine_slots: {
 			crystal: 0,
 			steel: 3,
 			titanium: 3,
@@ -162,8 +162,8 @@ var planetData = {
 			furnace: 1.5,
 			nuclear: 1
 		},
-		maxBuildingSlots: 12,
-		mineSlots: {
+		max_building_slots: 12,
+		mine_slots: {
 			crystal: 1,
 			steel: 1,
 			titanium: 2,

@@ -8,7 +8,7 @@ function Planet(type, sun) {
 
 	this.type = type;
 	this.sun = sun;
-	this.resourceTypes = ["crystal", "steel", "titanium", "tritium"];
+	this.resource_types = ["crystal", "steel", "titanium", "tritium"];
 
 	this.buildings = {
 		mine: {
@@ -63,7 +63,7 @@ function Planet(type, sun) {
 		tritium: 1000
 	}
 
-	this.mineRates = {
+	this.mine_rates = {
 		crystal: 0,
 		steel: 0,
 		titanium: 0,
@@ -79,6 +79,9 @@ function Planet(type, sun) {
 
 	this.power = 50;
 
+	this.ship_rate_multiplier = 1;
+	this.defense_rate_multiplier = 1;
+
 	// assign mine_rate_multipliers from sun
 	this.mine_rate_multipliers = this.sun.mine_rate_multipliers;
 
@@ -92,9 +95,9 @@ function Planet(type, sun) {
 	// assign planet type data
 	this.power_multipliers = planetData[type].power_multipliers;
 
-	this.usedBuildingSlots = 0;
-	this.maxBuildingSlots = planetData[type].maxBuildingSlots;
-	this.mineSlots = planetData[type].mineSlots;
+	this.used_building_slots = 0;
+	this.max_building_slots = planetData[type].max_building_slots;
+	this.mine_slots = planetData[type].mine_slots;
 
 	// build specific buildings only for Super Terra
 	if (type === 'super_terra') {
@@ -112,14 +115,14 @@ function Planet(type, sun) {
 			tritium: [1]
 		}
 
-		// start mineRates
+		// start mine_rates
 		for (r in this.mine_rate_multipliers) {
 			if (!this.mine_rate_multipliers.hasOwnProperty(r)) continue;
 
-			this.mineRates[r] = mine.production(r, 1) * this.mine_rate_multipliers[r];
+			this.mine_rates[r] = mine.production(r, 1) * this.mine_rate_multipliers[r];
 		}
 
-		this.usedBuildingSlots = 4;
+		this.used_building_slots = 4;
 
 		this.buildings.power.planetary_power_generator = [1];
 	}
@@ -182,8 +185,8 @@ Planet.prototype.canUpgradeBuilding = function(category, name, level) {
 			return false;
 		}
 
-		for (i = 0; i < this.resourceTypes.length; i++) {
-			r = this.resourceTypes[i];
+		for (i = 0; i < this.resource_types.length; i++) {
+			r = this.resource_types[i];
 
 			if (this.resources[r] < resourceCost[r]) {
 				return false;
@@ -207,8 +210,8 @@ Planet.prototype.canUpgradeBuilding = function(category, name, level) {
 Planet.prototype.spend = function(resourceCost) {
 	var i,
 		r;
-	for (i = 0; i < this.resourceTypes.length; i++) {
-		r = this.resourceTypes[i];
+	for (i = 0; i < this.resource_types.length; i++) {
+		r = this.resource_types[i];
 
 		this.resources[r] -= resourceCost[r];
 	}
@@ -269,7 +272,7 @@ Planet.prototype.updatePlanetData = function(category, name, level) {
 			this.power -= mine.power(name, level);
 
 			// recalculate mine production
-			this.mineRates[name] = this.sum(category, name, buildingClass, 'production') * this.mine_rate_multipliers[name];
+			this.mine_rates[name] = this.sum(category, name, buildingClass, 'production') * this.mine_rate_multipliers[name];
 			break;
 		case 'storage':
 			buildingClass = storage;
@@ -283,25 +286,14 @@ Planet.prototype.updatePlanetData = function(category, name, level) {
 		case 'power':
 			buildingClass = power;
 
-			// increase power (sums differently than mineRates or storage)
-			if (name === 'planetary_power_generator') {
-				// remove previous level (if there is one)
-				if (level > 1) {
-					this.power -= (power.production(name, level - 1) * this.power_multipliers[name]);
-				}
-
-				// add current level
-				this.power += (power.production(name, level) * this.power_multipliers[name]);
-			} 
-			else {
-				// remove previous level
-				if (level > 1) {
-					this.power -= (power.production(name, level - 1) * this.power_multipliers[name]);
-				}
-
-				// add current level
-				this.power += (power.production(name, level) * this.power_multipliers[name]);
+			// increase power (sums differently than mine_rates or storage)
+			// remove previous level (if there is one)
+			if (level > 1) {
+				this.power -= (power.production(name, level - 1) * this.power_multipliers[name]);
 			}
+
+			// add current level
+			this.power += (power.production(name, level) * this.power_multipliers[name]);
 			break;
 		case 'economy':
 			buildingClass = economy;
@@ -312,11 +304,31 @@ Planet.prototype.updatePlanetData = function(category, name, level) {
 		case 'fleet':
 			buildingClass = fleet;
 
+			// recalculate ship_rate_multiplier
+			if (name === 'customization_shipyard') {
+				// remove previous level (if there is one)
+				if (level > 1) {
+					this.ship_rate_multiplier -= fleet.ship_rate_multiplier(name, level - 1);
+				}
+
+				// multiply current level
+				this.ship_rate_multiplier += fleet.ship_rate_multiplier(name, level);		
+			}
+
 			// decrease power
 			this.power -= fleet.power(name, level);
 			break;
 		case 'defense':
 			buildingClass = defense;
+
+			// recalculate defense_rate_multiplier
+			// remove previous level (if there is one)
+			if (level > 1) {
+				this.defense_rate_multiplier -= defense.defense_rate_multiplier(name, level - 1);
+			}
+
+			// multiply current level
+			this.defense_rate_multiplier += defense.defense_rate_multiplier(name, level);	
 
 			// decrease power
 			this.power -= defense.power(name, level);
@@ -373,12 +385,12 @@ Planet.prototype.upgradeBuilding = function(category, name, level, instance) {
 Planet.prototype.canBuyBuilding = function(category, name) {
 	// check available building / mine slots
 	if (category === 'mine') {
-		if (this.buildings.mine[name].length === this.mineSlots[name]) {
+		if (this.buildings.mine[name].length === this.mine_slots[name]) {
 			return false;
 		}
 	} 
 	else {
-		if (this.usedBuildingSlots === this.maxBuildingSlots) {
+		if (this.used_building_slots === this.max_building_slots) {
 			return false;
 		}
 	}
@@ -403,7 +415,7 @@ Planet.prototype.buyBuilding = function(category, name) {
 
 		// increase used building slots
 		if (category !== 'mine') {
-			this.usedBuildingSlots++;
+			this.used_building_slots++;
 		}
 
 		// make all changes in memory
@@ -454,7 +466,7 @@ Planet.prototype.deleteBuilding = function(category, name, level, instance) {
 				this.power -= storage.power(name, 1);
 			}
 			else {
-				this.usedBuildingSlots--; // adjust building slots
+				this.used_building_slots--; // adjust building slots
 			}
 			break;
 		case 'power':
@@ -466,7 +478,7 @@ Planet.prototype.deleteBuilding = function(category, name, level, instance) {
 			} 
 			else {
 				// adjust building slots
-				this.usedBuildingSlots--;
+				this.used_building_slots--;
 			}
 			break;
 		case 'economy':
@@ -474,10 +486,33 @@ Planet.prototype.deleteBuilding = function(category, name, level, instance) {
 			this.power += this.sum(category, name, economy, 'power', level);
 			break;
 		case 'fleet':
+			// adjust power
+			this.power += this.sum(category, name, fleet, 'power', level);
+
+			// adjust ship_rate_multiplier
+			if (name === 'customization_shipyard') {
+				// this.ship_rate_multiplier -= this.sum(category, name, fleet, 'ship_rate_multiplier', level);
+			}
+
+			// adjust building slots
+			this.used_building_slots--;
 			break;
 		case 'defense':
+			// adjust power
+			this.power += this.sum(category, name, defense, 'power', level);
+
+			// adjust defense_rate_multiplier
+			// this.ship_rate_multiplier -= this.sum(category, name, fleet, 'defense_rate_multiplier', level);
+
+			// adjust building slots
+			this.used_building_slots--;
 			break;
 		case 'technology':
+			// adjust power
+			this.power += this.sum(category, name, technology, 'power', level);
+
+			// adjust building slots
+			this.used_building_slots--;
 			break;
 		default:
 			break;
@@ -497,10 +532,10 @@ Planet.prototype.dataLoop = function() {
 		increment; 
 
 	// modify resources
-	for (i = 0; i < this.resourceTypes.length; i++) {
-		r = this.resourceTypes[i];
+	for (i = 0; i < this.resource_types.length; i++) {
+		r = this.resource_types[i];
 
-		increment = this.mineRates[r] / 60 / cyclesPerSecond;
+		increment = this.mine_rates[r] / 60 / cyclesPerSecond;
 
 		// increment resource if less than capacity, otherwise set to capacity
 		if (this.resources[r] + increment < this.storage[r]) {

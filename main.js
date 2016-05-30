@@ -66,10 +66,13 @@ $(document).on('click', 'li a', function() {
 			ui.generateBuildingTable('economy', ['traders', 'difference']);
 			break;
 		case 'fleet':
+			ui.generateBuildingTable('fleet', ['ship_rate_multiplier', 'difference']);
 			break;
 		case 'defense':
+			ui.generateBuildingTable('defense', ['defense_rate_multiplier', 'difference']);
 			break;
 		case 'technology':
+			ui.generateBuildingTable('technology', ['batch_size', 'difference']);
 			break;
 		default:
 			break;
@@ -79,7 +82,7 @@ $(document).on('click', 'li a', function() {
 
 /*
  * To Do
- *  - Add input-output power plants (will need special scalability UI; probably worth sticking in its own table below other plants)
+ *  - Add input-output power plants (will need special multiplier UI; probably worth sticking in its own table below other plants)
  *  - Other building table + UI support
  *  - Special building / ship / defense unlock file + classes
  *  - Research (IBRT)
@@ -92,5 +95,6 @@ $(document).on('click', 'li a', function() {
  *
  * Considerations
  *  - prevent shifting of button UI from upgrade / buy to upgrade / buy / delete (separate columns, redo part of ui.js)
+ *  - changing ship_rate_multiplier to ship_build_speed and making it a % on the UI
  */
 

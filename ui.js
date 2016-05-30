@@ -130,19 +130,23 @@ UI.prototype.generateBuildingTable = function(category, attributes) {
 UI.prototype.multiplyValue = function(category, name, value) {
 	switch(category) {
 		case 'mine':
-			return value *= planet.mine_rate_multipliers[name];
+			value = Math.floor(value * planet.mine_rate_multipliers[name]);
 			break;
 		case 'storage':
-			return value; // no change for storage, but need call
+			break;
 		case 'power':
-			return value *= planet.power_multipliers[name];
+			value = Math.floor(value * planet.power_multipliers[name]);
 			break;
 		case 'economy':
-			return value;
 			break;
 		case 'fleet':
+			if (name === 'customization_shipyard') { // not always called; see below
+				value = Math.round(value * 100) / 100.0;
+			}
 			break;
 		case 'defense':
+			console.log(value);
+			value = Math.round(value * 100) / 100.0;
 			break;
 		case 'technology':
 			break;
@@ -150,6 +154,7 @@ UI.prototype.multiplyValue = function(category, name, value) {
 		default:
 			break;
 	}
+	return value;
 }
 
 /*
@@ -169,23 +174,37 @@ UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, bui
 	var nextLevel = level + 1,
 		attributeValue, 
 		difference,
-		j;
+		j,
+		sign = '+';
+
+	if (name === 'customization_shipyard' || name === 'defense_factory') {
+		sign = ''
+	}
 
 	for (j = 0; j < attributes.length; j++) {
 		if (attributes[j] !== 'difference') {
 			// show what attribute value is for current level
-			attributeValue = buildingClass[attributes[j]](name, level); // e.g. power.production('wind_power_plant', 2) 
+			if (name === 'customization_shipyard') {
+				attributeValue = planet.ship_rate_multiplier;
+			}
+			else if (name === 'defense_factory') {
+				attributeValue = planet.defense_rate_multiplier;
+			}
+			else {
+				attributeValue = buildingClass[attributes[j]](name, level); // e.g. power.production('wind_power_plant', 2)
+			}
+
 			attributeValue = this.multiplyValue(category, name, attributeValue);
 
-			$row.append('<td>'+Math.floor(attributeValue)+'</td>');
+			$row.append('<td>'+attributeValue+'</td>');
 		} 
 		else if (attributes[j] === 'difference' && level > 0) {
 			if (nextLevel <= 21) {
-				// calculate difference in attribute values
 				difference = buildingClass[attributes[j-1]](name, nextLevel) - buildingClass[attributes[j-1]](name, level);
+
 				difference = this.multiplyValue(category, name, difference);
 
-				$row.append('<td class="increase">+'+Math.floor(difference)+'</td>');
+				$row.append('<td class="increase">'+sign+difference+'</td>');
 			} 
 			else {
 				$row.append('<td>--</td>');
@@ -195,8 +214,8 @@ UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, bui
 			// Note: this assumes 'difference' is never first element
 			attributeValue = buildingClass[attributes[j-1]](name, nextLevel); // e.g. mine.production('crystal', 1)
 			attributeValue = this.multiplyValue(category, name, attributeValue);
-
-			$row.append('<td class="increase">+'+Math.floor(attributeValue)+'</td>');
+			
+			$row.append('<td class="increase">'+sign+attributeValue+'</td>');
 		}
 	}
 
@@ -401,7 +420,7 @@ UI.prototype.generateResourceTable = function() {
 					<td>'+r.capitalize()+'</td>\
 					<td class="count">'+Math.floor(planet.resources[r])+'</td>\
 					<td class="storage">'+Math.floor(planet.storage[r])+'</td>\
-					<td class="rate">'+Math.floor(planet.mineRates[r])+'</td>\
+					<td class="rate">'+Math.floor(planet.mine_rates[r])+'</td>\
 					<td class="multiplier">'+planet.mine_rate_multipliers[r]+'</td>\
 				</tr>');
 
@@ -453,7 +472,7 @@ UI.prototype.updateResourceRow = function(resource, attribute) {
 				value = planet.storage[resource];
 				break;
 			case 'rate':
-				value = planet.mineRates[resource];
+				value = planet.mine_rates[resource];
 				// console.log(value);
 				break;
 			case 'multiplier':
@@ -517,8 +536,8 @@ UI.prototype.updateButtonStyle = function() {
 UI.prototype.visualLoop = function() {
 	var i;
 	// update all resource counts
-	for (i = 0; i < planet.resourceTypes.length; i++) {
-		this.updateResourceRow(planet.resourceTypes[i], 'count');
+	for (i = 0; i < planet.resource_types.length; i++) {
+		this.updateResourceRow(planet.resource_types[i], 'count');
 	}
 	this.updateResourceRow('power', 'count');
 	this.updateButtonStyle();
