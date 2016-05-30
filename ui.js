@@ -99,7 +99,31 @@ UI.prototype.generateBuildingTable = function(category, attributes) {
 }
 
 /*
- * Helper function for UI.generateBuildingTable adds attribute columns (<td> elements) to a row and returns it
+ * Helper function for UI.addAttributeColumnsToRow that reduces repeated multiplier code
+ *
+ * Type      Parameter      Description
+ * String    category       The building category for the table
+ * String    name           The name of the building
+ * Float     value          The value that needs to be *= by a multiplier
+ *
+ * return float
+ */
+UI.prototype.multiplyValue = function(category, name, value) {
+	switch(category) {
+		case 'mine':
+			return value *= planet.mineMultipliers[name];
+			break;
+		case 'power':
+			return value *= planet.powerMultipliers[name];
+			break;
+		// I'll need a case for multipliers of defense and ship building
+		default:
+			break;
+	}
+}
+
+/*
+ * Helper function for UI.generateBuildingTable that adds attribute columns (<td> elements) to a row and returns it
  *
  * Type      Parameter      Description
  * String    category       The building category for the table
@@ -121,13 +145,7 @@ UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, bui
 		if (attributes[j] !== 'difference') {
 			// show what attribute value is for current level
 			attributeValue = buildingClass[attributes[j]](name, level); // e.g. power.production('wind_power_plant', 2) 
-			
-			if (category === 'mine') {
-				attributeValue *= planet.mineMultipliers[name]; // this is not generalizable
-			}
-			else if (category === 'power') {
-				attributeValue *= planet.powerMultipliers[name];
-			}
+			attributeValue = this.multiplyValue(category, name, attributeValue);
 
 			$row.append('<td>'+Math.floor(attributeValue)+'</td>');
 		} 
@@ -135,13 +153,7 @@ UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, bui
 			if (nextLevel <= 21) {
 				// calculate difference in attribute values
 				difference = buildingClass[attributes[j-1]](name, nextLevel) - buildingClass[attributes[j-1]](name, level);
-
-				if (category === 'mine') {
-					difference *= planet.mineMultipliers[name]; // this is not generalizable
-				}
-				else if (category === 'power') {
-					difference *= planet.powerMultipliers[name];
-				}
+				difference = this.multiplyValue(category, name, difference);
 
 				$row.append('<td class="increase">+'+Math.floor(difference)+'</td>');
 			} 
@@ -152,13 +164,7 @@ UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, bui
 		else if (attributes[j] === 'difference' && level === 0) { // buy case
 			// Note: this assumes 'difference' is never first element
 			attributeValue = buildingClass[attributes[j-1]](name, nextLevel); // e.g. mine.production('crystal', 1)
-
-			if (category === 'mine') {
-				attributeValue *= planet.mineMultipliers[name]; // this is not generalizable
-			}
-			else if (category === 'power') {
-				attributeValue *= planet.powerMultipliers[name];
-			}
+			attributeValue = this.multiplyValue(category, name, attributeValue);
 
 			$row.append('<td class="increase">+'+Math.floor(attributeValue)+'</td>');
 		}
@@ -210,10 +216,11 @@ UI.prototype.addButtonColumnToRow = function(category, name, attributes, level, 
 		$buttonTd.append($upgradeButton);
 	}
 	// Big string of conditionals to allow both buildings with and without existing instances be have the chance of a buy button
+	// The last part of the conditional checks for all other building types
 	if (category === 'mine' || 
 		(category === 'power' && name !== 'planetary_power_generator') || 
 		category === 'storage' || 
-		planet.buildings[category][name].length === 0) {
+		planet.buildings[category][name].length === 0) { 
 
 		// add buy button
 		$buyButton = $('<button class="buy-button">Buy</button>');
@@ -273,6 +280,18 @@ UI.prototype.generateBuildingRow = function(category, name, attributes, level, i
 			break;
 		case 'power':
 			buildingClass = power;
+			break;
+		case 'economy':
+			buildingClass = economy;
+			break;
+		case 'fleet':
+			buildingClass = fleet;
+			break;
+		case 'defense':
+			buildingClass = defense;
+			break;
+		case 'technology':
+			buildingClass = technology;
 			break;
 		default:
 			break;

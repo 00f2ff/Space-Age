@@ -156,6 +156,18 @@ Planet.prototype.canUpgradeBuilding = function(category, name, level) {
 			case 'power':
 				buildingClass = power;
 				break;
+			case 'economy':
+				buildingClass = economy;
+				break;
+			case 'fleet':
+				buildingClass = fleet;
+				break;
+			case 'defense':
+				buildingClass = defense;
+				break;
+			case 'technology':
+				buildingClass = technology;
+				break;
 			default:
 				break;
 		}
@@ -290,6 +302,14 @@ Planet.prototype.updatePlanetData = function(category, name, level) {
 				// add current level
 				this.power += (power.production(name, level) * this.powerMultipliers[name]);
 			}
+			break;
+		case 'economy':
+			break;
+		case 'fleet':
+			break;
+		case 'defense':
+			break;
+		case 'technology':
 			break;
 		default:
 			break;
@@ -432,6 +452,14 @@ Planet.prototype.deleteBuilding = function(category, name, level, instance) {
 				// adjust building slots
 				this.usedBuildingSlots--;
 			}
+			break;
+		case 'economy':
+			break;
+		case 'fleet':
+			break;
+		case 'defense':
+			break;
+		case 'technology':
 			break;
 		default:
 			break;
