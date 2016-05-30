@@ -87,7 +87,6 @@ $(document).on('click', 'li a', function() {
  *
  *
  * Considerations
- *  - snake_case for attributes such as mineMultipliers to make them look less like functions
  *  - prevent shifting of button UI from upgrade / buy to upgrade / buy / delete (separate columns, redo part of ui.js)
  */
 

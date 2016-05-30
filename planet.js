@@ -79,18 +79,18 @@ function Planet(type, sun) {
 
 	this.power = 50;
 
-	// assign mineMultipliers from sun
-	this.mineMultipliers = this.sun.mineMultipliers;
+	// assign mine_multipliers from sun
+	this.mine_multipliers = this.sun.mine_multipliers;
 
-	// modify mineMultipliers from planet type
-	for (mult in this.mineMultipliers) {
-		if (!this.mineMultipliers.hasOwnProperty(mult)) continue;
+	// modify mine_multipliers from planet type
+	for (mult in this.mine_multipliers) {
+		if (!this.mine_multipliers.hasOwnProperty(mult)) continue;
 
-		this.mineMultipliers[mult] *= planetData[type].mineMultipliers[mult];
+		this.mine_multipliers[mult] *= planetData[type].mine_multipliers[mult];
 	}
 
 	// assign planet type data
-	this.powerMultipliers = planetData[type].powerMultipliers;
+	this.power_multipliers = planetData[type].power_multipliers;
 
 	this.usedBuildingSlots = 0;
 	this.maxBuildingSlots = planetData[type].maxBuildingSlots;
@@ -113,10 +113,10 @@ function Planet(type, sun) {
 		}
 
 		// start mineRates
-		for (r in this.mineMultipliers) {
-			if (!this.mineMultipliers.hasOwnProperty(r)) continue;
+		for (r in this.mine_multipliers) {
+			if (!this.mine_multipliers.hasOwnProperty(r)) continue;
 
-			this.mineRates[r] = mine.production(r, 1) * this.mineMultipliers[r];
+			this.mineRates[r] = mine.production(r, 1) * this.mine_multipliers[r];
 		}
 
 		this.usedBuildingSlots = 4;
@@ -269,7 +269,7 @@ Planet.prototype.updatePlanetData = function(category, name, level) {
 			this.power -= mine.power(name, level);
 
 			// recalculate mine production
-			this.mineRates[name] = this.sum(category, name, buildingClass, 'production') * this.mineMultipliers[name];
+			this.mineRates[name] = this.sum(category, name, buildingClass, 'production') * this.mine_multipliers[name];
 			break;
 		case 'storage':
 			buildingClass = storage;
@@ -287,20 +287,20 @@ Planet.prototype.updatePlanetData = function(category, name, level) {
 			if (name === 'planetary_power_generator') {
 				// remove previous level (if there is one)
 				if (level > 1) {
-					this.power -= (power.production(name, level - 1) * this.powerMultipliers[name]);
+					this.power -= (power.production(name, level - 1) * this.power_multipliers[name]);
 				}
 
 				// add current level
-				this.power += (power.production(name, level) * this.powerMultipliers[name]);
+				this.power += (power.production(name, level) * this.power_multipliers[name]);
 			} 
 			else {
 				// remove previous level
 				if (level > 1) {
-					this.power -= (power.production(name, level - 1) * this.powerMultipliers[name]);
+					this.power -= (power.production(name, level - 1) * this.power_multipliers[name]);
 				}
 
 				// add current level
-				this.power += (power.production(name, level) * this.powerMultipliers[name]);
+				this.power += (power.production(name, level) * this.power_multipliers[name]);
 			}
 			break;
 		case 'economy':

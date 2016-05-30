@@ -111,10 +111,12 @@ UI.prototype.generateBuildingTable = function(category, attributes) {
 UI.prototype.multiplyValue = function(category, name, value) {
 	switch(category) {
 		case 'mine':
-			return value *= planet.mineMultipliers[name];
+			return value *= planet.mine_multipliers[name];
 			break;
+		case 'storage':
+			return value; // no change for storage, but need call
 		case 'power':
-			return value *= planet.powerMultipliers[name];
+			return value *= planet.power_multipliers[name];
 			break;
 		// I'll need a case for multipliers of defense and ship building
 		default:
@@ -372,7 +374,7 @@ UI.prototype.generateResourceTable = function() {
 					<td class="count">'+Math.floor(planet.resources[r])+'</td>\
 					<td class="storage">'+Math.floor(planet.storage[r])+'</td>\
 					<td class="rate">'+Math.floor(planet.mineRates[r])+'</td>\
-					<td class="multiplier">'+planet.mineMultipliers[r]+'</td>\
+					<td class="multiplier">'+planet.mine_multipliers[r]+'</td>\
 				</tr>');
 
 		$tbody.append($row);
@@ -427,7 +429,7 @@ UI.prototype.updateResourceRow = function(resource, attribute) {
 				// console.log(value);
 				break;
 			case 'multiplier':
-				value = planet.mineMultipliers[resource];
+				value = planet.mine_multipliers[resource];
 				break;
 			default: 
 				break;

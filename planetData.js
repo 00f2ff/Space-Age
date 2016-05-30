@@ -3,13 +3,13 @@
  */
 var planetData = {
 	super_terra: {
-		mineMultipliers: {
+		mine_multipliers: {
 			crystal: 2,
 			steel: 2,
 			titanium: 2,
 			tritium: 2
 		},
-		powerMultipliers: {
+		power_multipliers: {
 			hydro_power_plant: 1,
 			thermal_power_plant: 1,
 			wind_power_plant: 1,
@@ -27,13 +27,13 @@ var planetData = {
 		}
 	},
 	terra: {
-		mineMultipliers: {
+		mine_multipliers: {
 			crystal: 1,
 			steel: 1,
 			titanium: 1,
 			tritium: 1
 		},
-		powerMultipliers: {
+		power_multipliers: {
 			hydro_power_plant: 1,
 			thermal_power_plant: 1,
 			wind_power_plant: 1,
@@ -51,13 +51,13 @@ var planetData = {
 		}
 	},
 	volcanic: {
-		mineMultipliers: {
+		mine_multipliers: {
 			crystal: 1,
 			steel: 1.5,
 			titanium: 1.5,
 			tritium: 0
 		},
-		powerMultipliers: {
+		power_multipliers: {
 			hydro_power_plant: 0,
 			thermal_power_plant: 2,
 			wind_power_plant: 1.5,
@@ -75,13 +75,13 @@ var planetData = {
 		}
 	},
 	aqua: {
-		mineMultipliers: {
+		mine_multipliers: {
 			crystal: 1,
 			steel: 0,
 			titanium: 0.5,
 			tritium: 2.5
 		},
-		powerMultipliers: {
+		power_multipliers: {
 			hydro_power_plant: 1.5,
 			thermal_power_plant: 0.5,
 			wind_power_plant: 1.5,
@@ -99,13 +99,13 @@ var planetData = {
 		}
 	},
 	airy: {
-		mineMultipliers: {
+		mine_multipliers: {
 			crystal: 3,
 			steel: 0,
 			titanium: 0,
 			tritium: 1
 		},
-		powerMultipliers: {
+		power_multipliers: {
 			hydro_power_plant: 1,
 			thermal_power_plant: 0,
 			wind_power_plant: 2.9,
@@ -123,13 +123,13 @@ var planetData = {
 		}
 	},
 	crag: {
-		mineMultipliers: {
+		mine_multipliers: {
 			crystal: 0,
 			steel: 1.5,
 			titanium: 2.5,
 			tritium: 0
 		},
-		powerMultipliers: {
+		power_multipliers: {
 			hydro_power_plant: 0,
 			thermal_power_plant: 1,
 			wind_power_plant: 1,
@@ -147,13 +147,13 @@ var planetData = {
 		}
 	},
 	outcrop: {
-		mineMultipliers: {
+		mine_multipliers: {
 			crystal: 0.5,
 			steel: 1,
 			titanium: 1.5,
 			tritium: 1
 		},
-		powerMultipliers: {
+		power_multipliers: {
 			hydro_power_plant: 0.5,
 			thermal_power_plant: 0.5,
 			wind_power_plant: 1.5,
