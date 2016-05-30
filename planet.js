@@ -27,10 +27,12 @@ function Planet(type, sun) {
 			hydro_power_plant: [],
 			thermal_power_plant: [],
 			wind_power_plant: [],
-			planetary_power_generator: []//,
-			// liquid: [],
-			// furnace: [],
-			// nuclear: []
+			planetary_power_generator: []
+		},
+		io: {
+			liquid_power_plant: [],
+			furnace_power_plant: [],
+			nuclear_power_plant: []
 		},
 		economy: {
 			trade_center: []
@@ -94,6 +96,7 @@ function Planet(type, sun) {
 
 	// assign planet type data
 	this.power_multipliers = planetData[type].power_multipliers;
+	this.io_multipliers = planetData[type].io_multipliers;
 
 	this.used_building_slots = 0;
 	this.max_building_slots = planetData[type].max_building_slots;
@@ -158,6 +161,9 @@ Planet.prototype.canUpgradeBuilding = function(category, name, level) {
 				break;
 			case 'power':
 				buildingClass = power;
+				break;
+			case 'io':
+				buildingClass = io;
 				break;
 			case 'economy':
 				buildingClass = economy;
@@ -294,6 +300,18 @@ Planet.prototype.updatePlanetData = function(category, name, level) {
 
 			// add current level
 			this.power += (power.production(name, level) * this.power_multipliers[name]);
+			break;
+		case 'io':
+			buildingClass = io;
+
+			// recalculate io multipliers
+			// remove previous level (if there is one)
+			if (level > 1) {
+				this.io_multipliers[name] -= io.output(name, level - 1);
+			}
+
+			// add current level
+			this.io_multipliers[name] += io.output(name, level);
 			break;
 		case 'economy':
 			buildingClass = economy;
@@ -480,6 +498,13 @@ Planet.prototype.deleteBuilding = function(category, name, level, instance) {
 				// adjust building slots
 				this.used_building_slots--;
 			}
+			break;
+		case 'io':
+			// adjust io_multipliers
+			// this.io_multipliers[name] 
+
+			// adjust building slots
+			this.used_building_slots--;
 			break;
 		case 'economy':
 			// adjust power

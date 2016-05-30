@@ -13,10 +13,12 @@ var planetData = {
 			hydro_power_plant: 1,
 			thermal_power_plant: 1,
 			wind_power_plant: 1,
-			planetary_power_generator: 1,
-			liquid: 1,
-			furnace: 1,
-			nuclear: 1
+			planetary_power_generator: 1
+		},
+		io_multipliers: {
+			liquid_power_plant: 1,
+			furnace_power_plant: 1,
+			nuclear_power_plant: 1
 		},
 		max_building_slots: 12,
 		mine_slots: {
@@ -37,10 +39,12 @@ var planetData = {
 			hydro_power_plant: 1,
 			thermal_power_plant: 1,
 			wind_power_plant: 1,
-			planetary_power_generator: 0,
-			liquid: 1,
-			furnace: 1,
-			nuclear: 1
+			planetary_power_generator: 0
+		},
+		io_multipliers: {
+			liquid_power_plant: 1,
+			furnace_power_plant: 1,
+			nuclear_power_plant: 1
 		},
 		max_building_slots: 10,
 		mine_slots: {
@@ -61,10 +65,12 @@ var planetData = {
 			hydro_power_plant: 0,
 			thermal_power_plant: 2,
 			wind_power_plant: 1.5,
-			planetary_power_generator: 0,
-			liquid: 1.5,
-			furnace: 2,
-			nuclear: 0
+			planetary_power_generator: 0
+		},
+		io_multipliers: {
+			liquid_power_plant: 1.5,
+			furnace_power_plant: 2,
+			nuclear_power_plant: 0
 		},
 		max_building_slots: 10,
 		mine_slots: {
@@ -85,10 +91,12 @@ var planetData = {
 			hydro_power_plant: 1.5,
 			thermal_power_plant: 0.5,
 			wind_power_plant: 1.5,
-			planetary_power_generator: 0,
-			liquid: 1,
-			furnace: 0,
-			nuclear: 1.5
+			planetary_power_generator: 0
+		},
+		io_multipliers: {
+			liquid_power_plant: 1,
+			furnace_power_plant: 0,
+			nuclear_power_plant: 1.5
 		},
 		max_building_slots: 7,
 		mine_slots: {
@@ -109,10 +117,12 @@ var planetData = {
 			hydro_power_plant: 1,
 			thermal_power_plant: 0,
 			wind_power_plant: 2.9,
-			planetary_power_generator: 0,
-			liquid: 0.7,
-			furnace: 0.7,
-			nuclear: 0.7
+			planetary_power_generator: 0
+		},
+		io_multipliers: {
+			liquid_power_plant: 0.7,
+			furnace_power_plant: 0.7,
+			nuclear_power_plant: 0.7
 		},
 		max_building_slots: 3,
 		mine_slots: {
@@ -133,10 +143,12 @@ var planetData = {
 			hydro_power_plant: 0,
 			thermal_power_plant: 1,
 			wind_power_plant: 1,
-			planetary_power_generator: 0,
-			liquid: 0.5,
-			furnace: 2,
-			nuclear: 1.5
+			planetary_power_generator: 0
+		},
+		io_multipliers: {
+			liquid_power_plant: 0.5,
+			furnace_power_plant: 2,
+			nuclear_power_plant: 1.5
 		},
 		max_building_slots: 10,
 		mine_slots: {
@@ -157,10 +169,12 @@ var planetData = {
 			hydro_power_plant: 0.5,
 			thermal_power_plant: 0.5,
 			wind_power_plant: 1.5,
-			planetary_power_generator: 0,
-			liquid: 1,
-			furnace: 1.5,
-			nuclear: 1
+			planetary_power_generator: 0
+		},
+		io_multipliers: {
+			liquid_power_plant: 1,
+			furnace_power_plant: 1.5,
+			nuclear_power_plant: 1
 		},
 		max_building_slots: 12,
 		mine_slots: {

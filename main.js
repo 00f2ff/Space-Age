@@ -61,6 +61,7 @@ $(document).on('click', 'li a', function() {
 			break;
 		case 'power':
 			ui.generateBuildingTable('power', ['production', 'difference']);
+			ui.generateBuildingTable('io', ['output', 'difference']); // different enough that it needs its own table
 			break;
 		case 'economy':
 			ui.generateBuildingTable('economy', ['traders', 'difference']);
@@ -83,7 +84,7 @@ $(document).on('click', 'li a', function() {
 /*
  * To Do
  *  - Add input-output power plants (will need special multiplier UI; probably worth sticking in its own table below other plants)
- *  - Other building table + UI support
+ *  - Other building UI support
  *  - Special building / ship / defense unlock file + classes
  *  - Research (IBRT)
  *  - Ships / missions

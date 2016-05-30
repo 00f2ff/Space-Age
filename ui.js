@@ -44,8 +44,10 @@ String.prototype.capitalize = function() {
  * return $
  */
 UI.prototype.generateBuildingTable = function(category, attributes) {
-	// delete existing one
-	$('#active-wrapper').empty();
+	// delete existing one (if not io)
+	if (category !== 'io') {
+		$('#active-wrapper').empty();
+	}
 	// $('.table[data-category="'+category+'"]').remove();
 
 	var $table,
@@ -137,6 +139,10 @@ UI.prototype.multiplyValue = function(category, name, value) {
 		case 'power':
 			value = Math.floor(value * planet.power_multipliers[name]);
 			break;
+		case 'io':
+			value = Math.round(value * 100) / 100.0;
+			// console.log(value);
+			break;
 		case 'economy':
 			break;
 		case 'fleet':
@@ -145,12 +151,10 @@ UI.prototype.multiplyValue = function(category, name, value) {
 			}
 			break;
 		case 'defense':
-			console.log(value);
 			value = Math.round(value * 100) / 100.0;
 			break;
 		case 'technology':
 			break;
-		// I'll need a case for multipliers of defense and ship building
 		default:
 			break;
 	}
@@ -190,6 +194,9 @@ UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, bui
 			else if (name === 'defense_factory') {
 				attributeValue = planet.defense_rate_multiplier;
 			}
+			else if (category === 'io') {
+				attributeValue = planet.io_multipliers[name];
+			}
 			else {
 				attributeValue = buildingClass[attributes[j]](name, level); // e.g. power.production('wind_power_plant', 2)
 			}
@@ -213,6 +220,7 @@ UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, bui
 		else if (attributes[j] === 'difference' && level === 0) { // buy case
 			// Note: this assumes 'difference' is never first element
 			attributeValue = buildingClass[attributes[j-1]](name, nextLevel); // e.g. mine.production('crystal', 1)
+			if (category === 'io') console.log(attributeValue, level, nextLevel)
 			attributeValue = this.multiplyValue(category, name, attributeValue);
 			
 			$row.append('<td class="increase">'+sign+attributeValue+'</td>');
@@ -329,6 +337,9 @@ UI.prototype.generateBuildingRow = function(category, name, attributes, level, i
 			break;
 		case 'power':
 			buildingClass = power;
+			break;
+		case 'io':
+			buildingClass = io;
 			break;
 		case 'economy':
 			buildingClass = economy;

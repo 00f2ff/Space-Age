@@ -111,7 +111,6 @@ function Storage() {
 	}
 }
 
-// I'm going to figure out how to implement feeder plants later
 function Power() {
 	this.production = function(name, level) {
 		if(name === 'planetary_power_generator') {
@@ -120,9 +119,7 @@ function Power() {
 		else if (name === 'hydro_power_plant' || name === 'wind_power_plant' || name === 'thermal_power_plant') {
 			return glob.calculate(level, 10, 9.1);
 		}		
-	}
-
-	// need special function for input-output
+	}	
 
 	this.power = function(name, level) {
 		return 0;
@@ -164,6 +161,36 @@ function Power() {
 				break;
 			default:
 				break;
+		}
+	}
+}
+
+function IO() {
+	this.output = function(name, level) {
+		if (level === 0) {
+			return 0;
+		} 
+		else if (level === 1) {
+			return 0.1;
+		}
+		else if (level < 21) {
+			return 0.1 * (level - 1);
+		}
+		else {
+			return 2.5;
+		}
+	}
+
+	this.power = function(name, level) {
+		return 0;
+	}
+
+	this.cost = function(name, level) {
+		return {
+			crystal: glob.calculate(level, 100, 46),
+			steel: glob.calculate(level, 800, 44.5),
+			titanium: glob.calculate(level, 200, 35),
+			tritium: glob.calculate(level, 100, 46)
 		}
 	}
 }
@@ -298,6 +325,7 @@ function Technology() {
 var mine       = new Mine(),
 	storage    = new Storage(),
 	power      = new Power(),
+	io         = new IO(),
 	economy    = new Economy(),
 	fleet      = new Fleet(),
 	defense    = new Defense(),
