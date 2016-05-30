@@ -7,12 +7,31 @@ function UI() {
 }
 
 /*
- * Extension of String.prototype that capitalizes the first letter of a string
+ * Extension of String.prototype that capitalizes the first letter of a string, or splits and capitalizes a string
  *
  * return String
  */
 String.prototype.capitalize = function() {
-    return this.charAt(0).toUpperCase() + this.slice(1);
+	var stringArray,
+		returnString = '',
+		i;
+
+	// check if snake_case
+	if (this.indexOf('_') > -1) {
+		stringArray = this.split('_');
+	}
+	else {
+		stringArray = [this]
+	}
+
+	for (i = 0; i < stringArray.length; i++) {
+		returnString += stringArray[i].charAt(0).toUpperCase() + stringArray[i].slice(1);
+
+		if (i < stringArray.length - 1) {
+			returnString += ' ';
+		}
+	}
+    return returnString;
 }
 
 /*
@@ -111,12 +130,21 @@ UI.prototype.generateBuildingTable = function(category, attributes) {
 UI.prototype.multiplyValue = function(category, name, value) {
 	switch(category) {
 		case 'mine':
-			return value *= planet.mine_multipliers[name];
+			return value *= planet.mine_rate_multipliers[name];
 			break;
 		case 'storage':
 			return value; // no change for storage, but need call
 		case 'power':
 			return value *= planet.power_multipliers[name];
+			break;
+		case 'economy':
+			return value;
+			break;
+		case 'fleet':
+			break;
+		case 'defense':
+			break;
+		case 'technology':
 			break;
 		// I'll need a case for multipliers of defense and ship building
 		default:
@@ -374,7 +402,7 @@ UI.prototype.generateResourceTable = function() {
 					<td class="count">'+Math.floor(planet.resources[r])+'</td>\
 					<td class="storage">'+Math.floor(planet.storage[r])+'</td>\
 					<td class="rate">'+Math.floor(planet.mineRates[r])+'</td>\
-					<td class="multiplier">'+planet.mine_multipliers[r]+'</td>\
+					<td class="multiplier">'+planet.mine_rate_multipliers[r]+'</td>\
 				</tr>');
 
 		$tbody.append($row);
@@ -429,7 +457,7 @@ UI.prototype.updateResourceRow = function(resource, attribute) {
 				// console.log(value);
 				break;
 			case 'multiplier':
-				value = planet.mine_multipliers[resource];
+				value = planet.mine_rate_multipliers[resource];
 				break;
 			default: 
 				break;

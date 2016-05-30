@@ -194,7 +194,7 @@ function Fleet() {
 	}
 
 	// just for customization_shipyard
-	this.shipRateMultiplier = function(name, level) {
+	this.ship_rate_multiplier = function(name, level) {
 		if (level < 21) {
 			return (100 - level) / 100.0; // 99 - 80
 		}
@@ -235,7 +235,7 @@ function Fleet() {
 }
 
 function Defense() {
-	this.defenseRateMultiplier = function(name, level) { // think about moving this function into global for rates
+	this.defense_rate_multiplier = function(name, level) { // think about moving this function into global for rates
 		if (level < 21) {
 			return (100 - level) / 100.0; // 99 - 80
 		}
@@ -259,7 +259,7 @@ function Defense() {
 }
 
 function Technology() {
-	this.batchSize = function(name, level) { // This function is correct, but I don't know how much this matters if I don't take time into consideration
+	this.batch_size = function(name, level) { // This function is correct, but I don't know how much this matters if I don't take time into consideration
 	// look into how Crank does timing. That may be a good implementation
 		return 5 + level * 5;
 	}

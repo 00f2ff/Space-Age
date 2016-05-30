@@ -79,14 +79,14 @@ function Planet(type, sun) {
 
 	this.power = 50;
 
-	// assign mine_multipliers from sun
-	this.mine_multipliers = this.sun.mine_multipliers;
+	// assign mine_rate_multipliers from sun
+	this.mine_rate_multipliers = this.sun.mine_rate_multipliers;
 
-	// modify mine_multipliers from planet type
-	for (mult in this.mine_multipliers) {
-		if (!this.mine_multipliers.hasOwnProperty(mult)) continue;
+	// modify mine_rate_multipliers from planet type
+	for (mult in this.mine_rate_multipliers) {
+		if (!this.mine_rate_multipliers.hasOwnProperty(mult)) continue;
 
-		this.mine_multipliers[mult] *= planetData[type].mine_multipliers[mult];
+		this.mine_rate_multipliers[mult] *= planetData[type].mine_rate_multipliers[mult];
 	}
 
 	// assign planet type data
@@ -113,10 +113,10 @@ function Planet(type, sun) {
 		}
 
 		// start mineRates
-		for (r in this.mine_multipliers) {
-			if (!this.mine_multipliers.hasOwnProperty(r)) continue;
+		for (r in this.mine_rate_multipliers) {
+			if (!this.mine_rate_multipliers.hasOwnProperty(r)) continue;
 
-			this.mineRates[r] = mine.production(r, 1) * this.mine_multipliers[r];
+			this.mineRates[r] = mine.production(r, 1) * this.mine_rate_multipliers[r];
 		}
 
 		this.usedBuildingSlots = 4;
@@ -269,7 +269,7 @@ Planet.prototype.updatePlanetData = function(category, name, level) {
 			this.power -= mine.power(name, level);
 
 			// recalculate mine production
-			this.mineRates[name] = this.sum(category, name, buildingClass, 'production') * this.mine_multipliers[name];
+			this.mineRates[name] = this.sum(category, name, buildingClass, 'production') * this.mine_rate_multipliers[name];
 			break;
 		case 'storage':
 			buildingClass = storage;
@@ -304,12 +304,28 @@ Planet.prototype.updatePlanetData = function(category, name, level) {
 			}
 			break;
 		case 'economy':
+			buildingClass = economy;
+
+			// decrease power
+			this.power -= economy.power(name, level);
 			break;
 		case 'fleet':
+			buildingClass = fleet;
+
+			// decrease power
+			this.power -= fleet.power(name, level);
 			break;
 		case 'defense':
+			buildingClass = defense;
+
+			// decrease power
+			this.power -= defense.power(name, level);
 			break;
 		case 'technology':
+			buildingClass = technology;
+
+			// decrease power
+			this.power -= technology.power(name, level);
 			break;
 		default:
 			break;
@@ -454,6 +470,8 @@ Planet.prototype.deleteBuilding = function(category, name, level, instance) {
 			}
 			break;
 		case 'economy':
+			// adjust power
+			this.power += this.sum(category, name, economy, 'power', level);
 			break;
 		case 'fleet':
 			break;

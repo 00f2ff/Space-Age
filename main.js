@@ -8,15 +8,10 @@ var planet = new Planet('super_terra', sun);
 // Then we initiate the UI
 var ui = new UI();
 
-// Then we populate initial resource and building data
+// Then we populate initial resource and mine data
 ui.generateResourceTable();
 
 ui.generateBuildingTable('mine', ['production', 'difference']);
-
-// a planet has storage, and storage has capacity
-// ui.generateBuildingTable('storage', ['capacity', 'difference']);
-
-// ui.generateBuildingTable('power', ['production', 'difference']);
 
 // Then we start the game loop
 window.setInterval(game, 100);
@@ -66,6 +61,15 @@ $(document).on('click', 'li a', function() {
 			break;
 		case 'power':
 			ui.generateBuildingTable('power', ['production', 'difference']);
+			break;
+		case 'economy':
+			ui.generateBuildingTable('economy', ['traders', 'difference']);
+			break;
+		case 'fleet':
+			break;
+		case 'defense':
+			break;
+		case 'technology':
 			break;
 		default:
 			break;

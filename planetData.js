@@ -3,7 +3,7 @@
  */
 var planetData = {
 	super_terra: {
-		mine_multipliers: {
+		mine_rate_multipliers: {
 			crystal: 2,
 			steel: 2,
 			titanium: 2,
@@ -27,7 +27,7 @@ var planetData = {
 		}
 	},
 	terra: {
-		mine_multipliers: {
+		mine_rate_multipliers: {
 			crystal: 1,
 			steel: 1,
 			titanium: 1,
@@ -51,7 +51,7 @@ var planetData = {
 		}
 	},
 	volcanic: {
-		mine_multipliers: {
+		mine_rate_multipliers: {
 			crystal: 1,
 			steel: 1.5,
 			titanium: 1.5,
@@ -75,7 +75,7 @@ var planetData = {
 		}
 	},
 	aqua: {
-		mine_multipliers: {
+		mine_rate_multipliers: {
 			crystal: 1,
 			steel: 0,
 			titanium: 0.5,
@@ -99,7 +99,7 @@ var planetData = {
 		}
 	},
 	airy: {
-		mine_multipliers: {
+		mine_rate_multipliers: {
 			crystal: 3,
 			steel: 0,
 			titanium: 0,
@@ -123,7 +123,7 @@ var planetData = {
 		}
 	},
 	crag: {
-		mine_multipliers: {
+		mine_rate_multipliers: {
 			crystal: 0,
 			steel: 1.5,
 			titanium: 2.5,
@@ -147,7 +147,7 @@ var planetData = {
 		}
 	},
 	outcrop: {
-		mine_multipliers: {
+		mine_rate_multipliers: {
 			crystal: 0.5,
 			steel: 1,
 			titanium: 1.5,
