@@ -2,8 +2,12 @@
 	/*color: red;*/
 }
 
-.rate-increase, .storage-increase {
+.increase {
 	color: blue;
+}
+.delete-button {
+	color: white;
+	background-color: red;
 }
 
 #resources-table td:nth-child(2) {

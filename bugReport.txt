@@ -1,0 +1,8 @@
+
+
+
+BUGS
+ - IO buildings not increasing in level on buy
+ - Need to update multipliers via buildings to multiply instead of add because otherwise multiplier effect just subtracts
+   e.g. planet.io_multipliers.liquid_power_plant = 0.7; <-- would just get added to, not multiplied by on io upgrade
+   - This is probably worth its own UI update function to get away from all of the annoyingness I've been dealing with
