@@ -152,18 +152,14 @@ UI.prototype.multiplyValue = function(category, name, value) {
 			value = Math.floor(value * planet.power_multipliers[name]);
 			break;
 		case 'io':
-			value = Math.round(value * planet.io_multipliers[name] * 10) / 10.0;
+			// value = Math.round(value * planet.io_multipliers[name] * 10) / 10.0; // ** can't multiply by what it's incorporated in
+			// value = Math.round(value * 10) / 10.0;
 			break;
 		case 'economy':
 			break;
 		case 'fleet':
-			// specific check for difference
-			// if (name === 'customization_shipyard' && value !== planet.ship_rate_multiplier) { 
-			// 	value = Math.round((1 - value) * 100) / 100.0;
-			// }
 			break;
 		case 'defense':
-			// value = Math.round(value * 100) / 100.0;
 			break;
 		case 'technology':
 			break;
@@ -206,6 +202,16 @@ UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, bui
 			else if (name === 'defense_factory') {
 				attributeValue = planet.defense_rate_multiplier;
 			}
+			else if (category === 'io') { // io can't work with traditional multiplyValue call since multiplier already incorporates it
+				attributeValue = buildingClass[attributes[j]](name, level);
+
+				if (level > 1) {
+					// divide by existing portion of planet.io_multipliers[name]
+					attributeValue /= buildingClass[attributes[j]](name, level - 1);
+				}
+				// round multiplied version	
+				attributeValue = Math.round(attributeValue * planet.io_multipliers[name] * 10) / 10.0;
+			}
 			else {
 				attributeValue = buildingClass[attributes[j]](name, level); // e.g. power.production('wind_power_plant', 2)
 
@@ -219,6 +225,16 @@ UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, bui
 				if (name === 'customization_shipyard' || name === 'defense_factory') {
 					level < 20 ? difference = -0.01 : difference = -0.05; // hardcoded because working on this is annoying
 				} 
+				else if (category === 'io') { // io can't work with traditional multiplyValue call since multiplier already incorporates it
+					difference = buildingClass[attributes[j-1]](name, nextLevel) - buildingClass[attributes[j-1]](name, level);
+
+					if (level > 1) {
+						// divide by existing portion of planet.io_multipliers[name]
+						difference /= buildingClass[attributes[j]](name, level);
+					}
+					// round multiplied version	
+					difference = Math.round(difference * planet.io_multipliers[name] * 10) / 10.0;
+				}
 				else {
 					difference = buildingClass[attributes[j-1]](name, nextLevel) - buildingClass[attributes[j-1]](name, level);
 
@@ -235,6 +251,12 @@ UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, bui
 			if (name === 'customization_shipyard' || name === 'defense_factory') {
 				attributeValue = -0.01; // hardcoded because working on this is annoying
 			} 
+			else if (category === 'io') { // io can't work with traditional multiplyValue call since multiplier already incorporates it
+				attributeValue = buildingClass[attributes[j-1]](name, nextLevel);
+				console.log(attributeValue);
+				// round multiplied version	
+				attributeValue = Math.round(attributeValue * planet.io_multipliers[name] * 10) / 10.0;
+			}
 			else {
 				// Note: this assumes 'difference' is never first element
 				attributeValue = buildingClass[attributes[j-1]](name, nextLevel); // e.g. mine.production('crystal', 1)
