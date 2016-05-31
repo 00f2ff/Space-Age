@@ -220,14 +220,11 @@ function Fleet() {
 	// just for customization_shipyard
 	this.ship_rate_multiplier = function(name, level) {
 		if (name === 'customization_shipyard') {
-			if (level === 0) {
-				return 1;
-			}
-			else if (level < 21) {
-				return (100 - level) / 100.0 - 1; // -0.01 to -0.2
+			if (level < 21) {
+				return (100 - level) / 100.0; // 1 to 0.8
 			}
 			else {
-				return -0.25;
+				return 0.75;
 			}
 		}
 		else {
@@ -269,14 +266,11 @@ function Fleet() {
 
 function Defense() {
 	this.defense_rate_multiplier = function(name, level) { // think about moving this function into global for rates
-		if (level === 0) {
-			return 1;
-		}
-		else if (level < 21) {
-			return (100 - level) / 100.0 - 1; // -0.01 to -0.2
+		if (level < 21) {
+			return (100 - level) / 100.0; // 1 to 0.8
 		}
 		else {
-			return -0.25;
+			return 0.75;
 		}
 	}
 

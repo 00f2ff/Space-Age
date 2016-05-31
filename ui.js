@@ -157,12 +157,13 @@ UI.prototype.multiplyValue = function(category, name, value) {
 		case 'economy':
 			break;
 		case 'fleet':
-			if (name === 'customization_shipyard') { // not always called; see below
-				value = Math.round(value * 100) / 100.0;
-			}
+			// specific check for difference
+			// if (name === 'customization_shipyard' && value !== planet.ship_rate_multiplier) { 
+			// 	value = Math.round((1 - value) * 100) / 100.0;
+			// }
 			break;
 		case 'defense':
-			value = Math.round(value * 100) / 100.0;
+			// value = Math.round(value * 100) / 100.0;
 			break;
 		case 'technology':
 			break;
@@ -205,22 +206,24 @@ UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, bui
 			else if (name === 'defense_factory') {
 				attributeValue = planet.defense_rate_multiplier;
 			}
-			// else if (category === 'io') {
-			// 	attributeValue = planet.io_multipliers[name];
-			// }
 			else {
 				attributeValue = buildingClass[attributes[j]](name, level); // e.g. power.production('wind_power_plant', 2)
-			}
 
-			attributeValue = this.multiplyValue(category, name, attributeValue);
+				attributeValue = this.multiplyValue(category, name, attributeValue);
+			}
 
 			$row.append('<td>'+attributeValue+'</td>');
 		} 
 		else if (attributes[j] === 'difference' && level > 0) {
 			if (nextLevel <= 21) {
-				difference = buildingClass[attributes[j-1]](name, nextLevel) - buildingClass[attributes[j-1]](name, level);
+				if (name === 'customization_shipyard' || name === 'defense_factory') {
+					level < 20 ? difference = -0.01 : difference = -0.05; // hardcoded because working on this is annoying
+				} 
+				else {
+					difference = buildingClass[attributes[j-1]](name, nextLevel) - buildingClass[attributes[j-1]](name, level);
 
-				difference = this.multiplyValue(category, name, difference);
+					difference = this.multiplyValue(category, name, difference);
+				}
 
 				$row.append('<td class="increase">'+sign+difference+'</td>');
 			} 
@@ -229,9 +232,15 @@ UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, bui
 			}
 		} 
 		else if (attributes[j] === 'difference' && level === 0) { // buy case
-			// Note: this assumes 'difference' is never first element
-			attributeValue = buildingClass[attributes[j-1]](name, nextLevel); // e.g. mine.production('crystal', 1)
-			attributeValue = this.multiplyValue(category, name, attributeValue);
+			if (name === 'customization_shipyard' || name === 'defense_factory') {
+				attributeValue = -0.01; // hardcoded because working on this is annoying
+			} 
+			else {
+				// Note: this assumes 'difference' is never first element
+				attributeValue = buildingClass[attributes[j-1]](name, nextLevel); // e.g. mine.production('crystal', 1)
+
+				attributeValue = this.multiplyValue(category, name, attributeValue);
+			}
 			
 			$row.append('<td class="increase">'+sign+attributeValue+'</td>');
 		}
@@ -392,7 +401,7 @@ UI.prototype.generateBuildingRow = function(category, name, attributes, level, i
 			<td>--</td>\
 			<td>--</td>\
 			<td>--</td>\
-			<td>--</td>\
+			<td>'+Math.floor(powerCost)+'</td>\
 		</tr>');
 	}
 

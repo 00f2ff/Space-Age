@@ -326,11 +326,11 @@ Planet.prototype.updatePlanetData = function(category, name, level) {
 			if (name === 'customization_shipyard') {
 				// remove previous level (if there is one)
 				if (level > 1) {
-					this.ship_rate_multiplier -= fleet.ship_rate_multiplier(name, level - 1);
+					this.ship_rate_multiplier /= fleet.ship_rate_multiplier(name, level - 1);
 				}
 
 				// multiply current level
-				this.ship_rate_multiplier += fleet.ship_rate_multiplier(name, level);		
+				this.ship_rate_multiplier *= fleet.ship_rate_multiplier(name, level);		
 			}
 
 			// decrease power
@@ -342,11 +342,11 @@ Planet.prototype.updatePlanetData = function(category, name, level) {
 			// recalculate defense_rate_multiplier
 			// remove previous level (if there is one)
 			if (level > 1) {
-				this.defense_rate_multiplier -= defense.defense_rate_multiplier(name, level - 1);
+				this.defense_rate_multiplier /= defense.defense_rate_multiplier(name, level - 1);
 			}
 
 			// multiply current level
-			this.defense_rate_multiplier += defense.defense_rate_multiplier(name, level);	
+			this.defense_rate_multiplier *= defense.defense_rate_multiplier(name, level);	
 
 			// decrease power
 			this.power -= defense.power(name, level);
@@ -516,7 +516,7 @@ Planet.prototype.deleteBuilding = function(category, name, level, instance) {
 
 			// adjust ship_rate_multiplier
 			if (name === 'customization_shipyard') {
-				// this.ship_rate_multiplier -= this.sum(category, name, fleet, 'ship_rate_multiplier', level);
+				this.ship_rate_multiplier /= fleet.ship_rate_multiplier(name, level);
 			}
 
 			// adjust building slots
@@ -527,7 +527,7 @@ Planet.prototype.deleteBuilding = function(category, name, level, instance) {
 			this.power += this.sum(category, name, defense, 'power', level);
 
 			// adjust defense_rate_multiplier
-			// this.ship_rate_multiplier -= this.sum(category, name, fleet, 'defense_rate_multiplier', level);
+			this.defense_rate_multiplier /= defense.defense_rate_multiplier(name, level);
 
 			// adjust building slots
 			this.used_building_slots--;
