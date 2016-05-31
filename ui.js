@@ -12,6 +12,11 @@ function UI() {
  * return String
  */
 String.prototype.capitalize = function() {
+	// won't look good for io, so hardcode that
+	if (this[0] === 'i' && this[1] === 'o') {
+		return 'Input-Output';
+	}
+
 	var stringArray,
 		returnString = '',
 		i;
@@ -44,9 +49,12 @@ String.prototype.capitalize = function() {
  * return $
  */
 UI.prototype.generateBuildingTable = function(category, attributes) {
-	// delete existing one (if not io)
+	// clear active-wrapper, rebuild if power or io
 	if (category !== 'io') {
 		$('#active-wrapper').empty();
+	}
+	else {
+		$('.table[data-category="io"]').remove();
 	}
 	// $('.table[data-category="'+category+'"]').remove();
 
@@ -117,6 +125,10 @@ UI.prototype.generateBuildingTable = function(category, attributes) {
 		}	
 	}
 	$('#active-wrapper').append($table);
+	// build io table if category was power (since power eliminates it)
+	if (category === 'power') {
+		this.generateBuildingTable('io', ['output_multiplier', 'difference']);
+	}	
 }
 
 /*
@@ -140,8 +152,7 @@ UI.prototype.multiplyValue = function(category, name, value) {
 			value = Math.floor(value * planet.power_multipliers[name]);
 			break;
 		case 'io':
-			value = Math.round(value * 100) / 100.0;
-			// console.log(value);
+			value = Math.round(value * planet.io_multipliers[name] * 10) / 10.0;
 			break;
 		case 'economy':
 			break;
@@ -194,9 +205,9 @@ UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, bui
 			else if (name === 'defense_factory') {
 				attributeValue = planet.defense_rate_multiplier;
 			}
-			else if (category === 'io') {
-				attributeValue = planet.io_multipliers[name];
-			}
+			// else if (category === 'io') {
+			// 	attributeValue = planet.io_multipliers[name];
+			// }
 			else {
 				attributeValue = buildingClass[attributes[j]](name, level); // e.g. power.production('wind_power_plant', 2)
 			}
@@ -220,7 +231,6 @@ UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, bui
 		else if (attributes[j] === 'difference' && level === 0) { // buy case
 			// Note: this assumes 'difference' is never first element
 			attributeValue = buildingClass[attributes[j-1]](name, nextLevel); // e.g. mine.production('crystal', 1)
-			if (category === 'io') console.log(attributeValue, level, nextLevel)
 			attributeValue = this.multiplyValue(category, name, attributeValue);
 			
 			$row.append('<td class="increase">'+sign+attributeValue+'</td>');

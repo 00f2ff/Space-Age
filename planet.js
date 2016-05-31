@@ -307,11 +307,11 @@ Planet.prototype.updatePlanetData = function(category, name, level) {
 			// recalculate io multipliers
 			// remove previous level (if there is one)
 			if (level > 1) {
-				this.io_multipliers[name] -= io.output(name, level - 1);
+				this.io_multipliers[name] /= io.output_multiplier(name, level - 1);
 			}
 
-			// add current level
-			this.io_multipliers[name] += io.output(name, level);
+			// multiply current level
+			this.io_multipliers[name] *= io.output_multiplier(name, level);
 			break;
 		case 'economy':
 			buildingClass = economy;
@@ -501,7 +501,7 @@ Planet.prototype.deleteBuilding = function(category, name, level, instance) {
 			break;
 		case 'io':
 			// adjust io_multipliers
-			// this.io_multipliers[name] 
+			this.io_multipliers[name] /= io.output_multiplier(name, level);
 
 			// adjust building slots
 			this.used_building_slots--;

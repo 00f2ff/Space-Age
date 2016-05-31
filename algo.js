@@ -166,18 +166,15 @@ function Power() {
 }
 
 function IO() {
-	this.output = function(name, level) {
+	this.output_multiplier = function(name, level) {
 		if (level === 0) {
 			return 0;
 		} 
-		else if (level === 1) {
-			return 0.1;
-		}
 		else if (level < 21) {
-			return 0.1 * (level - 1);
+			return 1 + 0.1 * (level - 1);
 		}
 		else {
-			return 2.5;
+			return 3.5;
 		}
 	}
 

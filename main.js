@@ -61,7 +61,7 @@ $(document).on('click', 'li a', function() {
 			break;
 		case 'power':
 			ui.generateBuildingTable('power', ['production', 'difference']);
-			ui.generateBuildingTable('io', ['output', 'difference']); // different enough that it needs its own table
+			ui.generateBuildingTable('io', ['output_multiplier', 'difference']); // different enough that it needs its own table
 			break;
 		case 'economy':
 			ui.generateBuildingTable('economy', ['traders', 'difference']);
