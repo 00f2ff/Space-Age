@@ -2,3 +2,9 @@
 
 
 BUGS
+
+IO
+ - io mult at level 20 is shown as 3 not 2.9 
+   - first upgrade sometimes changes to 1.2, not 1.1
+ - io increase from 20 to 21 is 1.2, not 0.6, potentially indicating the difference gets added twice
+

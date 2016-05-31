@@ -78,13 +78,42 @@ $(document).on('click', 'li a', function() {
 		default:
 			break;
 	}
-})
+});
+
+/*
+ * Only for test purposes; remove later
+ * 
+ * categories is array of categories of which all buildings will be set to level 10
+ */
+function cheat(categories) {
+	planet.storage = {
+		crystal: 2000000000,
+		steel: 200000000,
+		titanium: 200000000,
+		tritium: 20000000
+	}
+	planet.resources = {
+		crystal: 2000000000,
+		steel: 200000000,
+		titanium: 200000000,
+		tritium: 20000000
+	}
+	planet.power = 2000000000;
+
+	for (var i = 0; i < categories.length; i++) {
+		for (var name in planet.buildings[categories[i]]) {
+			if (!planet.buildings[categories[i]].hasOwnProperty(name)) continue;
+			planet.buildings[categories[i]][name] = [20];
+		}
+	}
+	console.log(planet.buildings.mine)
+}
 
 
 /*
  * To Do
  *  - Other building UI support
- *  - Special building / ship / defense unlock file + classes
+ *  - Special ship / defense unlock file + classes (model after algo)
  *  - Research (IBRT)
  *  - Ships / missions
  *  - Solar system (aka planet abstraction)
