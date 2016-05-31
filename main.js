@@ -115,6 +115,9 @@ function cheat(categories) {
 
 /*
  * To Do
+ *  - Go into a new branch and play around with refactoring ui.js into table, button, cell, etc factories. It's getting incredibly
+ *    long and complex, and I'd like to make it easier to parse / learn some JS design patterns
+ *    - In the same vein, consider how I might use a pub/sub or observer pattern for updating cells / buttons on resource change
  *  - Other building UI support
  *  - Special ship / defense unlock file + classes (model after algo)
  *  - Research (IBRT)
