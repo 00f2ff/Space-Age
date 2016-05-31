@@ -226,15 +226,16 @@ UI.prototype.differenceColumn = function(category, name, attribute, buildingClas
 		column = '<td>--</td>';
 	}
 	else {
-		// *** Note: I should reduce the conditional nesting to 2 levels, but that'll require updating ship and defense rate calculation
-		// logic to support research, which I need to do, but don't want to right now
+		// *** Note: I should reduce the conditional nesting to 2 levels, but that'll require updating ship and defense 
+		// rate calculation logic to support research, which I need to do, but don't want to right now
 		if (name === 'customization_shipyard' || name === 'defense_factory') {
 			level < 20 ? difference = -0.01 : difference = -0.05; // hardcoded because abstraction adds too much logic
 		} 
 		else {
 			difference = buildingClass[attribute](name, nextLevel) - buildingClass[attribute](name, level);
 
-			if (category === 'io' && level > 1) { // this code still repeats the notDifference version, but it may not be worth refactoring
+			// this code still repeats the notDifference version, but it may not be worth refactoring
+			if (category === 'io' && level > 1) { 
 				// divide by existing portion of planet.io_multipliers[name]
 				difference /= buildingClass[attribute](name, level);
 			}
@@ -329,7 +330,8 @@ UI.prototype.addButtonColumnToRow = function(category, name, attributes, level, 
 
 		$buttonTd.append($upgradeButton);
 	}
-	// Big string of conditionals to allow both buildings with and without existing instances be have the chance of a buy button
+	// Big string of conditionals to allow both buildings with and without existing instances be have the chance of a 
+	// buy button
 	// The last part of the conditional checks for all other building types
 	if (category === 'mine' || 
 		(category === 'power' && name !== 'planetary_power_generator') || 

@@ -484,10 +484,11 @@ Planet.prototype.requirementsMet = function(category, name) {
 				met = met && this.mineRequirementsMet(value[0], value[1]);
 			}
 			else {
-				// this format is ok because there's only one of each building type that is referenced as a requirement that's not a mine
+				// this format is ok because there's only one of each building type that is referenced as a requirement 
+				// that's not a mine
 				// aka currently storage and renewable power aren't referenced
-				// this is a convoluted naming convention, but req = category, value[0] = name (can't use those vars though)
-				// and value[1] = sumLevel
+				// this is a convoluted naming convention, but req = category, value[0] = name (can't use those vars 
+				// though) and value[1] = sumLevel
 				if (this.buildings[req][value[0]].length && this.buildings[req][value[0]][0] >= value[1]) {
 					met = met && true;
 				}
@@ -607,7 +608,8 @@ Planet.prototype.deleteBuilding = function(category, name, level, instance) {
 		case 'power':
 			// adjust power (power does not compound)
 			this.power -= power.production(name, level);
-			if (revert && name === 'planetary_power_generator') { // shouldn't need second conditional, but there just in case
+			// shouldn't need second conditional, but there just in case
+			if (revert && name === 'planetary_power_generator') { 
 				// don't let users screw themselves by deleting their core power base
 				this.power += power.production(name, 1);
 			} 
@@ -692,7 +694,8 @@ Planet.prototype.dataLoop = function() {
 
 /*
  * Each building node will consist of an array of 0+ elements, each indicating a level of a particular building
- * Those will be subject to a capped length based on planet-specific attributes such as quantity available, as well as available building spots
+ * Those will be subject to a capped length based on planet-specific attributes such as quantity available, as well as 
+ * available building spots
  * -- Technology and reference perhaps shouldn't be here...
  *
  */
