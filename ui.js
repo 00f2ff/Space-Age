@@ -230,7 +230,7 @@ UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, bui
 
 					if (level > 1) {
 						// divide by existing portion of planet.io_multipliers[name]
-						difference /= buildingClass[attributes[j]](name, level);
+						difference /= buildingClass[attributes[j-1]](name, level);
 					}
 					// round multiplied version	
 					difference = Math.round(difference * planet.io_multipliers[name] * 10) / 10.0;

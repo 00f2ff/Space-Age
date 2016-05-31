@@ -83,7 +83,6 @@ $(document).on('click', 'li a', function() {
 
 /*
  * To Do
- *  - Add input-output power plants (will need special multiplier UI; probably worth sticking in its own table below other plants)
  *  - Other building UI support
  *  - Special building / ship / defense unlock file + classes
  *  - Research (IBRT)
@@ -92,10 +91,12 @@ $(document).on('click', 'li a', function() {
  *  - Periodically test to make sure I don't wait around too long for buildings. If that happens, create new price functions and adjust code to support that
  *  
  *  - Tooltips (I can put this off by adding to reference, although it's a good idea to also provide tooltips)
+ *    - Esp. important regarding level unlocking, tech unlocking, why something might not be available, etc
  *
  *
  * Considerations
  *  - prevent shifting of button UI from upgrade / buy to upgrade / buy / delete (separate columns, redo part of ui.js)
  *  - changing ship_rate_multiplier to ship_build_speed and making it a % on the UI
+ *    - current implementation might make users think speed is declining, 
  */
 

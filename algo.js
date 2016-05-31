@@ -60,6 +60,10 @@ function Mine() {
 				break;
 		}
 	}
+
+	this.requirements = function(name) {
+		return {}
+	}
 }
 
 function Storage() {
@@ -108,6 +112,10 @@ function Storage() {
 			default:
 				break;
 		}
+	}
+
+	this.requirements = function(name) { // not called in that table helper function, so doesn't need to conform to abstraction
+		return {}
 	}
 }
 
@@ -163,6 +171,10 @@ function Power() {
 				break;
 		}
 	}
+
+	this.requirements = function(name) {
+		return {}
+	}
 }
 
 function IO() {
@@ -190,6 +202,29 @@ function IO() {
 			tritium: glob.calculate(level, 100, 46)
 		}
 	}
+
+	// contains sum levels
+	this.requirements = function(name) {
+		switch(name) {
+			case 'liquid_power_plant':
+				return {
+					mine: [['crystal', 20]] // aka sum of crystal mine levels must >= 20
+				}
+				break;
+			case 'furnace_power_plant':
+				return {
+					mine: [['metal', 20]] // special case meaning sum of all steel + titanium >= 20
+				}
+				break;
+			case 'nuclear_power_plant':
+				return  {
+					mine: [['tritium', 20]]
+				}
+				break;
+			default:
+				break;
+		}
+	}
 }
 
 function Economy() {
@@ -207,6 +242,12 @@ function Economy() {
 			steel: glob.calculate(level, 200, 23.5),
 			titanium: 0,
 			tritium: glob.calculate(level, 200, 23.8)
+		}
+	}
+
+	this.requirements = function(name) {
+		return {
+			fleet: [['fleet_base', 5]]
 		}
 	}
 }
@@ -262,6 +303,32 @@ function Fleet() {
 			}
 		}
 	}
+
+	this.requirements = function(name) {
+		switch(name) {
+			case 'fleet_base':
+				return {}
+				break;
+			case 'neutral_shipyard':
+				return {
+					fleet: [['fleet_base', 1]]
+				}
+				break;
+			case 'military_shipyard':
+				return {
+					fleet: [['fleet_base', 3]]
+				}
+				break;
+			case 'customization_shipyard':
+				return {
+					economy: [['trade_center', 10]],
+					fleet: [['neutral_shipyard', 5], ['military_shipyard', 5]]
+				}
+				break;
+			default:
+				break;
+		}
+	}
 }
 
 function Defense() {
@@ -286,6 +353,10 @@ function Defense() {
 			tritium: glob.calculate(level, 200, 29.2)
 		}
 	}
+
+	this.requirements = function(name) {
+		return {}
+	}
 }
 
 function Technology() {
@@ -309,6 +380,12 @@ function Technology() {
 			steel: Math.floor(glob.calculate(level, 1000, 37.4) / 2),
 			titanium: Math.floor(glob.calculate(level, 1000, 37.4) / 2),
 			tritium: Math.floor(glob.calculate(level, 1000, 37.4) / 2)
+		}
+	}
+
+	this.requirements = function(name) {
+		return {
+			mine: [['all', 15]] // meaning sum of all mines >= 15
 		}
 	}
 }

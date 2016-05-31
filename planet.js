@@ -392,6 +392,131 @@ Planet.prototype.upgradeBuilding = function(category, name, level, instance) {
 }
 
 /*
+ * Helper function for requirementsMet specifically for mines
+ *
+ * Type      Parameter   Description
+ * String    mine        Which mine or mine combo is required
+ * Int       sumLevel    The sum of mine levels required
+ *
+ * return Boolean
+ */
+Planet.prototype.mineRequirementsMet = function(mine, sumLevel) {
+	var i,
+		currentSum = 0,
+		j;
+
+	if (mine === 'crystal' || mine === 'steel' || mine === 'titanium' || mine === 'tritium') {
+		for (i = 0; i < planet.buildings.mine[mine].length; i++) {
+			currentSum += planet.buildings.mine[mine][i];
+		}
+	} 
+	// titanium / steel combo case
+	else if (mine === 'metal') {
+		for (i = 0; i < planet.buildings.mine.steel.length; i++) {
+			currentSum += planet.buildings.mine.steel[i];
+		}
+		for (i = 0; i < planet.buildings.mine.titanium.length; i++) {
+			currentSum += planet.buildings.mine.titanium[i];
+		}
+	}
+	// every single mine type
+	else if (mine === 'all') {
+		for (i = 0; i < this.resource_types.length; i++) {
+			for (j = 0; j < planet.buildings.mine[this.resource_types[i]].length; j++) {
+				currentSum += planet.buildings.mine[this.resource_types[i]][j];
+			}
+		}
+	}
+
+	return currentSum >= sumLevel;
+}
+
+/*
+ * Helper function for canBuyBuilding that verifies all building requirements have been met
+ *
+ * Type      Parameter   Description
+ * String    category    The building category for the table
+ * String    name        The name of the building
+ *
+ * return Boolean
+ */
+Planet.prototype.requirementsMet = function(category, name) {
+	var requirements,
+		buildingClass,
+		req,
+		i,
+		building,
+		value,
+		met = true;
+
+	switch(category) {
+		case 'mine': 
+			buildingClass = mine;
+			break;
+		case 'storage':
+			buildingClass = storage;
+			break;
+		case 'power':
+			buildingClass = power;
+			break;
+		case 'io':
+			buildingClass = io;
+			break;
+		case 'economy':
+			buildingClass = economy;
+			break;
+		case 'fleet':
+			buildingClass = fleet;
+			break;
+		case 'defense':
+			buildingClass = defense;
+			break;
+		case 'technology':
+			buildingClass = technology;
+			break;
+		default:
+			break;
+	}
+
+	requirements = buildingClass.requirements(name);
+
+	// base case: no requirements (length = 0, falsey)
+	if (!Object.keys(requirements).length) {
+		return true;
+	}
+
+	// iterate through building categories
+	for (req in requirements) {
+		if (!requirements.hasOwnProperty(req)) continue;
+
+		// iterate through building names
+		for (i = 0; i < requirements[req].length; i++) {
+			value = requirements[req][i];
+
+			// check for mine case
+			if (req === 'mine') {
+				met = met && this.mineRequirementsMet(value[0], value[1]);
+			}
+			else {
+				// this format is ok because there's only one of each building type that is referenced as a requirement that's not a mine
+				// aka currently storage and renewable power aren't referenced
+				// this is a convoluted naming convention, but req = category, value[0] = name (can't use those vars though)
+				// and value[1] = sumLevel
+				if (this.buildings[req][value[0]].length && this.buildings[req][value[0]][0] >= value[1]) {
+					met = met && true;
+				}
+				else {
+					return false; // we can eliminate it immediately
+				}
+			}
+		}
+	}
+	// console.log(category, name, met)
+
+	return met;
+}
+
+/*
  * Verifies that a building can be bought
  *
  * Type      Parameter   Description
@@ -401,19 +526,25 @@ Planet.prototype.upgradeBuilding = function(category, name, level, instance) {
  * return Boolean
  */
 Planet.prototype.canBuyBuilding = function(category, name) {
-	// check available building / mine slots
-	if (category === 'mine') {
-		if (this.buildings.mine[name].length === this.mine_slots[name]) {
-			return false;
+	// check that requirements are met
+	if (this.requirementsMet(category, name)) {
+		// check available building / mine slots
+		if (category === 'mine') {
+			if (this.buildings.mine[name].length === this.mine_slots[name]) {
+				return false;
+			}
+		} 
+		else {
+			if (this.used_building_slots === this.max_building_slots) {
+				return false;
+			}
 		}
-	} 
-	else {
-		if (this.used_building_slots === this.max_building_slots) {
-			return false;
-		}
-	}
 
-	return this.canUpgradeBuilding(category, name, 0); // 0 sets nextLevel to 1
+		return this.canUpgradeBuilding(category, name, 0); // 0 sets nextLevel to 1
+	}
+	else {
+		return false;
+	}
 }
 
 /*
