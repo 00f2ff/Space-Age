@@ -131,6 +131,46 @@ function Planet(type, sun) {
 	}
 }
 
+/*
+ * Giant switch statement to find and return correct buildingClass for category
+ *
+ * Type      Parameter      Description
+ * String    category       The building category for the table
+ *
+ * return Object
+ */
+Planet.prototype.pickBuildingClass = function(category) {
+	switch(category) {
+		case 'mine': 
+			buildingClass = mine;
+			break;
+		case 'storage':
+			buildingClass = storage;
+			break;
+		case 'power':
+			buildingClass = power;
+			break;
+		case 'io':
+			buildingClass = io;
+			break;
+		case 'economy':
+			buildingClass = economy;
+			break;
+		case 'fleet':
+			buildingClass = fleet;
+			break;
+		case 'defense':
+			buildingClass = defense;
+			break;
+		case 'technology':
+			buildingClass = technology;
+			break;
+		default:
+			break;
+	}
+
+	return buildingClass;
+}
 
 /*
  * Checks whether a building can be upgraded
@@ -152,34 +192,7 @@ Planet.prototype.canUpgradeBuilding = function(category, name, level) {
 
 	// Check building not already at max level
 	if (nextLevel <= 21) {
-		switch(category) {
-			case 'mine': 
-				buildingClass = mine;
-				break;
-			case 'storage':
-				buildingClass = storage;
-				break;
-			case 'power':
-				buildingClass = power;
-				break;
-			case 'io':
-				buildingClass = io;
-				break;
-			case 'economy':
-				buildingClass = economy;
-				break;
-			case 'fleet':
-				buildingClass = fleet;
-				break;
-			case 'defense':
-				buildingClass = defense;
-				break;
-			case 'technology':
-				buildingClass = technology;
-				break;
-			default:
-				break;
-		}
+		buildingClass = this.pickBuildingClass(category);
 
 		// determine costs
 		powerCost = buildingClass.power(name, nextLevel);
@@ -449,34 +462,7 @@ Planet.prototype.requirementsMet = function(category, name) {
 		value,
 		met = true;
 
-	switch(category) {
-		case 'mine': 
-			buildingClass = mine;
-			break;
-		case 'storage':
-			buildingClass = storage;
-			break;
-		case 'power':
-			buildingClass = power;
-			break;
-		case 'io':
-			buildingClass = io;
-			break;
-		case 'economy':
-			buildingClass = economy;
-			break;
-		case 'fleet':
-			buildingClass = fleet;
-			break;
-		case 'defense':
-			buildingClass = defense;
-			break;
-		case 'technology':
-			buildingClass = technology;
-			break;
-		default:
-			break;
-	}
+	buildingClass = this.pickBuildingClass(category);
 
 	requirements = buildingClass.requirements(name);
 

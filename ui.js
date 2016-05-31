@@ -142,30 +142,13 @@ UI.prototype.generateBuildingTable = function(category, attributes) {
  * return float
  */
 UI.prototype.multiplyValue = function(category, name, value) {
-	switch(category) {
-		case 'mine':
-			value = Math.floor(value * planet.mine_rate_multipliers[name]);
-			break;
-		case 'storage':
-			break;
-		case 'power':
-			value = Math.floor(value * planet.power_multipliers[name]);
-			break;
-		case 'io':
-			// value = Math.round(value * planet.io_multipliers[name] * 10) / 10.0; // ** can't multiply by what it's incorporated in
-			// value = Math.round(value * 10) / 10.0;
-			break;
-		case 'economy':
-			break;
-		case 'fleet':
-			break;
-		case 'defense':
-			break;
-		case 'technology':
-			break;
-		default:
-			break;
+	if (category === 'mine') {
+		value = Math.floor(value * planet.mine_rate_multipliers[name]);
 	}
+	else if (category === 'power') {
+		value = Math.floor(value * planet.power_multipliers[name]);
+	}
+
 	return value;
 }
 
@@ -363,40 +346,11 @@ UI.prototype.addButtonColumnToRow = function(category, name, attributes, level, 
  * return $
  */
 UI.prototype.generateBuildingRow = function(category, name, attributes, level, instance) {
-	var buildingClass, 
+	var buildingClass = planet.pickBuildingClass(category), 
 		powerCost, 
 		resourceCost,
 		nextLevel,
 		$row;
-
-	switch(category) {
-		case 'mine': 
-			buildingClass = mine;
-			break;
-		case 'storage':
-			buildingClass = storage;
-			break;
-		case 'power':
-			buildingClass = power;
-			break;
-		case 'io':
-			buildingClass = io;
-			break;
-		case 'economy':
-			buildingClass = economy;
-			break;
-		case 'fleet':
-			buildingClass = fleet;
-			break;
-		case 'defense':
-			buildingClass = defense;
-			break;
-		case 'technology':
-			buildingClass = technology;
-			break;
-		default:
-			break;
-	}
 
 	nextLevel = level + 1;
 	// determine costs
