@@ -2,7 +2,12 @@
 // I may add more functions in the future, but for now Mine, Storage and Power all use calculate
 function Global() {
 	this.calculate = function(level, constant, divisor) {
-		return Math.floor(Math.pow(constant, (1 + (level - 1) / divisor) ) );
+		if (level === 0) {
+			return 0;
+		}
+		else {
+			return Math.floor(Math.pow(constant, (1 + (level - 1) / divisor) ) );
+		}
 	}
 }
 

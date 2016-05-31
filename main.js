@@ -47,6 +47,9 @@ $(document).on('click', 'button', function() {
 	console.log(planet)
 });
 
+/*
+ * Note: code will break if 'difference' comes before what you're trying to find the difference of
+ */
 $(document).on('click', 'li a', function() {
 	$('li.active').removeClass('active');
 

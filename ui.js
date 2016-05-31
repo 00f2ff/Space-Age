@@ -153,6 +153,102 @@ UI.prototype.multiplyValue = function(category, name, value) {
 }
 
 /*
+ * Helper function for UI.addAttributeColumnsToRow that adds a non-difference attribute column (<td> element) to a row and returns it
+ *
+ * Type      Parameter      Description
+ * String    category       The building category for the table
+ * String    name           The name of the building
+ * [String]  attribute      Table column specific to the building type
+ * Object    buildingClass  The specific class of the building
+ * Int       level          The building's current level
+ * $         $row           The previously constructed row for the <td> elements to be appended to
+ *
+ * return $
+ */
+UI.prototype.notDifferenceColumn = function(category, name, attribute, buildingClass, level, $row) {
+	var attributeValue;
+
+	// show what attribute value is for current level
+	if (name === 'customization_shipyard') {
+		attributeValue = planet.ship_rate_multiplier;
+	}
+	else if (name === 'defense_factory') {
+		attributeValue = planet.defense_rate_multiplier;
+	}
+	else if (category === 'io') { // io can't work with traditional multiplyValue call since multiplier already incorporates it
+		attributeValue = buildingClass[attribute](name, level);
+
+		if (level > 1) {
+			// divide by existing portion of planet.io_multipliers[name]
+			attributeValue /= buildingClass[attribute](name, level - 1);
+		}
+		// round multiplied version	
+		attributeValue = Math.round(attributeValue * planet.io_multipliers[name] * 10) / 10.0;
+	}
+	else {
+		attributeValue = buildingClass[attribute](name, level); // e.g. power.production('wind_power_plant', 2)
+
+		attributeValue = this.multiplyValue(category, name, attributeValue);
+	}
+
+	$row.append('<td>'+attributeValue+'</td>');
+
+	return $row;
+}
+
+/*
+ * Helper function for UI.addAttributeColumnsToRow that adds a difference attribute column (<td> element) to a row and returns it
+ *
+ * Type      Parameter      Description
+ * String    category       The building category for the table
+ * String    name           The name of the building
+ * [String]  attribute      Table column specific to the building type
+ * Object    buildingClass  The specific class of the building
+ * Int       level          The building's current level
+ * $         $row           The previously constructed row for the <td> elements to be appended to
+ *
+ * return $
+ */
+UI.prototype.differenceColumn = function(category, name, attribute, buildingClass, level, $row) {
+	var difference,
+		sign = '+'
+		nextLevel = level + 1;
+
+	if (name === 'customization_shipyard' || name === 'defense_factory') {
+		sign = '';
+	}
+
+	if (nextLevel > 21) {
+		$row.append('<td>--</td>');
+	}
+	else {
+		if (name === 'customization_shipyard' || name === 'defense_factory') {
+			level < 20 ? difference = -0.01 : difference = -0.05; // hardcoded because abstraction adds too much logic
+		} 
+		else {
+			difference = buildingClass[attribute](name, nextLevel) - buildingClass[attribute](name, level);
+
+			if (category === 'io') {
+				if (level > 1) { // can't do every time because dividing by 0 = Infinity
+					// divide by existing portion of planet.io_multipliers[name]
+					difference /= buildingClass[attribute](name, level);
+				}
+
+				// round multiplied version	
+				difference = Math.round(difference * planet.io_multipliers[name] * 10) / 10.0;
+			}
+			else {
+				difference = this.multiplyValue(category, name, difference);
+			}
+		}
+
+		$row.append('<td class="increase">'+sign+difference+'</td>');
+	}
+
+	return $row;
+}
+
+/*
  * Helper function for UI.generateBuildingTable that adds attribute columns (<td> elements) to a row and returns it
  *
  * Type      Parameter      Description
@@ -167,87 +263,22 @@ UI.prototype.multiplyValue = function(category, name, value) {
  */
 UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, buildingClass, level, $row) {
 	var nextLevel = level + 1,
-		attributeValue, 
-		difference,
-		j,
-		sign = '+';
+		i,
+		attribute,
+		prevAttribute;
 
-	if (name === 'customization_shipyard' || name === 'defense_factory') {
-		sign = ''
-	}
+	for (i = 0; i < attributes.length; i++) {
+		attribute = attributes[i];
+		
+		if (i > 0) {
+			prevAttribute = attributes[i - 1];
+		}
 
-	for (j = 0; j < attributes.length; j++) {
-		if (attributes[j] !== 'difference') {
-			// show what attribute value is for current level
-			if (name === 'customization_shipyard') {
-				attributeValue = planet.ship_rate_multiplier;
-			}
-			else if (name === 'defense_factory') {
-				attributeValue = planet.defense_rate_multiplier;
-			}
-			else if (category === 'io') { // io can't work with traditional multiplyValue call since multiplier already incorporates it
-				attributeValue = buildingClass[attributes[j]](name, level);
-
-				if (level > 1) {
-					// divide by existing portion of planet.io_multipliers[name]
-					attributeValue /= buildingClass[attributes[j]](name, level - 1);
-				}
-				// round multiplied version	
-				attributeValue = Math.round(attributeValue * planet.io_multipliers[name] * 10) / 10.0;
-			}
-			else {
-				attributeValue = buildingClass[attributes[j]](name, level); // e.g. power.production('wind_power_plant', 2)
-
-				attributeValue = this.multiplyValue(category, name, attributeValue);
-			}
-
-			$row.append('<td>'+attributeValue+'</td>');
+		if (attribute !== 'difference') {
+			$row = this.notDifferenceColumn(category, name, attribute, buildingClass, level, $row);
 		} 
-		else if (attributes[j] === 'difference' && level > 0) {
-			if (nextLevel <= 21) {
-				if (name === 'customization_shipyard' || name === 'defense_factory') {
-					level < 20 ? difference = -0.01 : difference = -0.05; // hardcoded because working on this is annoying
-				} 
-				else if (category === 'io') { // io can't work with traditional multiplyValue call since multiplier already incorporates it
-					difference = buildingClass[attributes[j-1]](name, nextLevel) - buildingClass[attributes[j-1]](name, level);
-
-					if (level > 1) {
-						// divide by existing portion of planet.io_multipliers[name]
-						difference /= buildingClass[attributes[j-1]](name, level);
-					}
-					// round multiplied version	
-					difference = Math.round(difference * planet.io_multipliers[name] * 10) / 10.0;
-				}
-				else {
-					difference = buildingClass[attributes[j-1]](name, nextLevel) - buildingClass[attributes[j-1]](name, level);
-
-					difference = this.multiplyValue(category, name, difference);
-				}
-
-				$row.append('<td class="increase">'+sign+difference+'</td>');
-			} 
-			else {
-				$row.append('<td>--</td>');
-			}
-		} 
-		else if (attributes[j] === 'difference' && level === 0) { // buy case
-			if (name === 'customization_shipyard' || name === 'defense_factory') {
-				attributeValue = -0.01; // hardcoded because working on this is annoying
-			} 
-			else if (category === 'io') { // io can't work with traditional multiplyValue call since multiplier already incorporates it
-				attributeValue = buildingClass[attributes[j-1]](name, nextLevel);
-				console.log(attributeValue);
-				// round multiplied version	
-				attributeValue = Math.round(attributeValue * planet.io_multipliers[name] * 10) / 10.0;
-			}
-			else {
-				// Note: this assumes 'difference' is never first element
-				attributeValue = buildingClass[attributes[j-1]](name, nextLevel); // e.g. mine.production('crystal', 1)
-
-				attributeValue = this.multiplyValue(category, name, attributeValue);
-			}
-			
-			$row.append('<td class="increase">'+sign+attributeValue+'</td>');
+		else {
+			$row = this.differenceColumn(category, name, prevAttribute, buildingClass, level, $row);
 		}
 	}
 
