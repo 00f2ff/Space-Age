@@ -142,18 +142,31 @@ UI.prototype.generateBuildingTable = function(category, attributes) {
  * return float
  */
 UI.prototype.multiplyValue = function(category, name, value) {
-	if (category === 'mine') {
-		value = Math.floor(value * planet.mine_rate_multipliers[name]);
-	}
-	else if (category === 'power') {
-		value = Math.floor(value * planet.power_multipliers[name]);
+	switch (category) {
+		case 'mine':
+			value = Math.floor(value * planet.mine_rate_multipliers[name]); // don't want to abstract mult here b/c of io
+			break;
+		case 'power':
+			value = Math.floor(value * planet.power_multipliers[name]);
+			break;
+		case 'io':
+			value = Math.round(value * planet.io_multipliers[name] * 10) / 10.0;
+			break;
+		case 'fleet':
+			value *= planet.ship_rate_multiplier;
+			break;
+		case 'defense':
+			value *= planet.defense_rate_multiplier;
+			break;
+		default:
+			break;
 	}
 
 	return value;
 }
 
 /*
- * Helper function for UI.addAttributeColumnsToRow that adds a non-difference attribute column (<td> element) to a row and returns it
+ * Helper function for UI.addAttributeColumnsToRow that returns a non-difference attribute cell
  *
  * Type      Parameter      Description
  * String    category       The building category for the table
@@ -169,35 +182,25 @@ UI.prototype.notDifferenceColumn = function(category, name, attribute, buildingC
 	var attributeValue;
 
 	// show what attribute value is for current level
-	if (name === 'customization_shipyard') {
-		attributeValue = planet.ship_rate_multiplier;
-	}
-	else if (name === 'defense_factory') {
-		attributeValue = planet.defense_rate_multiplier;
-	}
-	else if (category === 'io') { // io can't work with traditional multiplyValue call since multiplier already incorporates it
-		attributeValue = buildingClass[attribute](name, level);
-
-		if (level > 1) {
-			// divide by existing portion of planet.io_multipliers[name]
-			attributeValue /= buildingClass[attribute](name, level - 1);
-		}
-		// round multiplied version	
-		attributeValue = Math.round(attributeValue * planet.io_multipliers[name] * 10) / 10.0;
+	if (name === 'customization_shipyard' || name === 'defense_factory') {
+		attributeValue = 1;
 	}
 	else {
-		attributeValue = buildingClass[attribute](name, level); // e.g. power.production('wind_power_plant', 2)
-
-		attributeValue = this.multiplyValue(category, name, attributeValue);
+		attributeValue = buildingClass[attribute](name, level);
 	}
 
-	$row.append('<td>'+attributeValue+'</td>');
+	if (category === 'io' && level > 1) {
+		// divide by existing portion of planet.io_multipliers[name]
+		attributeValue /= buildingClass[attribute](name, level - 1);
+	}
 
-	return $row;
+	attributeValue = this.multiplyValue(category, name, attributeValue);
+
+	return '<td>'+attributeValue+'</td>';
 }
 
 /*
- * Helper function for UI.addAttributeColumnsToRow that adds a difference attribute column (<td> element) to a row and returns it
+ * Helper function for UI.addAttributeColumnsToRow that returns a difference attribute cell
  *
  * Type      Parameter      Description
  * String    category       The building category for the table
@@ -210,7 +213,8 @@ UI.prototype.notDifferenceColumn = function(category, name, attribute, buildingC
  * return $
  */
 UI.prototype.differenceColumn = function(category, name, attribute, buildingClass, level, $row) {
-	var difference,
+	var column,
+		difference,
 		sign = '+'
 		nextLevel = level + 1;
 
@@ -219,33 +223,29 @@ UI.prototype.differenceColumn = function(category, name, attribute, buildingClas
 	}
 
 	if (nextLevel > 21) {
-		$row.append('<td>--</td>');
+		column = '<td>--</td>';
 	}
 	else {
+		// *** Note: I should reduce the conditional nesting to 2 levels, but that'll require updating ship and defense rate calculation
+		// logic to support research, which I need to do, but don't want to right now
 		if (name === 'customization_shipyard' || name === 'defense_factory') {
 			level < 20 ? difference = -0.01 : difference = -0.05; // hardcoded because abstraction adds too much logic
 		} 
 		else {
 			difference = buildingClass[attribute](name, nextLevel) - buildingClass[attribute](name, level);
 
-			if (category === 'io') {
-				if (level > 1) { // can't do every time because dividing by 0 = Infinity
-					// divide by existing portion of planet.io_multipliers[name]
-					difference /= buildingClass[attribute](name, level);
-				}
+			if (category === 'io' && level > 1) { // this code still repeats the notDifference version, but it may not be worth refactoring
+				// divide by existing portion of planet.io_multipliers[name]
+				difference /= buildingClass[attribute](name, level);
+			}
 
-				// round multiplied version	
-				difference = Math.round(difference * planet.io_multipliers[name] * 10) / 10.0;
-			}
-			else {
-				difference = this.multiplyValue(category, name, difference);
-			}
+			difference = this.multiplyValue(category, name, difference);
 		}
 
-		$row.append('<td class="increase">'+sign+difference+'</td>');
+		column = '<td class="increase">'+sign+difference+'</td>';
 	}
 
-	return $row;
+	return column;
 }
 
 /*
@@ -265,7 +265,8 @@ UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, bui
 	var nextLevel = level + 1,
 		i,
 		attribute,
-		prevAttribute;
+		prevAttribute,
+		$column;
 
 	for (i = 0; i < attributes.length; i++) {
 		attribute = attributes[i];
@@ -275,11 +276,13 @@ UI.prototype.addAttributeColumnsToRow = function(category, name, attributes, bui
 		}
 
 		if (attribute !== 'difference') {
-			$row = this.notDifferenceColumn(category, name, attribute, buildingClass, level, $row);
+			$column = this.notDifferenceColumn(category, name, attribute, buildingClass, level, $row);
 		} 
 		else {
-			$row = this.differenceColumn(category, name, prevAttribute, buildingClass, level, $row);
+			$column = this.differenceColumn(category, name, prevAttribute, buildingClass, level, $row);
 		}
+
+		$row.append($column);
 	}
 
 	return $row;
@@ -314,7 +317,6 @@ UI.prototype.addButtonColumnToRow = function(category, name, attributes, level, 
 	});
 
 	if (level > 0) {
-
 		// add upgrade button
 		$upgradeButton = $('<button class="upgrade-button">Upgrade</button>');
 
