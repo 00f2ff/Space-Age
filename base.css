@@ -19,3 +19,9 @@
 .affordable { color: green; }
 .unaffordable { color: red; }
 .no-upgrades { color: black; }
+
+.slider {
+	/*position: relative;
+	display: inline-block;
+	vertical-align: middle;*/
+}

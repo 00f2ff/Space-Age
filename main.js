@@ -44,7 +44,6 @@ $(document).on('click', 'button', function() {
 	ui.generateBuildingTable(data.category, data.attributes.split(','));
 
 	ui.generateResourceTable();
-	console.log(planet)
 });
 
 /*
@@ -83,6 +82,8 @@ $(document).on('click', 'li a', function() {
 	}
 });
 
+
+
 /*
  * Only for test purposes; remove later
  * 
@@ -109,19 +110,17 @@ function cheat(categories) {
 			planet.buildings[categories[i]][name] = [20];
 		}
 	}
-	console.log(planet.buildings.mine)
 }
 
 
 /*
  * To Do
- *  - Go into a new branch and play around with refactoring ui.js into table, button, cell, etc factories. It's getting incredibly
- *    long and complex, and I'd like to make it easier to parse / learn some JS design patterns
- *    - In the same vein, consider how I might use a pub/sub or observer pattern for updating cells / buttons on resource change
- *  - Other building UI support
+ *  - Deleting building also refunds 25% of input resources
+ *  - Power / economy / technology UI support
+ *  - Research (IBRT) (technology UI integration)
  *  - Special ship / defense unlock file + classes (model after algo)
- *  - Research (IBRT)
- *  - Ships / missions
+ *  - Fleet / defense UI support
+ *  - Ships (already done?) / missions
  *  - Solar system (aka planet abstraction)
  *  - Periodically test to make sure I don't wait around too long for buildings. If that happens, create new price functions and adjust code to support that
  *  
