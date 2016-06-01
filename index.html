@@ -50,7 +50,7 @@
 
     <div class="row" id="active-wrapper"></div>
 
-    <div class="row col-md-6">
+    <div class="row col-md-7">
       <table class="table table-bordered">
         <thead>
           <tr> 
@@ -68,6 +68,26 @@
         </tbody>
       </table>
     </div>
+    <div class="row col-md-7">
+      <table class="table table-bordered">
+        <thead>
+          <tr> 
+            <th class="col-md-6">Liquid Power Plant</th>
+            <th class="col-md-3">Crystal Rate</th>
+            <th class="col-md-3">Energy</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr> 
+            <td class="col-md-6" style="padding-left:40px"><input class="slider" data-slider-id='ex1Slider' type="text" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-value="0"/></td>
+            <td class="col-md-3 value"></td>
+            <td class="col-md-3"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- furnace will have instances for both steel and titanium -->
+    <!-- I'm going to need to set their ids and reinstantiate each one since it appears I can't just instantiate from a classname -->
 
     
 
@@ -85,8 +105,7 @@
 <script type="text/javascript" src="main.js"></script>
 
 <script type="text/javascript">
-// With JQuery
-$('.slider').slider().on('slide', function(e) {$('.value').html(e.value)});
+$('.slider').slider().on('slide', function(e) {$('.value').html(e.value)}); // update based on some programmatic naming conventions I come up with
 </script>
 
 </body>

@@ -20,8 +20,7 @@
 .unaffordable { color: red; }
 .no-upgrades { color: black; }
 
-.slider {
-	/*position: relative;
-	display: inline-block;
-	vertical-align: middle;*/
-}
+/* Needs to be inlined for some reason */
+/*.slider-cell {
+	padding-left: 40px;
+}*/
