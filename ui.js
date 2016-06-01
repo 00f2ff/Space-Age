@@ -39,6 +39,86 @@ String.prototype.capitalize = function() {
     return returnString;
 }
 
+UI.prototype.generateSecondaryInterface = function(category) {
+	switch(category) {
+		case 'io':
+			for (var i = 0; i < planet.resource_types.length; i++) {
+				this.generateIOSecondaryInterface(planet.resource_types[i]);
+			}
+			break;
+		case 'economy':
+			break;
+		case 'fleet':
+			break;
+		case 'defense':
+			break;
+		case 'technology'
+			break;
+		default:
+			break;
+	}
+}
+
+UI.prototype.generateIOSecondaryInterface = function(resource) {
+	var plant;
+	switch(resource) {
+		case 'crystal':
+			plant = 'liquid_power_plant';
+			break;
+		case 'steel':
+			plant = 'furnace_power_plant';
+			break;
+		case 'titanium':
+			plant = 'furnace_power_plant';
+			break;
+		case 'tritium':
+			plant = 'nuclear_power_plant';
+			break;
+		default:
+			break;
+	}
+	var $div = $('<div class="row col-md-7"></div>');
+	var $table = $('<table class="table table-bordered">\
+			        <thead>\
+			          <tr> \
+			            <th class="col-md-6">'+plant.capitalize()+'</th>\
+			            <th class="col-md-3">'+resource.capitalize()+' Rate</th>\
+			            <th class="col-md-3">Energy</th>\
+			          </tr>\
+			        </thead>\
+			        <tbody>\
+			          <tr>\
+			            <td class="col-md-6 slider-cell" style="padding-left:40px"></td>\
+			            <td class="col-md-3" id="'+resource+'-slider-deduction"></td>\
+			            <td class="col-md-3" id="'+resource+'-slider-production"></td>\
+			          </tr>\
+			        </tbody>\
+			      </table>');
+	var $slider = $('<input class="slider" type="text"/>');
+	$slider.attr({
+		'data-slider-id': resource, 
+		'data-slider-step': 1, 
+		'data-slider-value': 0, 
+		'data-slider-min': 0, 
+		'data-slider-max': planet.mine_rates[resource]
+	});
+	$slider.slider()
+		   .on('slide', function(e) {
+		   		var rateDeduction = e.value;
+		   		var energyIncrease = e.value * planet.io_multipliers[plant];
+		   		// this.updatePlanetData isn't going to work because that's for leveling buildings.
+		   		// I'll need to create my own version, which also means I need to keep track of energy that comes from
+		   		// io so that I can vary levels accordingly.
+		   		// Also think about how external changes to io_multipliers are going to affect planet variables (since
+		   		// the slide event won't be triggered in that instance). I may need an additional function that runs on
+		   		// those updates too (though perhaps it'll be the same function I use to alter planet variables here)
+		   		$('#'+resource+'-slider-deduction').html(rateDeduction);
+		   		$('#'+resource+'-slider-production').html(e.value);
+		   });
+	$table.find('.slider-cell').append($slider);
+
+}
+
 /*
  * Generates a table for a specific building category
  *
@@ -46,7 +126,6 @@ String.prototype.capitalize = function() {
  * String    category    The building category for the table
  * [String]  attributes  Additional table columns specific to the building type
  *
- * return $
  */
 UI.prototype.generateBuildingTable = function(category, attributes) {
 	// clear active-wrapper, rebuild if power or io

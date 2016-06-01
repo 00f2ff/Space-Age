@@ -122,11 +122,15 @@ function cheat(categories) {
  *  - Fleet / defense UI support
  *  - Ships (already done?) / missions
  *  - Solar system (aka planet abstraction)
+ *  - Off-planet resource collection
  *  - Periodically test to make sure I don't wait around too long for buildings. If that happens, create new price functions and adjust code to support that
  *  
  *  - Tooltips (I can put this off by adding to reference, although it's a good idea to also provide tooltips)
  *    - Esp. important regarding level unlocking, tech unlocking, why something might not be available, etc
- *
+ *	- Design whole thing in sketch and then create. I'll probably use a card model or something.
+ *    - Perhaps move off of bootstrap and treat it as a CSS refresher
+ *	  - Focus on usability and what makes sense
+ *  - Build interactive tutorial
  *
  * Considerations
  *  - prevent shifting of button UI from upgrade / buy to upgrade / buy / delete (separate columns, redo part of ui.js)
