@@ -8,3 +8,4 @@ IO
    - first upgrade sometimes changes to 1.2, not 1.1
  - io increase from 20 to 21 is 1.2, not 0.6, potentially indicating the difference gets added twice
 
+ - Clicking on a slider doesn't activate slide function. I could easily just add a click, if I want

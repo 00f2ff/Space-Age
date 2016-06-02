@@ -40,6 +40,8 @@ String.prototype.capitalize = function() {
 }
 
 UI.prototype.generateSecondaryInterface = function(category) {
+	// clear secondary UI
+	$('#secondary-active-wrapper').empty();
 	switch(category) {
 		case 'io':
 			for (var i = 0; i < planet.resource_types.length; i++) {
@@ -52,7 +54,7 @@ UI.prototype.generateSecondaryInterface = function(category) {
 			break;
 		case 'defense':
 			break;
-		case 'technology'
+		case 'technology':
 			break;
 		default:
 			break;
@@ -96,27 +98,39 @@ UI.prototype.generateIOSecondaryInterface = function(resource) {
 			      </table>');
 	var $slider = $('<input class="slider" type="text"/>');
 	$slider.attr({
-		'data-slider-id': resource, 
+		'data-slider-id': plant, 
 		'data-slider-step': 1, 
-		'data-slider-value': 0, 
+		'data-slider-value': planet.mine_rate_deductions[resource], 
 		'data-slider-min': 0, 
 		'data-slider-max': planet.mine_rates[resource]
 	});
+	
+	$table.find('.slider-cell').append($slider);
+	$div.append($table);
+	$('#secondary-active-wrapper').append($div);
+	// needs to be appended to DOM before it can be activated
 	$slider.slider()
 		   .on('slide', function(e) {
 		   		var rateDeduction = e.value;
-		   		var energyIncrease = e.value * planet.io_multipliers[plant];
-		   		// this.updatePlanetData isn't going to work because that's for leveling buildings.
-		   		// I'll need to create my own version, which also means I need to keep track of energy that comes from
-		   		// io so that I can vary levels accordingly.
-		   		// Also think about how external changes to io_multipliers are going to affect planet variables (since
-		   		// the slide event won't be triggered in that instance). I may need an additional function that runs on
-		   		// those updates too (though perhaps it'll be the same function I use to alter planet variables here)
-		   		$('#'+resource+'-slider-deduction').html(rateDeduction);
-		   		$('#'+resource+'-slider-production').html(e.value);
-		   });
-	$table.find('.slider-cell').append($slider);
+		   		var powerIncrease = e.value * planet.io_multipliers[plant];
+		   		// reduce energy by previous increase
+		   		planet.power -= (planet.mine_rate_deductions[resource] * planet.io_multipliers[plant]);
+		   		// increase energy
+		   		planet.power += powerIncrease;
+		   		// reset rate deduction
+		   		planet.mine_rate_deductions[resource] = rateDeduction;
 
+		   		$('#'+resource+'-slider-deduction').html(rateDeduction);
+		   		$('#'+resource+'-slider-production').html(powerIncrease);
+		   });
+	// since planet.io_multipliers are set to 1 by default for easy scaling, using a slider when a plant is either level
+	// 0 or 1 would result in the same effect
+	if (planet.buildings.io[plant].length === 0) {
+		$slider.slider('disable');
+	}
+	else {
+		$slider.slider('enable');
+	}
 }
 
 /*
@@ -540,7 +554,7 @@ UI.prototype.generateResourceTable = function() {
 					<td>'+r.capitalize()+'</td>\
 					<td class="count">'+Math.floor(planet.resources[r])+'</td>\
 					<td class="storage">'+Math.floor(planet.storage[r])+'</td>\
-					<td class="rate">'+Math.floor(planet.mine_rates[r])+'</td>\
+					<td class="rate">'+Math.floor(planet.mine_rates[r] - planet.mine_rate_deductions[r])+'</td>\
 					<td class="multiplier">'+planet.mine_rate_multipliers[r]+'</td>\
 				</tr>');
 
@@ -592,8 +606,8 @@ UI.prototype.updateResourceRow = function(resource, attribute) {
 				value = planet.storage[resource];
 				break;
 			case 'rate':
-				value = planet.mine_rates[resource];
-				// console.log(value);
+				value = (planet.mine_rates[resource] - planet.mine_rate_deductions[resource]);
+				console.log(planet.mine_rate_deductions)
 				break;
 			case 'multiplier':
 				value = planet.mine_rate_multipliers[resource];

@@ -72,6 +72,14 @@ function Planet(type, sun) {
 		tritium: 0
 	}
 
+	// Due to IO conversions
+	this.mine_rate_deductions = {
+		crystal: 0,
+		steel: 0,
+		titanium: 0,
+		tritium: 0
+	}
+
 	this.storage = {
 		crystal: 2000,
 		steel: 2000,
@@ -320,11 +328,41 @@ Planet.prototype.updatePlanetData = function(category, name, level) {
 			// recalculate io multipliers
 			// remove previous level (if there is one)
 			if (level > 1) {
+				// reduce power by current rate deduction * multiplier
+				switch(name) {
+					case 'liquid_power_plant':
+						this.power -= (this.mine_rate_deductions.crystal * this.io_multipliers[name])
+						break;
+					case 'furnace_power_plant':
+						this.power -= ((this.mine_rate_deductions.steel + this.mine_rate_deductions.titanium)
+										 * this.io_multipliers[name]);
+						break;
+					case 'nuclear_power_plant':
+						this.power -= (this.mine_rate_deductions.tritium * this.io_multipliers[name])
+						break;
+					default:
+						break;
+				}
 				this.io_multipliers[name] /= io.output_multiplier(name, level - 1);
 			}
 
 			// multiply current level
 			this.io_multipliers[name] *= io.output_multiplier(name, level);
+			// increase power by rate deduction * new multiplier
+			switch(name) {
+				case 'liquid_power_plant':
+					this.power += (this.mine_rate_deductions.crystal * this.io_multipliers[name])
+					break;
+				case 'furnace_power_plant':
+					this.power += ((this.mine_rate_deductions.steel + this.mine_rate_deductions.titanium)
+									 * this.io_multipliers[name]);
+					break;
+				case 'nuclear_power_plant':
+					this.power += (this.mine_rate_deductions.tritium * this.io_multipliers[name])
+					break;
+				default:
+					break;
+			}
 			break;
 		case 'economy':
 			buildingClass = economy;
@@ -679,7 +717,7 @@ Planet.prototype.dataLoop = function() {
 	for (i = 0; i < this.resource_types.length; i++) {
 		r = this.resource_types[i];
 
-		increment = this.mine_rates[r] / 60 / cyclesPerSecond;
+		increment = (this.mine_rates[r] - this.mine_rate_deductions[r]) / 60 / cyclesPerSecond;
 
 		// increment resource if less than capacity, otherwise set to capacity
 		if (this.resources[r] + increment < this.storage[r]) {

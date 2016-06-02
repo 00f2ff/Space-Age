@@ -28,6 +28,10 @@ $(document).on('click', 'button', function() {
 	// change in data and on UI <-- should auto update...
 	switch($(this).attr('class')) {
 		case 'buy-button':
+			// specific secondary UI update for Power // NOTE *** I'll need a switch here for other things w/ secondary ui
+			if (data.category === 'io' && planet.canBuyBuilding(data.category, data.name)) {
+				$('.slider[data-slider-id="'+data.name+'"]').slider('enable');
+			}
 			planet.buyBuilding(data.category, data.name);
 			break;
 		case 'upgrade-button':
@@ -57,25 +61,32 @@ $(document).on('click', 'li a', function() {
 	switch($(this).text().toLowerCase()) {
 		case 'mine':
 			ui.generateBuildingTable('mine', ['production', 'difference']);
+			ui.generateSecondaryInterface('mine'); // no effect
 			break;
 		case 'storage':
 			ui.generateBuildingTable('storage', ['capacity', 'difference']);
+			ui.generateSecondaryInterface('storage'); // no effect
 			break;
 		case 'power':
 			ui.generateBuildingTable('power', ['production', 'difference']);
 			ui.generateBuildingTable('io', ['output_multiplier', 'difference']); // different enough that it needs its own table
+			ui.generateSecondaryInterface('io'); // sliders
 			break;
 		case 'economy':
 			ui.generateBuildingTable('economy', ['traders', 'difference']);
+			ui.generateSecondaryInterface('economy');
 			break;
 		case 'fleet':
 			ui.generateBuildingTable('fleet', ['ship_rate_multiplier', 'difference']);
+			ui.generateSecondaryInterface('fleet');
 			break;
 		case 'defense':
 			ui.generateBuildingTable('defense', ['defense_rate_multiplier', 'difference']);
+			ui.generateSecondaryInterface('defense');
 			break;
 		case 'technology':
 			ui.generateBuildingTable('technology', ['batch_size', 'difference']);
+			ui.generateSecondaryInterface('technology');
 			break;
 		default:
 			break;
@@ -116,7 +127,7 @@ function cheat(categories) {
 /*
  * To Do
  *  - Deleting building also refunds 25% of input resources
- *  - Power / economy / technology UI support
+ *  - Economy / technology UI support
  *  - Research (IBRT) (technology UI integration)
  *  - Special ship / defense unlock file + classes (model after algo)
  *  - Fleet / defense UI support

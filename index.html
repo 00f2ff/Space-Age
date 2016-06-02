@@ -50,7 +50,9 @@
 
     <div class="row" id="active-wrapper"></div>
 
-    <div class="row col-md-7">
+    <div class="row" id="secondary-active-wrapper"></div>
+
+    <!-- <div class="row col-md-7">
       <table class="table table-bordered">
         <thead>
           <tr> 
@@ -60,7 +62,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr> <!--  style="padding: 35px 0px 35px 50px" -->
+          <tr>
             <td class="col-md-6" style="padding-left:40px"><input class="slider" data-slider-id='ex1Slider' type="text" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-value="0"/></td>
             <td class="col-md-3 value"></td>
             <td class="col-md-3"></td>
@@ -85,7 +87,7 @@
           </tr>
         </tbody>
       </table>
-    </div>
+    </div> -->
     <!-- furnace will have instances for both steel and titanium -->
     <!-- I'm going to need to set their ids and reinstantiate each one since it appears I can't just instantiate from a classname -->
 
@@ -105,7 +107,7 @@
 <script type="text/javascript" src="main.js"></script>
 
 <script type="text/javascript">
-$('.slider').slider().on('slide', function(e) {$('.value').html(e.value)}); // update based on some programmatic naming conventions I come up with
+// $('.slider').slider().on('slide', function(e) {$('.value').html(e.value)}); // update based on some programmatic naming conventions I come up with
 </script>
 
 </body>
