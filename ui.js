@@ -669,10 +669,12 @@ UI.prototype.updateButtonStyle = function() {
  */
 UI.prototype.visualLoop = function() {
 	var i;
-	// update all resource counts
+	// update all resource counts and mine rates
 	for (i = 0; i < planet.resource_types.length; i++) {
 		this.updateResourceRow(planet.resource_types[i], 'count');
+		this.updateResourceRow(planet.resource_types[i], 'rate');
 	}
+
 	this.updateResourceRow('power', 'count');
 	this.updateButtonStyle();
 }
