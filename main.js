@@ -126,6 +126,8 @@ function cheat(categories) {
 
 /*
  * To Do
+ *  - Try redesigning UI (in sketch, maybe) to look more like swarmism's. That way, I can reduce the length of page and improve
+      readability (menu + submenu). I would also move around info
  *  - Deleting building also refunds 25% of input resources
  *  - Economy / technology UI support
  *  - Research (IBRT) (technology UI integration)
@@ -138,6 +140,7 @@ function cheat(categories) {
  *  
  *  - Tooltips (I can put this off by adding to reference, although it's a good idea to also provide tooltips)
  *    - Esp. important regarding level unlocking, tech unlocking, why something might not be available, etc
+ *    - But also descriptive. See `Buildings` doc for descriptions. I'll need to edit
  *	- Design whole thing in sketch and then create. I'll probably use a card model or something.
  *    - Perhaps move off of bootstrap and treat it as a CSS refresher
  *	  - Focus on usability and what makes sense

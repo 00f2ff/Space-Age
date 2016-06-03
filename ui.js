@@ -49,6 +49,7 @@ UI.prototype.generateSecondaryInterface = function(category) {
 			}
 			break;
 		case 'economy':
+			this.generateEconomySecondaryInterface();
 			break;
 		case 'fleet':
 			break;
@@ -58,6 +59,87 @@ UI.prototype.generateSecondaryInterface = function(category) {
 			break;
 		default:
 			break;
+	}
+}
+
+UI.prototype.generateEconomySecondaryInterface = function() {
+	var $div = $('<div class="row col-md-7"></div>');
+	var $table = $('<table class="table table-bordered">\
+			        <thead>\
+			          <tr> \
+			            <th class="col-md-6">Trade Center</th>\
+			            <th class="col-md-3">\
+			            	<div class="dropdown">\
+  								<button class="btn btn-default dropdown-toggle" type="button" id="trade-center-give" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">\
+    							Give\
+							    <span class="caret"></span>\
+								</button>\
+								<ul class="dropdown-menu" aria-labelledby="trade-center-dropdown">\
+								    <li><a href="#">Crystal</a></li>\
+								    <li><a href="#">Steel</a></li>\
+								    <li><a href="#">Titanium</a></li>\
+								    <li><a href="#">Tritium</a></li>\
+								</ul>\
+							</div>\
+			            </th>\
+			            <th class="col-md-3">\
+			            	<div class="dropdown trade-center-dropdown">\
+  								<button class="btn btn-default dropdown-toggle" type="button" id="trade-center-receive" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">\
+    							Receive\
+							    <span class="caret"></span>\
+								</button>\
+								<ul class="dropdown-menu" aria-labelledby="trade-center-dropdown">\
+								    <li><a href="#">Crystal</a></li>\
+								    <li><a href="#">Steel</a></li>\
+								    <li><a href="#">Titanium</a></li>\
+								    <li><a href="#">Tritium</a></li>\
+								</ul>\
+							</div>\
+			            </th>\
+			          </tr>\
+			        </thead>\
+			        <tbody>\
+			          <tr>\
+			            <td class="col-md-6 slider-cell" style="padding-left:40px"></td>\
+			            <td class="col-md-3" id="'+resource+'-slider-deduction"></td>\
+			            <td class="col-md-3" id="'+resource+'-slider-production"></td>\
+			          </tr>\
+			        </tbody>\
+			      </table>'); // need a button that executes the trade too
+	var $slider = $('<input class="slider" type="text"/>');
+	$slider.attr({
+		'data-slider-id': plant, 
+		'data-slider-step': 1, 
+		'data-slider-value': planet.mine_rate_deductions[resource], 
+		'data-slider-min': 0, 
+		'data-slider-max': planet.mine_rates[resource]
+	});
+	
+	$table.find('.slider-cell').append($slider);
+	$div.append($table);
+	$('#secondary-active-wrapper').append($div);
+	// needs to be appended to DOM before it can be activated
+	$slider.slider()
+		   .on('slide', function(e) {
+		   		var rateDeduction = e.value;
+		   		var powerIncrease = e.value * planet.io_multipliers[plant];
+		   		// reduce energy by previous increase
+		   		planet.power -= (planet.mine_rate_deductions[resource] * planet.io_multipliers[plant]);
+		   		// increase energy
+		   		planet.power += powerIncrease;
+		   		// reset rate deduction
+		   		planet.mine_rate_deductions[resource] = rateDeduction;
+
+		   		$('#'+resource+'-slider-deduction').html(rateDeduction);
+		   		$('#'+resource+'-slider-production').html(powerIncrease);
+		   });
+	// since planet.io_multipliers are set to 1 by default for easy scaling, using a slider when a plant is either level
+	// 0 or 1 would result in the same effect
+	if (planet.buildings.io[plant].length === 0) {
+		$slider.slider('disable');
+	}
+	else {
+		$slider.slider('enable');
 	}
 }
 
